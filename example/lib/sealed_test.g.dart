@@ -6,4 +6,8 @@ part of 'sealed_test.dart';
 // SealedUghGenerator
 // **************************************************************************
 
-// Hey! Annotation found!
+abstract class SealedTest<T> {}
+
+class FirstObj<T> extends SealedTest<T> {}
+
+class SecondObj<T> extends SealedTest<T> {}
