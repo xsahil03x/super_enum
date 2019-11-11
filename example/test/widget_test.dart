@@ -5,26 +5,38 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:example/sealed_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:example/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  // ignore: close_sinks
+  final _controller = StreamController<Result<int>>();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  test('Sealed Class test', () async {
+    final intStream = _controller.stream;
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    getResult() async {
+      for (int i = 0; i < 2; i++) {
+        if (i == 0)
+          _controller.add(Result.success(data: 333, message: 'Hurray'));
+        else
+          _controller.add(
+              Result.error(exception: Exception('Some exception occured')));
+
+        await Future.delayed(Duration(seconds: 1));
+      }
+    }
+
+    intStream.listen((result) {
+      result.when(
+        onSuccess: (data) => print(data.message),
+        onError: (data) => print(data.exception),
+      );
+    });
+
+    await getResult();
   });
 }

@@ -7,56 +7,42 @@ part of 'sealed_test.dart';
 // **************************************************************************
 
 @immutable
-abstract class SealedTest<T> {
-  const SealedTest(this._type);
+abstract class Result<T> {
+  const Result(this._type);
 
-  final _SealedTest _type;
+  factory Result.success({@required T data, @required String message}) =
+      Success<T>;
+
+  factory Result.error({@required Exception exception}) = Error<T>;
+
+  final _Result _type;
 
 //ignore: missing_return
   R when<R>(
-      {@required R Function(FirstObj) onFirstObj,
-      @required R Function(SecondObj) onSecondObj,
-      @required R Function(ThirdObj) onThirdObj,
-      @required R Function(FourthObj) onFourthObj}) {
+      {@required R Function(Success) onSuccess,
+      @required R Function(Error) onError}) {
     switch (this._type) {
-      case _SealedTest.FirstObj:
-        return onFirstObj(this as FirstObj);
-      case _SealedTest.SecondObj:
-        return onSecondObj(this as SecondObj);
-      case _SealedTest.ThirdObj:
-        return onThirdObj(this as ThirdObj);
-      case _SealedTest.FourthObj:
-        return onFourthObj(this as FourthObj);
+      case _Result.Success:
+        return onSuccess(this as Success);
+      case _Result.Error:
+        return onError(this as Error);
     }
   }
 }
 
 @immutable
-class FirstObj extends SealedTest {
-  const FirstObj() : super(_SealedTest.FirstObj);
+class Success<T> extends Result<T> {
+  const Success({@required this.data, @required this.message})
+      : super(_Result.Success);
+
+  final T data;
+
+  final String message;
 }
 
 @immutable
-class SecondObj extends SealedTest {
-  const SecondObj({@required this.f1, @required this.f2})
-      : super(_SealedTest.SecondObj);
+class Error<T> extends Result<T> {
+  const Error({@required this.exception}) : super(_Result.Error);
 
-  final double f1;
-
-  final int f2;
-}
-
-@immutable
-class ThirdObj<T> extends SealedTest {
-  const ThirdObj({@required this.f1, @required this.f2})
-      : super(_SealedTest.ThirdObj);
-
-  final int f1;
-
-  final T f2;
-}
-
-@immutable
-class FourthObj extends SealedTest {
-  const FourthObj() : super(_SealedTest.FourthObj);
+  final Exception exception;
 }
