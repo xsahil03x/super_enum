@@ -5,7 +5,7 @@ import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:code_builder/code_builder.dart';
 
-//TODO : Allow for fields to be put into the Data class specified as paramters to Data annotation.
+//TODO : Improve specification of Data annotation and its fields parameter
 
 Builder sealedUghGeneratorFactoryBuilder() => SharedPartBuilder(
       [SealedUghGenerator()],
@@ -14,6 +14,8 @@ Builder sealedUghGeneratorFactoryBuilder() => SharedPartBuilder(
 
 final _dartFmt = DartFormatter();
 TypeChecker _typeChecker(Type t) => TypeChecker.fromRuntime(t);
+
+String _typeOfParameter(obj) => ConstantReader(obj).read('type').typeValue.toString();
 
 class SealedUghGenerator extends GeneratorForAnnotation<SealedUgh> {
   @override
@@ -26,9 +28,12 @@ class SealedUghGenerator extends GeneratorForAnnotation<SealedUgh> {
 String _generateClass(ClassElement element) {
   assert(element.isEnum);
   assert(element.isPrivate);
+  final isGeneric = _typeChecker(Generic).hasAnnotationOfExact(element);
+
   final cls = Class((c) => c
     ..name = ('${element.name.replaceFirst('_', '')}')
-    ..types.add(refer('T'))
+    ..annotations.add(refer('immutable'))
+    ..types.addAll(isGeneric ? [refer('T')] : [])
     ..abstract = true
     ..fields.add(Field((f) => f
       ..name = '_type'
@@ -36,6 +41,7 @@ String _generateClass(ClassElement element) {
       ..type = refer(element.name)
       ..build()))
     ..constructors.add(Constructor((constructor) => constructor
+      ..constant = true
       ..requiredParameters.add(Parameter((p) => p
         ..name = 'this._type'
         ..build()))
@@ -44,10 +50,10 @@ String _generateClass(ClassElement element) {
     ..build());
   final emitter = DartEmitter();
   return _dartFmt.format(
-      '${cls.accept(emitter)}\n${_generateDerivedClasses(element, cls.name).join('\n')}');
+      '${cls.accept(emitter)}\n${_generateDerivedClasses(element).join('\n')}');
 }
 
-List<String> _generateDerivedClasses(ClassElement element, String parent) {
+List<String> _generateDerivedClasses(ClassElement element) {
   assert(element.isEnum);
   assert(element.isPrivate);
 
@@ -58,9 +64,11 @@ List<String> _generateDerivedClasses(ClassElement element, String parent) {
 
   for (var field in fields) {
     if (_typeChecker(Object).hasAnnotationOfExact(field)) {
-      classes.add('${_generateObjectClass(field, parent).accept(emitter)}');
+      classes.add(_dartFmt
+          .format('${_generateObjectClass(field, element).accept(emitter)}'));
     } else if (_typeChecker(Data).hasAnnotationOfExact(field)) {
-      classes.add('${_generateDataClass(field, parent).accept(emitter)}');
+      classes.add(_dartFmt
+          .format('${_generateDataClass(field, element).accept(emitter)}'));
     } else {
       //ignore other annotations
     }
@@ -102,28 +110,71 @@ Method _generateWhenMethod(ClassElement element) {
     ..build());
 }
 
-Class _generateObjectClass(FieldElement field, String parent) => Class((c) => c
-  ..name = '${field.name}'
-  ..types.add(refer('T'))
-  ..constructors.add(Constructor((c) => c
-    ..initializers.add(Code('super(_$parent.${field.name})'))
-    ..build()))
-  ..extend = refer(parent)
-  ..build());
+Class _generateObjectClass(FieldElement field, ClassElement parent) {
+  final isGeneric = _typeChecker(Generic).hasAnnotationOfExact(field);
 
-Class _generateDataClass(FieldElement field, String parent) => Class((c) => c
+  if(isGeneric)
+    throw 'Can\'t use @generic on object classes';
+
+  return Class((c) => c
   ..name = '${field.name}'
-  ..extend = refer(parent)
-  ..types.add(refer('T'))
-  ..fields.add(Field((f) => f
-    ..name = 'value'
-    ..type = refer('T')
-    ..modifier = FieldModifier.final$
+  ..constructors.add(Constructor((c) => c
+    ..constant = true
+    ..initializers.add(Code('super(${parent.name}.${field.name})'))
     ..build()))
-  ..constructors.add(Constructor((constructor) => constructor
-    ..initializers.add(Code('super(_$parent.${field.name})'))
-    ..requiredParameters.add(Parameter((p) => p
-      ..name = 'this.value'
-      ..build()))
-    ..build()))
+  ..extend = refer(parent.name.replaceFirst('_', ''))
+  ..annotations.add(refer('immutable'))
   ..build());
+}
+
+Class _generateDataClass(FieldElement field, ClassElement parent) {
+  final annotation = _typeChecker(Data).firstAnnotationOfExact(field);
+  final isGeneric = _typeChecker(Generic).hasAnnotationOfExact(field);
+
+  final _classFields =
+      ConstantReader(annotation).read('fields')?.listValue ?? [];
+
+
+  if(isGeneric) {
+    if(_classFields.every((e) => _typeOfParameter(e) != "Generic")){
+      throw '${field.name} must have atleast one Generic field';
+    }
+  }
+
+  if(_classFields.any((e) => _typeOfParameter(e) == "Generic")){
+    if(!_typeChecker(Generic).hasAnnotationOfExact(parent))
+      throw '${parent.name} must be annotated with @generic';
+    if(!isGeneric)
+      throw '${field.name} must be annotated with @generic';
+  }
+
+  return Class((c) => c
+    ..name = '${field.name}'
+    ..extend = refer(parent.name.replaceFirst('_', ''))
+    ..annotations.add(refer('immutable'))
+    ..types.addAll(isGeneric ? [refer('T')] : [])
+    ..fields.addAll(_classFields.map((e) => Field((f) => f
+      ..name = ConstantReader(e).read('name').stringValue
+      ..modifier = FieldModifier.final$
+      ..type =_typeOfParameter(e) != "Generic" ? refer(_typeOfParameter(e)) : refer('T')
+      ..build())))
+    // ..fields.add(Field((f) => f
+    //   ..name = 'value'
+    //   ..type = refer('T')
+    //   ..modifier = FieldModifier.final$
+    //   ..build()))
+    ..constructors.add(Constructor((constructor) => constructor
+      ..constant = true
+      ..initializers.add(Code('super(${parent.name}.${field.name})'))
+      // ..requiredParameters.add(Parameter((p) => p
+      //   ..name = 'this.value'
+      //   ..build()))
+
+      ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) => f
+        ..name = 'this.${ConstantReader(e).read('name').stringValue}'
+        ..named = true
+        ..annotations.add(refer('required'))
+        ..build())))
+      ..build()))
+    ..build());
+}
