@@ -7,7 +7,7 @@
 
 import 'dart:async';
 
-import 'package:example/sealed_test.dart';
+import 'package:example/result.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

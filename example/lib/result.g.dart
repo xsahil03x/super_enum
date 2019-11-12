@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sealed_test.dart';
+part of 'result.dart';
 
 // **************************************************************************
 // SealedUghGenerator
@@ -18,7 +18,6 @@ abstract class Result<T> {
   final _Result _type;
 
 //ignore: missing_return
-  @protected
   R when<R>(
       {@required R Function(Success) onSuccess,
       @required R Function(Error) onError}) {

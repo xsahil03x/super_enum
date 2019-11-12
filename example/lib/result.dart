@@ -1,6 +1,6 @@
 import 'package:sealed_ugh/sealed_ugh.dart';
 
-part "sealed_test.g.dart";
+part "result.g.dart";
 
 @sealed
 enum _Result {
