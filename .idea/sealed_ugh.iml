@@ -6,6 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/sealed_ugh/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/sealed_ugh/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/sealed_ugh/build" />
       <excludeFolder url="file://$MODULE_DIR$/sealed_ugh_generator/.dart_tool" />
