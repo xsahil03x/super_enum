@@ -11,7 +11,7 @@ class ClassGenerator {
   final ClassElement element;
   const ClassGenerator(this.element);
 
-  List<FieldElement> get _fields => element.fields.skip(2);
+  List<FieldElement> get _fields => element.fields.skip(2).toList();
 
   bool get isNamespaceGeneric => element.fields.any(
       (e) => TypeProcessor.typeChecker(Generic).hasAnnotationOfExact(e));
@@ -138,7 +138,7 @@ class ClassGenerator {
   Class _generateDataClass(FieldElement field) {
     final annotation = TypeProcessor.typeChecker(Data).firstAnnotationOfExact(field);
     final isGeneric = TypeProcessor.typeChecker(Generic).hasAnnotationOfExact(field);
-   
+
     final _classFields =
         ConstantReader(annotation).read('fields')?.listValue ?? [];
 
