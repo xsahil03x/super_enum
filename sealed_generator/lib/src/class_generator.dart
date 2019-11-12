@@ -1,11 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:sealed_ugh/sealed_ugh.dart';
-import 'package:sealed_ugh_generator/src/type_processor.dart';
-import 'package:sealed_ugh_generator/src/extension.dart';
+import 'package:sealed/sealed.dart';
+import 'package:sealed_generator/src/type_processor.dart';
+import 'package:sealed_generator/src/extension.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:dart_style/dart_style.dart';
-import 'package:sealed_ugh_generator/src/references.dart' as References;
+import 'package:sealed_generator/src/references.dart' as References;
 
 class ClassGenerator {
   final ClassElement element;

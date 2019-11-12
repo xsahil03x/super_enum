@@ -340,17 +340,17 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  sealed_ugh:
+  sealed:
     dependency: "direct main"
     description:
-      path: "../sealed_ugh"
+      path: "../sealed"
       relative: true
     source: path
     version: "0.0.1"
-  sealed_ugh_generator:
+  sealed_generator:
     dependency: "direct dev"
     description:
-      path: "../sealed_ugh_generator"
+      path: "../sealed_generator"
       relative: true
     source: path
     version: "0.0.1"

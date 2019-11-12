@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      sealed_generator|sealed:
+        enabled: true
+
+builders:
+  sealed_ugh_generator:
+    target: ":sealed_generator"
+    import: "package:sealed_generator/sealed_generator.dart"
+    builder_factories: ["sealedGeneratorFactory"]
+    build_extensions: {".dart": [".sealed.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

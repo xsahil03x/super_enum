@@ -1,4 +1,4 @@
-# sealed_ugh
+# sealed
 
 A new Flutter package.
 

@@ -1,4 +1,4 @@
-name: sealed_ugh
+name: sealed_generator
 description: A new Flutter package.
 version: 0.0.1
 homepage: https://github.com/xsahil03x/sealed_ugh
@@ -13,11 +13,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  analyzer: ^0.39.1
-  built_collection: ^4.2.2
+  source_gen: ^0.9.4+6
+  sealed:
+    path: ../sealed/
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^1.7.1
 
 flutter:

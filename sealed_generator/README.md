@@ -1,4 +1,4 @@
-# sealed_ugh_generator
+# sealed_generator
 
 A new Flutter package.
 

@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 
-const sealed = SealedUgh._();
+const sealed = Sealed._();
 
 @immutable
-class SealedUgh {
-  const SealedUgh._();
+class Sealed {
+  const Sealed._();
 }
 
 const object = Object._();

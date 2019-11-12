@@ -1,4 +1,4 @@
-import 'package:sealed_ugh/sealed_ugh.dart';
+import 'package:sealed/sealed.dart';
 
 part "result.g.dart";
 

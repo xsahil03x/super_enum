@@ -19,15 +19,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sealed_ugh:
-    path: ../sealed_ugh/
+  sealed:
+    path: ../sealed/
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.7.1
-  sealed_ugh_generator:
-    path: ../sealed_ugh_generator/
+  sealed_generator:
+    path: ../sealed_generator/
 
 
 # For information on the generic Dart part of this file, see the
