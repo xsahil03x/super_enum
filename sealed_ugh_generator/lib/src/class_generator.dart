@@ -61,7 +61,7 @@ class ClassGenerator {
     return Method((m) => m
       ..name = 'when'
       ..types.add(References.generic_R)
-      ..annotations.add(References.protected)
+      //..annotations.add(References.protected)
       ..returns = References.generic_R
       ..docs.add('//ignore: missing_return')
       ..optionalParameters.addAll(_params)
