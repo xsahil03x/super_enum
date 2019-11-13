@@ -11,7 +11,6 @@ import 'package:example/result.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-
   // ignore: close_sinks
   final _controller = StreamController<Result<int>>();
 

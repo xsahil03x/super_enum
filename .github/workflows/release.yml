@@ -23,13 +23,13 @@ jobs:
       - name: Collect coverage
         run: |
           cd sealed_generator && pub global activate test_coverage
-          cd sealed_generator && pub global run test_coverage
+          pub global run test_coverage
       - name: Report CodeCov
         uses: codecov/codecov-action@v1.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: coverage/lcov.info
+          file: sealed_generator/coverage/lcov.info
       - name: Release
-          uses: softprops/action-gh-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
