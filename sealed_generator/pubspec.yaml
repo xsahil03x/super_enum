@@ -1,7 +1,7 @@
 name: sealed_generator
-description: A new Flutter package.
+description: Dev-dependency to generate sealed classes and when statements together with the sealed.dart package.
 version: 0.0.1
-homepage: https://github.com/xsahil03x/sealed_ugh
+homepage: https://github.com/xsahil03x/sealed.dart
 
 authors:
   - Sahil Kumar <xdsahil@gmail.com>
