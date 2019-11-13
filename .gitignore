@@ -27,3 +27,4 @@
 .pub-cache/
 .pub/
 build/
+example/pubspec.lock
