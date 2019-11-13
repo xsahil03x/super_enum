@@ -9,7 +9,7 @@ abstract class Result<T> {
   factory Result.success({@required T data, @required String message}) =
       Success<T>;
 
-  factory Result.error({@required Exception exception}) = Error<T>;
+  factory Result.error() = Error<T>;
 
   final _Result _type;
 
@@ -38,9 +38,7 @@ class Success<T> extends Result<T> {
 
 @immutable
 class Error<T> extends Result<T> {
-  const Error({@required this.exception}) : super(_Result.Error);
-
-  final Exception exception;
+  const Error() : super(_Result.Error);
 }
 ''')
 @sealed
@@ -52,6 +50,6 @@ enum _Result {
   ])
   Success,
 
-  @Data(fields: [DataField('exception', Exception)])
+  @object
   Error,
 }
