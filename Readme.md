@@ -1,1 +1,1 @@
-## Sealed.dart
+# 👏 Sealed.dart  [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](https://opensource.org/licenses/MIT) [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://github.com/xsahil03x/before_after/blob/master/LICENSE) [![Dart CI](https://github.com/xsahil03x/sealed.dart/workflows/Dart%20CI/badge.svg)](https://github.com/rrousselGit/union/actions) [![codecov](https://codecov.io/gh/xsahil03x/sealed.dart/branch/master/graph/badge.svg)](https://codecov.io/gh/xsahil03x/sealed.dart)
