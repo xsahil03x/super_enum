@@ -11,13 +11,4 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-  analyzer: ^0.39.1
-  built_collection: ^4.2.2
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
+  meta: ^1.1.7

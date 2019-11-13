@@ -93,8 +93,8 @@ class ClassGenerator {
     final fields = TypeProcessor.listTypeFieldOf<Data>(element, 'fields');
     return fields.map((e) => Parameter((f) => f
       ..name = '${TypeProcessor.dataFieldName(e)}'
-      ..type = TypeProcessor.datafieldType(e) != "Generic"
-          ? refer(TypeProcessor.datafieldType(e))
+      ..type = TypeProcessor.dataFieldType(e) != "Generic"
+          ? refer(TypeProcessor.dataFieldType(e))
           : References.generic_T
       ..named = true
       ..annotations.add(References.required)
@@ -139,12 +139,12 @@ class ClassGenerator {
 
     if (isGeneric) {
       if (_classFields
-          .every((e) => TypeProcessor.datafieldType(e) != "Generic")) {
+          .every((e) => TypeProcessor.dataFieldType(e) != "Generic")) {
         throw '${field.name} must have atleast one Generic field';
       }
     }
 
-    if (_classFields.any((e) => TypeProcessor.datafieldType(e) == "Generic")) {
+    if (_classFields.any((e) => TypeProcessor.dataFieldType(e) == "Generic")) {
       if (!isGeneric) throw '${field.name} must be annotated with @generic';
     }
 
@@ -157,8 +157,8 @@ class ClassGenerator {
       ..fields.addAll(_classFields.map((e) => Field((f) => f
         ..name = TypeProcessor.dataFieldName(e)
         ..modifier = FieldModifier.final$
-        ..type = TypeProcessor.datafieldType(e) != "Generic"
-            ? refer(TypeProcessor.datafieldType(e))
+        ..type = TypeProcessor.dataFieldType(e) != "Generic"
+            ? refer(TypeProcessor.dataFieldType(e))
             : References.generic_T
         ..build())))
       ..constructors.add(Constructor((constructor) => constructor
