@@ -8,6 +8,7 @@ import 'package:sealed_generator/src/references.dart' as References;
 
 class ClassGenerator {
   final ClassElement element;
+
   const ClassGenerator(this.element);
 
   Iterable<FieldElement> get _fields => element.fields.skip(2);
@@ -17,7 +18,7 @@ class ClassGenerator {
   String generate(DartFormatter _dartFmt) {
     assert(element.isEnum);
     assert(element.isPrivate);
-  
+
     try {
       final cls = Class((c) => c
         ..name = ('${element.name.replaceFirst('_', '')}')

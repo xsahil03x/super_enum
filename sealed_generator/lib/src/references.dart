@@ -5,4 +5,3 @@ const generic_R = const Reference('R');
 const immutable = const Reference('immutable');
 const protected = const Reference('protected');
 const required = const Reference('required');
-
