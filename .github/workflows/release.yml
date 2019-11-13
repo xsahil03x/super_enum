@@ -1,0 +1,35 @@
+name: Dart CI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    container:
+      image: google/dart:latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: cd sealed_generator && pub get
+      - name: format
+        run: dartfmt -n --set-exit-if-changed .
+      - name: Run tests
+        run: cd sealed_generator && pub run test
+      - name: Collect coverage
+        run: |
+          cd sealed_generator && pub global activate test_coverage
+          pub global run test_coverage
+      - name: Report CodeCov
+        uses: codecov/codecov-action@v1.0.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: sealed_generator/coverage/lcov.info
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
