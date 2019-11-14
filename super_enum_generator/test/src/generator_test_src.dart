@@ -19,9 +19,9 @@ abstract class Result<T> {
       @required R Function(Error) onError}) {
     switch (this._type) {
       case _Result.Success:
-        return onSuccess(this as Success);
+        return success(this as Success);
       case _Result.Error:
-        return onError(this as Error);
+        return error(this as Error);
     }
   }
 }
