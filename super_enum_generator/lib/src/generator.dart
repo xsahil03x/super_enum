@@ -1,16 +1,16 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:sealed/sealed.dart';
-import 'package:sealed_generator/src/class_generator.dart';
+import 'package:super_enum/super_enum.dart';
+import 'package:super_enum_generator/src/class_generator.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 
-Builder sealedGeneratorFactoryBuilder() => SharedPartBuilder(
-      [SealedGenerator()],
-      'sealed',
+Builder superEnumGeneratorFactoryBuilder() => SharedPartBuilder(
+      [SuperEnumGenerator()],
+      'super_enum',
     );
 
-class SealedGenerator extends GeneratorForAnnotation<Sealed> {
+class SuperEnumGenerator extends GeneratorForAnnotation<SuperEnum> {
   @override
   generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {

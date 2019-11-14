@@ -1,4 +1,4 @@
-import 'package:sealed/sealed.dart';
+import 'package:super_enum/super_enum.dart';
 import 'package:source_gen_test/source_gen_test.dart';
 
 @ShouldGenerate(r'''
@@ -41,7 +41,7 @@ class Error<T> extends Result<T> {
   const Error() : super(_Result.Error);
 }
 ''')
-@sealed
+@superEnum
 enum _Result {
   @generic
   @Data(fields: [

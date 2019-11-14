@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 
-const sealed = Sealed._();
+const superEnum = SuperEnum._();
 
 @immutable
-class Sealed {
-  const Sealed._();
+class SuperEnum {
+  const SuperEnum._();
 }
 
 const object = Object._();

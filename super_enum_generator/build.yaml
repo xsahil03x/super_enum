@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      super_enum_generator|super_enum:
+        enabled: true
+
+builders:
+  super_enum_generator:
+    target: ":super_enum_generator"
+    import: "package:super_enum_generator/super_enum_generator.dart"
+    builder_factories: ["superEnumGeneratorFactory"]
+    build_extensions: {".dart": [".super_enum.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

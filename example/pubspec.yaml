@@ -19,15 +19,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sealed:
-    path: ../sealed/
+  super_enum:
+    path: ../super_enum/
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.7.1
-  sealed_generator:
-    path: ../sealed_generator/
+  super_enum_generator:
+    path: ../super_enum_generator/
 
 
 # For information on the generic Dart part of this file, see the
