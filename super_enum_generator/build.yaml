@@ -1,8 +1,9 @@
 targets:
   $default:
     builders:
-      super_enum_generator|super_enum:
-        enabled: true
+      super_enum_generator:
+        generate_for:
+        - example/*
 
 builders:
   super_enum_generator:

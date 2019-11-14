@@ -19,13 +19,13 @@ abstract class Result<T> {
 
 //ignore: missing_return
   R when<R>(
-      {@required R Function(Success) onSuccess,
-      @required R Function(Error) onError}) {
+      {@required R Function(Success) success,
+      @required R Function(Error) error}) {
     switch (this._type) {
       case _Result.Success:
-        return onSuccess(this as Success);
+        return success(this as Success);
       case _Result.Error:
-        return onError(this as Error);
+        return error(this as Error);
     }
   }
 }

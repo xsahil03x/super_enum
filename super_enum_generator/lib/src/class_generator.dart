@@ -2,10 +2,10 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:super_enum/super_enum.dart';
-import 'package:super_enum_generator/src/type_processor.dart' as TypeProcessor;
+import 'package:super_enum_generator/src/type_processor.dart' as type_processor;
 import 'package:super_enum_generator/src/extension.dart';
 import 'package:dart_style/dart_style.dart';
-import 'package:super_enum_generator/src/references.dart' as References;
+import 'package:super_enum_generator/src/references.dart' as references;
 
 class ClassGenerator {
   final ClassElement element;
@@ -14,18 +14,19 @@ class ClassGenerator {
 
   Iterable<FieldElement> get _fields => element.fields.skip(2);
 
-  bool get isNamespaceGeneric => _fields.any(TypeProcessor.isGeneric);
+  bool get _isNamespaceGeneric => _fields.any(type_processor.isGeneric);
 
   String generate(DartFormatter _dartFmt) {
-    if (!element.isEnum || !element.isPrivate)
+    if (!element.isEnum || !element.isPrivate) {
       throw InvalidGenerationSourceError(
           '${element.name} must be a private Enum');
+    }
 
     try {
       final cls = Class((c) => c
         ..name = ('${element.name.replaceFirst('_', '')}')
-        ..annotations.add(References.immutable)
-        ..types.addAll(isNamespaceGeneric ? [References.generic_T] : [])
+        ..annotations.add(references.immutable)
+        ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
         ..abstract = true
         ..fields.add(Field((f) => f
           ..name = '_type'
@@ -51,12 +52,13 @@ class ClassGenerator {
 
     for (var field in _fields) {
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
-      _bodyBuffer.writeln('return on${field.name}(this as ${field.name});');
+      _bodyBuffer.writeln(
+          'return ${getCamelCase(field.name)}(this as ${field.name});');
 
       _params.add(Parameter((p) => p
-        ..name = 'on${field.name}'
+        ..name = '${getCamelCase(field.name)}'
         ..named = true
-        ..annotations.add(References.required)
+        ..annotations.add(references.required)
         ..type = refer('R Function(${field.name})')
         ..build()));
     }
@@ -65,9 +67,9 @@ class ClassGenerator {
 
     return Method((m) => m
       ..name = 'when'
-      ..types.add(References.generic_R)
+      ..types.add(references.generic_R)
       //..annotations.add(References.protected)
-      ..returns = References.generic_R
+      ..returns = references.generic_R
       ..docs.add('//ignore: missing_return')
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
@@ -85,30 +87,36 @@ class ClassGenerator {
           constructor
             ..factory = true
             ..name = '${getCamelCase(field.name)}'
-            ..optionalParameters.addAll(TypeProcessor.hasAnnotation<Data>(field)
-                ? _generateClassConstructorFields(field)
-                : [])
+            ..optionalParameters.addAll(
+                type_processor.hasAnnotation<Data>(field)
+                    ? _generateClassConstructorFields(field)
+                    : [])
             ..redirect =
-                refer('${field.name}${isNamespaceGeneric ? '<T>' : ''}')
+                refer('${field.name}${_isNamespaceGeneric ? '<T>' : ''}')
             ..build())));
 
   Iterable<Parameter> _generateClassConstructorFields(FieldElement element) {
-    final fields = TypeProcessor.listTypeFieldOf<Data>(element, 'fields');
+    final fields = type_processor.listTypeFieldOf<Data>(element, 'fields');
     return fields.map((e) => Parameter((f) => f
-      ..name = '${TypeProcessor.dataFieldName(e)}'
-      ..type = TypeProcessor.dataFieldType(e) != "Generic"
-          ? refer(TypeProcessor.dataFieldType(e))
-          : References.generic_T
+      ..name = '${type_processor.dataFieldName(e)}'
+      ..type = type_processor.dataFieldType(e) != "Generic"
+          ? refer(type_processor.dataFieldType(e))
+          : references.generic_T
       ..named = true
-      ..annotations.add(References.required)
+      ..annotations.add(references.required)
       ..build()));
   }
 
   String get _generateDerivedClasses => _fields
       .map((field) {
-        if (TypeProcessor.hasAnnotation<Object>(field)) {
+        if (type_processor.hasAnnotation<Object>(field)) {
           return '${_generateObjectClass(field).accept(DartEmitter())}';
-        } else if (TypeProcessor.hasAnnotation<Data>(field)) {
+        } else if (type_processor.hasAnnotation<Data>(field)) {
+          if (type_processor.listTypeFieldOf<Data>(field, 'fields')?.isEmpty ??
+              true) {
+            throw InvalidGenerationSourceError(
+                'Data annotation must contain at least one DataField');
+          }
           return '${_generateDataClass(field).accept(DartEmitter())}';
         } else {
           return null;
@@ -118,63 +126,65 @@ class ClassGenerator {
       .join('');
 
   Class _generateObjectClass(FieldElement field) {
-    final isGeneric = TypeProcessor.isGeneric(field);
+    final isGeneric = type_processor.isGeneric(field);
 
-    if (isGeneric)
+    if (isGeneric) {
       throw InvalidGenerationSourceError(
           'Can\'t use @generic on object classes');
+    }
 
     return Class((c) => c
       ..name = '${field.name}'
-      ..types.addAll(isNamespaceGeneric ? [References.generic_T] : [])
+      ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
       ..constructors.add(Constructor((c) => c
         ..constant = true
         ..initializers.add(Code('super(${element.name}.${field.name})'))
         ..build()))
       ..extend = refer(
-          '${element.name.replaceFirst('_', '')}${isNamespaceGeneric ? '<T>' : ''}')
-      ..annotations.add(References.immutable)
+          '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
+      ..annotations.add(references.immutable)
       ..build());
   }
 
   Class _generateDataClass(FieldElement field) {
-    final _classFields = TypeProcessor.listTypeFieldOf<Data>(field, 'fields');
-    final isGeneric = TypeProcessor.isGeneric(field);
+    final _classFields = type_processor.listTypeFieldOf<Data>(field, 'fields');
+    final isGeneric = type_processor.isGeneric(field);
 
     if (isGeneric) {
       if (_classFields
-          .every((e) => TypeProcessor.dataFieldType(e) != "Generic")) {
+          .every((e) => type_processor.dataFieldType(e) != "Generic")) {
         throw InvalidGenerationSourceError(
             '${field.name} must have atleast one Generic field');
       }
     }
 
-    if (_classFields.any((e) => TypeProcessor.dataFieldType(e) == "Generic")) {
-      if (!isGeneric)
+    if (_classFields.any((e) => type_processor.dataFieldType(e) == "Generic")) {
+      if (!isGeneric) {
         throw InvalidGenerationSourceError(
             '${field.name} must be annotated with @generic');
+      }
     }
 
     return Class((c) => c
       ..name = '${field.name}'
       ..extend = refer(
-          '${element.name.replaceFirst('_', '')}${isNamespaceGeneric ? '<T>' : ''}')
-      ..annotations.add(References.immutable)
-      ..types.addAll(isNamespaceGeneric ? [References.generic_T] : [])
+          '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
+      ..annotations.add(references.immutable)
+      ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
       ..fields.addAll(_classFields.map((e) => Field((f) => f
-        ..name = TypeProcessor.dataFieldName(e)
+        ..name = type_processor.dataFieldName(e)
         ..modifier = FieldModifier.final$
-        ..type = TypeProcessor.dataFieldType(e) != "Generic"
-            ? refer(TypeProcessor.dataFieldType(e))
-            : References.generic_T
+        ..type = type_processor.dataFieldType(e) != "Generic"
+            ? refer(type_processor.dataFieldType(e))
+            : references.generic_T
         ..build())))
       ..constructors.add(Constructor((constructor) => constructor
         ..constant = true
         ..initializers.add(Code('super(${element.name}.${field.name})'))
         ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) => f
-          ..name = 'this.${TypeProcessor.dataFieldName(e)}'
+          ..name = 'this.${type_processor.dataFieldName(e)}'
           ..named = true
-          ..annotations.add(References.required)
+          ..annotations.add(references.required)
           ..build())))
         ..build()))
       ..build());

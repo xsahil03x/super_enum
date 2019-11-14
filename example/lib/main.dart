@@ -50,9 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, snapshot) {
               final result = !snapshot.hasError
                   ? snapshot.data?.when(
-                        onSuccess: (success) =>
-                            'Data: ${success.data}\nMessage: ${success.message}',
-                        onError: (error) => error.exception,
+                        success: (data) =>
+                            'Data: ${data.data}\nMessage: ${data.message}',
+                        error: (data) => data.exception,
                       ) ??
                       "No operation performed yet !"
                   : "Unknown error occurred";
