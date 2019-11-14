@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:source_gen/source_gen.dart';
 import 'package:super_enum/super_enum.dart';
 import 'package:super_enum_generator/src/type_processor.dart' as TypeProcessor;
 import 'package:super_enum_generator/src/extension.dart';
@@ -16,9 +17,9 @@ class ClassGenerator {
   bool get isNamespaceGeneric => _fields.any(TypeProcessor.isGeneric);
 
   String generate(DartFormatter _dartFmt) {
-    // TODO : Replace assertion with exceptions
-    assert(element.isEnum);
-    assert(element.isPrivate);
+    if (!element.isEnum || !element.isPrivate)
+      throw InvalidGenerationSourceError(
+          '${element.name} must be a private Enum');
 
     try {
       final cls = Class((c) => c
@@ -118,9 +119,10 @@ class ClassGenerator {
 
   Class _generateObjectClass(FieldElement field) {
     final isGeneric = TypeProcessor.isGeneric(field);
-    print('_generateObjectClass');
 
-    if (isGeneric) throw 'Can\'t use @generic on object classes';
+    if (isGeneric)
+      throw InvalidGenerationSourceError(
+          'Can\'t use @generic on object classes');
 
     return Class((c) => c
       ..name = '${field.name}'
@@ -142,12 +144,15 @@ class ClassGenerator {
     if (isGeneric) {
       if (_classFields
           .every((e) => TypeProcessor.dataFieldType(e) != "Generic")) {
-        throw '${field.name} must have atleast one Generic field';
+        throw InvalidGenerationSourceError(
+            '${field.name} must have atleast one Generic field');
       }
     }
 
     if (_classFields.any((e) => TypeProcessor.dataFieldType(e) == "Generic")) {
-      if (!isGeneric) throw '${field.name} must be annotated with @generic';
+      if (!isGeneric)
+        throw InvalidGenerationSourceError(
+            '${field.name} must be annotated with @generic');
     }
 
     return Class((c) => c

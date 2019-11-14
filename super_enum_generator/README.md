@@ -114,7 +114,7 @@ _resultController.add(Result.error()),
 _resultController.stream.listen((result) {
       result.when(
         onSuccess: (data) => print(data.message), // Success
-        onError: (_) => print('Error Occured'), // Error Occured
+        onError: (_) => print('Error Occured'), // Error Occurred
       );
     });
 ```
