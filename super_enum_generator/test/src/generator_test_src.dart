@@ -42,6 +42,7 @@ class Error<T> extends Result<T> {
 }
 ''')
 @superEnum
+// ignore: unused_element
 enum _Result {
   @generic
   @Data(fields: [

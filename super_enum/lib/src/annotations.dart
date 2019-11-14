@@ -10,7 +10,6 @@ class SuperEnum {
 const object = Object._();
 
 @immutable
-@visibleForTesting
 class Object {
   const Object._();
 }
