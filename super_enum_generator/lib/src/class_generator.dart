@@ -16,6 +16,7 @@ class ClassGenerator {
   bool get isNamespaceGeneric => _fields.any(TypeProcessor.isGeneric);
 
   String generate(DartFormatter _dartFmt) {
+    // TODO : Replace assertion with exceptions
     assert(element.isEnum);
     assert(element.isPrivate);
 
