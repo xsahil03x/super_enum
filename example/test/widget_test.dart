@@ -31,8 +31,8 @@ void main() {
 
     intStream.listen((result) {
       result.when(
-        onSuccess: (data) => print(data.message),
-        onError: (data) => print(data.exception),
+        success: (data) => print(data.message),
+        error: (data) => print(data.exception),
       );
     });
 
