@@ -52,7 +52,8 @@ class ClassGenerator {
 
     for (var field in _fields) {
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
-      _bodyBuffer.writeln('return ${getCamelCase(field.name)}(this as ${field.name});');
+      _bodyBuffer.writeln(
+          'return ${getCamelCase(field.name)}(this as ${field.name});');
 
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
@@ -111,8 +112,10 @@ class ClassGenerator {
         if (type_processor.hasAnnotation<Object>(field)) {
           return '${_generateObjectClass(field).accept(DartEmitter())}';
         } else if (type_processor.hasAnnotation<Data>(field)) {
-          if(type_processor.listTypeFieldOf<Data>(field, 'fields')?.isEmpty ?? true){
-            throw InvalidGenerationSourceError('Data annotation must contain at least one DataField');
+          if (type_processor.listTypeFieldOf<Data>(field, 'fields')?.isEmpty ??
+              true) {
+            throw InvalidGenerationSourceError(
+                'Data annotation must contain at least one DataField');
           }
           return '${_generateDataClass(field).accept(DartEmitter())}';
         } else {
