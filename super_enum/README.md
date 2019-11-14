@@ -1,4 +1,4 @@
-# sealed
+# super_enum
 
 A new Flutter package.
 

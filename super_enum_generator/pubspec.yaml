@@ -1,7 +1,7 @@
-name: sealed_generator
-description: Dev-dependency to generate sealed classes and when statements together with the sealed.dart package.
+name: super_enum_generator
+description: Dev-dependency to generate sealed classes and when statements together with the super_enum.dart package.
 version: 0.0.1
-homepage: https://github.com/xsahil03x/sealed.dart
+homepage: https://github.com/xsahil03x/super_enum.dart
 
 authors:
   - Sahil Kumar <xdsahil@gmail.com>
@@ -14,8 +14,8 @@ dependencies:
 
   # Specify a specific version or a version constraint
   # for "sealed" before publishing the package.
-  sealed:
-    path: ../sealed/
+  super_enum:
+    path: ../super_enum/
   source_gen: ^0.9.4+6
   build: ^1.2.1
   analyzer: ^0.39.1

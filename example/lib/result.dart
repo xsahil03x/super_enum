@@ -1,8 +1,8 @@
-import 'package:sealed/sealed.dart';
+import 'package:super_enum/super_enum.dart';
 
 part "result.g.dart";
 
-@sealed
+@superEnum
 enum _Result {
   @generic
   @Data(fields: [

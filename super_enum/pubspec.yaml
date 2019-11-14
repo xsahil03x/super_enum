@@ -1,7 +1,7 @@
-name: sealed
+name: super_enum
 description: Create super-powered enums similar to sealed classes in Kotlin.
 version: 0.0.1
-homepage: https://github.com/xsahil03x/sealed.dart
+homepage: https://github.com/xsahil03x/super_enum.dart
 
 authors:
   - Sahil Kumar <xdsahil@gmail.com>
@@ -11,4 +11,4 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  meta: ^1.1.8
+  meta: ^1.1.7

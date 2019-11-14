@@ -340,20 +340,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  sealed:
-    dependency: "direct main"
-    description:
-      path: "../sealed"
-      relative: true
-    source: path
-    version: "0.0.1"
-  sealed_generator:
-    dependency: "direct dev"
-    description:
-      path: "../sealed_generator"
-      relative: true
-    source: path
-    version: "0.0.1"
   shelf:
     dependency: transitive
     description:
@@ -415,6 +401,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  super_enum:
+    dependency: "direct main"
+    description:
+      path: "../super_enum"
+      relative: true
+    source: path
+    version: "0.0.1"
+  super_enum_generator:
+    dependency: "direct dev"
+    description:
+      path: "../super_enum_generator"
+      relative: true
+    source: path
+    version: "0.0.1"
   term_glyph:
     dependency: transitive
     description:

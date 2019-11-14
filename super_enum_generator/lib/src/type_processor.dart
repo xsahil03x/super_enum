@@ -1,6 +1,6 @@
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:sealed/sealed.dart';
+import 'package:super_enum/super_enum.dart';
 
 TypeChecker _typeChecker(Type t) => TypeChecker.fromRuntime(t);
 

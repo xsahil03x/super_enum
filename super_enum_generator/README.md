@@ -1,4 +1,4 @@
-# sealed_generator
+# super_enum_generator
 
 A new Flutter package.
 
