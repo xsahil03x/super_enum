@@ -7,16 +7,16 @@ part of 'main.dart';
 // **************************************************************************
 
 @immutable
-abstract class MovieResponse {
-  const MovieResponse(this._type);
+abstract class MoviesResponse {
+  const MoviesResponse(this._type);
 
-  factory MovieResponse.success({@required Movies movies}) = Success;
+  factory MoviesResponse.success({@required Movies movies}) = Success;
 
-  factory MovieResponse.unauthorized() = Unauthorized;
+  factory MoviesResponse.unauthorized() = Unauthorized;
 
-  factory MovieResponse.noNetwork() = NoNetwork;
+  factory MoviesResponse.noNetwork() = NoNetwork;
 
-  factory MovieResponse.unexpectedException({@required Exception exception}) =
+  factory MoviesResponse.unexpectedException({@required Exception exception}) =
       UnexpectedException;
 
   final _MoviesResponse _type;
@@ -41,24 +41,24 @@ abstract class MovieResponse {
 }
 
 @immutable
-class Success extends MovieResponse {
+class Success extends MoviesResponse {
   const Success({@required this.movies}) : super(_MoviesResponse.Success);
 
   final Movies movies;
 }
 
 @immutable
-class Unauthorized extends MovieResponse {
+class Unauthorized extends MoviesResponse {
   const Unauthorized() : super(_MoviesResponse.Unauthorized);
 }
 
 @immutable
-class NoNetwork extends MovieResponse {
+class NoNetwork extends MoviesResponse {
   const NoNetwork() : super(_MoviesResponse.NoNetwork);
 }
 
 @immutable
-class UnexpectedException extends MovieResponse {
+class UnexpectedException extends MoviesResponse {
   const UnexpectedException({@required this.exception})
       : super(_MoviesResponse.UnexpectedException);
 

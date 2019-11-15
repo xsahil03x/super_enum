@@ -29,19 +29,19 @@ class MoviesFetcher {
 
   MoviesFetcher({@required this.apiKey});
 
-  Future<MovieResponse> fetchMovies() async {
+  Future<MoviesResponse> fetchMovies() async {
     try {
       final response = await client.get('$_baseUrl/popular?api_key=$apiKey');
       if (response.statusCode == 200) {
         final movies = Movies.fromJson(json.decode(response.body));
-        return MovieResponse.success(movies: movies);
+        return MoviesResponse.success(movies: movies);
       } else {
-        return MovieResponse.unauthorized();
+        return MoviesResponse.unauthorized();
       }
     } on SocketException {
-      return MovieResponse.noNetwork();
+      return MoviesResponse.noNetwork();
     } catch (e) {
-      return MovieResponse.unexpectedException(exception: e);
+      return MoviesResponse.unexpectedException(exception: e);
     }
   }
 }
