@@ -26,10 +26,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^4.1.1
   build_runner: ^1.7.1
   super_enum_generator:
     path: ../super_enum_generator/
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

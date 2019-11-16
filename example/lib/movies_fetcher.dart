@@ -8,12 +8,15 @@ import 'movie_response.dart';
 import 'movies.dart';
 
 class MoviesFetcher {
-  http.Client client = http.Client();
   final _baseUrl = "http://api.themoviedb.org/3/movie";
 
   final String apiKey;
+  http.Client client;
 
-  MoviesFetcher({@required this.apiKey});
+  MoviesFetcher({
+    http.Client client,
+    @required this.apiKey,
+  }) : client = client ?? http.Client();
 
   Stream<MoviesResponse> fetchMovies() async* {
     try {
