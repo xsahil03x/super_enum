@@ -1,5 +1,6 @@
 import 'package:example/movie_response.dart';
 import 'package:example/movies_fetcher.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'movies.dart';
@@ -69,11 +70,15 @@ class MovieList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.shortestSide;
+
+    print(deviceWidth);
+
     return GridView.builder(
       itemCount: movieList.length,
       physics: BouncingScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+        crossAxisCount: deviceWidth > 900 ? 8 : deviceWidth > 600 ? 6 : 3,
         childAspectRatio: 1.5 / 1.8,
       ),
       itemBuilder: (context, index) {
