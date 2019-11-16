@@ -26,7 +26,7 @@ void main() {
     return await file.readAsString();
   }
 
-  group('MovieResponse super enum test', () {
+  group('MovieResponse super enum test:', () {
     test('fetch movies should emit MovieResponse.success', () async {
       when(_mockClient.get(
         '$_baseUrl/popular?api_key=fakeApiKey',
