@@ -38,7 +38,14 @@ class Success<T> extends Result<T> {
 
 @immutable
 class Error<T> extends Result<T> {
-  const Error() : super(_Result.Error);
+  const Error._() : super(_Result.Error);
+
+  factory Error() {
+    _instance ??= Error._();
+    return _instance;
+  }
+
+  static Error _instance;
 }
 ''')
 @superEnum
