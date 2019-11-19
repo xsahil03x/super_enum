@@ -136,9 +136,22 @@ class ClassGenerator {
     return Class((c) => c
       ..name = '${field.name}'
       ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
+      ..fields.add(Field((f) => f
+        ..name = '_instance'
+        ..static = true
+        ..type = refer('${field.name}')
+        ..build()))
       ..constructors.add(Constructor((c) => c
         ..constant = true
+        ..name = '_'
         ..initializers.add(Code('super(${element.name}.${field.name})'))
+        ..build()))
+      ..constructors.add(Constructor((c) => c
+        ..factory = true
+        ..body = Code('''
+        _instance ??= ${field.name}._();
+        return _instance;
+        ''')
         ..build()))
       ..extend = refer(
           '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')

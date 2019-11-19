@@ -52,8 +52,8 @@ void main() {
       );
 
       _fakeMovieFetcher.fetchMovies().listen(expectAsync1((event) => expect(
-            event.runtimeType,
-            MoviesResponse.unauthorized().runtimeType,
+            event,
+            MoviesResponse.unauthorized(),
           )));
     });
 
@@ -63,8 +63,8 @@ void main() {
       )).thenThrow(SocketException(''));
 
       _fakeMovieFetcher.fetchMovies().listen(expectAsync1((event) => expect(
-            event.runtimeType,
-            MoviesResponse.noNetwork().runtimeType,
+            event,
+            MoviesResponse.noNetwork(),
           )));
     });
 
