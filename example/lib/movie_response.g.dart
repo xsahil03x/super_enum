@@ -49,12 +49,26 @@ class Success extends MoviesResponse {
 
 @immutable
 class Unauthorized extends MoviesResponse {
-  const Unauthorized() : super(_MoviesResponse.Unauthorized);
+  const Unauthorized._() : super(_MoviesResponse.Unauthorized);
+
+  factory Unauthorized() {
+    _instance ??= Unauthorized._();
+    return _instance;
+  }
+
+  static Unauthorized _instance;
 }
 
 @immutable
 class NoNetwork extends MoviesResponse {
-  const NoNetwork() : super(_MoviesResponse.NoNetwork);
+  const NoNetwork._() : super(_MoviesResponse.NoNetwork);
+
+  factory NoNetwork() {
+    _instance ??= NoNetwork._();
+    return _instance;
+  }
+
+  static NoNetwork _instance;
 }
 
 @immutable
