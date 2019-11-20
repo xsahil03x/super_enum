@@ -56,7 +56,7 @@ Run the `build_runner` command to generate the `filename.g.dart` part file.
 ## Generated file
 ```dart
 @immutable
-abstract class Result<T> {
+abstract class Result<T> extends Equatable {
   const Result(this._type);
 
   factory Result.success({@required T data, @required String message}) =
@@ -66,16 +66,20 @@ abstract class Result<T> {
 
   final _Result _type;
 
+//ignore: missing_return
   R when<R>(
-      {@required R Function(Success) onSuccess,
-      @required R Function(Error) onError}) {
+      {@required R Function(Success) success,
+      @required R Function(Error) error}) {
     switch (this._type) {
       case _Result.Success:
-        return onSuccess(this as Success);
+        return success(this as Success);
       case _Result.Error:
-        return onError(this as Error);
+        return error(this as Error);
     }
   }
+
+  @override
+  List get props => null;
 }
 
 @immutable
@@ -86,11 +90,23 @@ class Success<T> extends Result<T> {
   final T data;
 
   final String message;
+
+  @override
+  String toString() => 'Success(data:${this.data},message:${this.message})';
+  @override
+  List get props => [data, message];
 }
 
 @immutable
 class Error<T> extends Result<T> {
-  const Error() : super(_Result.Error);
+  const Error._() : super(_Result.Error);
+
+  factory Error() {
+    _instance ??= Error._();
+    return _instance;
+  }
+
+  static Error _instance;
 }
 ```
 
