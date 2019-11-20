@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:example/movie_response.dart';
+import 'package:example/movies.dart';
 import 'package:example/movies_fetcher.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -28,17 +30,20 @@ void main() {
 
   group('MovieResponse super enum test:', () {
     test('fetch movies should emit MovieResponse.success', () async {
+      final moviesJson = await _getMovieJson();
+      final movies = Movies.fromJson(json.decode(moviesJson));
+
       when(_mockClient.get(
         '$_baseUrl/popular?api_key=fakeApiKey',
       )).thenAnswer(
-        (_) async => http.Response(await _getMovieJson(), 200, headers: {
+        (_) async => http.Response(moviesJson, 200, headers: {
           HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
         }),
       );
 
       _fakeMovieFetcher.fetchMovies().listen(expectAsync1((event) => expect(
-            event.runtimeType,
-            MoviesResponse.success().runtimeType,
+            event,
+            MoviesResponse.success(movies: movies),
           )));
     });
 
@@ -70,13 +75,15 @@ void main() {
 
     test('fetch movies should emit MovieResponse.unexpectedException',
         () async {
+      final exception = Exception('Unexpected Error Occured');
+
       when(_mockClient.get(
         '$_baseUrl/popular?api_key=fakeApiKey',
-      )).thenThrow(Exception('Unexpected Error Occured'));
+      )).thenThrow(exception);
 
       _fakeMovieFetcher.fetchMovies().listen(expectAsync1((event) => expect(
-            event.runtimeType,
-            MoviesResponse.unexpectedException().runtimeType,
+            event,
+            MoviesResponse.unexpectedException(exception: exception),
           )));
     });
   });

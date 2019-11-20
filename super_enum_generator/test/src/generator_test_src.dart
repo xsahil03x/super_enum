@@ -3,7 +3,7 @@ import 'package:source_gen_test/source_gen_test.dart';
 
 @ShouldGenerate(r'''
 @immutable
-abstract class Result<T> {
+abstract class Result<T> extends Equatable {
   const Result(this._type);
 
   factory Result.success({@required T data, @required String message}) =
@@ -24,6 +24,9 @@ abstract class Result<T> {
         return error(this as Error);
     }
   }
+
+  @override
+  List get props => null;
 }
 
 @immutable
@@ -34,6 +37,11 @@ class Success<T> extends Result<T> {
   final T data;
 
   final String message;
+
+  @override
+  String toString() => 'Success(data:${this.data},message:${this.message})';
+  @override
+  List get props => [data, message];
 }
 
 @immutable
