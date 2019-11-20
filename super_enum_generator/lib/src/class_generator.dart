@@ -177,7 +177,7 @@ class ClassGenerator {
     Method toString = Method((m) {
       final String values = _classFields
           .map((f) =>
-      '${type_processor.dataFieldName(f)}:\${this.${type_processor.dataFieldName(f)}}')
+              '${type_processor.dataFieldName(f)}:\${this.${type_processor.dataFieldName(f)}}')
           .join(',');
       return m
         ..name = 'toString'

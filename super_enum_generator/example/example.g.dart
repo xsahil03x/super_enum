@@ -27,11 +27,11 @@ abstract class Attribute extends Equatable {
 //ignore: missing_return
   R when<R>(
       {@required R Function(Strength) strength,
-        @required R Function(Intelligence) intelligence,
-        @required R Function(Agility) agility,
-        @required R Function(Dexterity) dexterity,
-        @required R Function(Endurance) endurance,
-        @required R Function(Speed) speed}) {
+      @required R Function(Intelligence) intelligence,
+      @required R Function(Agility) agility,
+      @required R Function(Dexterity) dexterity,
+      @required R Function(Endurance) endurance,
+      @required R Function(Speed) speed}) {
     switch (this._type) {
       case _Attribute.Strength:
         return strength(this as Strength);
