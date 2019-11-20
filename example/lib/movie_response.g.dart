@@ -7,7 +7,7 @@ part of 'movie_response.dart';
 // **************************************************************************
 
 @immutable
-abstract class MoviesResponse {
+abstract class MoviesResponse extends Equatable {
   const MoviesResponse(this._type);
 
   factory MoviesResponse.success({@required Movies movies}) = Success;
@@ -38,6 +38,9 @@ abstract class MoviesResponse {
         return unexpectedException(this as UnexpectedException);
     }
   }
+
+  @override
+  List get props => [];
 }
 
 @immutable
@@ -45,6 +48,11 @@ class Success extends MoviesResponse {
   const Success({@required this.movies}) : super(_MoviesResponse.Success);
 
   final Movies movies;
+
+  @override
+  String toString() => 'Success(movies:${this.movies})';
+  @override
+  List get props => [movies];
 }
 
 @immutable
@@ -77,4 +85,9 @@ class UnexpectedException extends MoviesResponse {
       : super(_MoviesResponse.UnexpectedException);
 
   final Exception exception;
+
+  @override
+  String toString() => 'UnexpectedException(exception:${this.exception})';
+  @override
+  List get props => [exception];
 }

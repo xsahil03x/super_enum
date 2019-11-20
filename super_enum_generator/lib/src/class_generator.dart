@@ -28,6 +28,7 @@ class ClassGenerator {
         ..annotations.add(references.immutable)
         ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
         ..abstract = true
+        ..extend = references.equatable
         ..fields.add(Field((f) => f
           ..name = '_type'
           ..modifier = FieldModifier.final$
@@ -35,12 +36,22 @@ class ClassGenerator {
           ..build()))
         ..constructors.addAll(_generateClassConstructors)
         ..methods.add(_generateWhenMethod)
+        ..methods.add(Method((m) {
+          return m
+            ..name = 'props'
+            ..lambda = true
+            ..returns = references.dynamic_list
+            ..annotations.add(references.override)
+            ..type = MethodType.getter
+            ..body = Code('[]')
+            ..build();
+        }))
         ..build());
 
       final emitter = DartEmitter();
       return _dartFmt.format('${cls.accept(emitter)}$_generateDerivedClasses');
-    } catch (e) {
-      return "/*${e.stackTrace}*/";
+    } catch (e, stackTrace) {
+      return "/*$e*/";
     }
   }
 
@@ -163,6 +174,34 @@ class ClassGenerator {
     final _classFields = type_processor.listTypeFieldOf<Data>(field, 'fields');
     final isGeneric = type_processor.isGeneric(field);
 
+    Method toString = Method((m) {
+      final String values = _classFields
+          .map((f) =>
+              '${type_processor.dataFieldName(f)}:\${this.${type_processor.dataFieldName(f)}}')
+          .join(',');
+      return m
+        ..name = 'toString'
+        ..lambda = true
+        ..annotations.add(references.override)
+        ..body = Code("'${field.name}($values)'")
+        ..returns = references.string
+        ..build();
+    });
+
+    Method getProps = Method((m) {
+      final String values = _classFields
+          .map((f) => '${type_processor.dataFieldName(f)}')
+          .join(',');
+      return m
+        ..name = 'props'
+        ..lambda = true
+        ..returns = references.dynamic_list
+        ..annotations.add(references.override)
+        ..type = MethodType.getter
+        ..body = Code('[$values]')
+        ..build();
+    });
+
     if (isGeneric) {
       if (_classFields
           .every((e) => type_processor.dataFieldType(e) != "Generic")) {
@@ -183,6 +222,7 @@ class ClassGenerator {
       ..extend = refer(
           '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
       ..annotations.add(references.immutable)
+      ..methods.addAll([toString, getProps])
       ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
       ..fields.addAll(_classFields.map((e) => Field((f) => f
         ..name = type_processor.dataFieldName(e)

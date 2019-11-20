@@ -1,22 +1,19 @@
-class Movies {
-  int page;
-  int totalResults;
-  int totalPages;
-  List<Movie> results;
+import 'package:super_enum/super_enum.dart';
 
-  Movies({this.page, this.totalResults, this.totalPages, this.results});
+class Movies extends Equatable {
+  final int page;
+  final int totalResults;
+  final int totalPages;
+  final List<Movie> results;
 
-  Movies.fromJson(Map<String, dynamic> json) {
-    page = json['page'];
-    totalResults = json['total_results'];
-    totalPages = json['total_pages'];
-    if (json['results'] != null) {
-      results = new List<Movie>();
-      json['results'].forEach((v) {
-        results.add(new Movie.fromJson(v));
-      });
-    }
-  }
+  const Movies({this.page, this.totalResults, this.totalPages, this.results});
+
+  factory Movies.fromJson(Map<String, dynamic> json) => Movies(
+        page: json['page'],
+        totalResults: json['total_results'],
+        totalPages: json['total_pages'],
+        results: (json['results'] as List)?.map((v) => Movie.fromJson(v))?.toList() ?? [],
+      );
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -28,23 +25,31 @@ class Movies {
     }
     return data;
   }
+
+  @override
+  List get props => [
+        page,
+        totalResults,
+        totalPages,
+        results,
+      ];
 }
 
-class Movie {
-  int voteCount;
-  int id;
-  bool video;
-  var voteAverage;
-  String title;
-  double popularity;
-  String posterPath;
-  String originalLanguage;
-  String originalTitle;
-  List<int> genreIds;
-  String backdropPath;
-  bool adult;
-  String overview;
-  String releaseDate;
+class Movie extends Equatable {
+  final int voteCount;
+  final int id;
+  final bool video;
+  final voteAverage;
+  final String title;
+  final double popularity;
+  final String posterPath;
+  final String originalLanguage;
+  final String originalTitle;
+  final List<int> genreIds;
+  final String backdropPath;
+  final bool adult;
+  final String overview;
+  final String releaseDate;
 
   Movie(
       {this.voteCount,
@@ -62,23 +67,22 @@ class Movie {
       this.overview,
       this.releaseDate});
 
-  Movie.fromJson(Map<String, dynamic> json) {
-    voteCount = json['vote_count'];
-    id = json['id'];
-    video = json['video'];
-    voteAverage = json['vote_average'];
-    title = json['title'];
-    popularity = json['popularity'];
-    posterPath = json['poster_path'];
-    originalLanguage = json['original_language'];
-    originalTitle = json['original_title'];
-    genreIds = json['genre_ids'].cast<int>();
-    backdropPath = json['backdrop_path'];
-    adult = json['adult'];
-    overview = json['overview'];
-    releaseDate = json['release_date'];
-  }
-
+  factory Movie.fromJson(Map<String, dynamic> json) => Movie(
+        voteCount: json['vote_count'],
+        id: json['id'],
+        video: json['video'],
+        voteAverage: json['vote_average'],
+        title: json['title'],
+        popularity: json['popularity'],
+        posterPath: json['poster_path'],
+        originalLanguage: json['original_language'],
+        originalTitle: json['original_title'],
+        genreIds: json['genre_ids'].cast<int>(),
+        backdropPath: json['backdrop_path'],
+        adult: json['adult'],
+        overview: json['overview'],
+        releaseDate: json['release_date'],
+      );
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['vote_count'] = this.voteCount;
@@ -97,4 +101,22 @@ class Movie {
     data['release_date'] = this.releaseDate;
     return data;
   }
+
+  @override
+  List get props => [
+        voteCount,
+        id,
+        video,
+        voteAverage,
+        title,
+        popularity,
+        posterPath,
+        originalLanguage,
+        originalTitle,
+        genreIds,
+        backdropPath,
+        adult,
+        overview,
+        releaseDate
+      ];
 }
