@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:super_enum/src/annotations.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
+import 'package:super_enum/super_enum.dart';
 import 'dart:io';
 
 import 'movies.dart';
