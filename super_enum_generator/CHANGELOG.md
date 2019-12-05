@@ -1,3 +1,8 @@
+0.2.0+1
+    
+    Set version range for 'analyzer' and 'build' 
+    for removing version compatibility issues.
+
 0.2.0
 
     1. Make object classes singleton.
