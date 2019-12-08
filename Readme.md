@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/25670178/68855928-5590b800-0705-11ea-98f2-43f98fb5b06e.png?sanitize=true" width="500px">
 
-[![Dart CI](https://github.com/xsahil03x/super_enum/workflows/Dart%20CI/badge.svg)](https://github.com/xsahil03x/super_enum/actions) [![codecov](https://codecov.io/gh/xsahil03x/super_enum/branch/master/graph/badge.svg)](https://codecov.io/gh/xsahil03x/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum)](https://pub.dartlang.org/packages/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum_generator)](https://pub.dartlang.org/packages/super_enum_generator) 
+[![Dart CI](https://github.com/xsahil03x/super_enum/workflows/Dart%20CI/badge.svg)](https://github.com/xsahil03x/super_enum/actions) [![codecov](https://codecov.io/gh/xsahil03x/super_enum/branch/master/graph/badge.svg)](https://codecov.io/gh/xsahil03x/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum)](https://pub.dartlang.org/packages/super_enum) [![Version](https://img.shields.io/pub/v/super_enum_generator?label=super_enum_generator)](https://pub.dartlang.org/packages/super_enum_generator)
 
 *Super-powered enums similar to sealed classes in Kotlin*
 
