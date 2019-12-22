@@ -36,6 +36,7 @@ class ClassGenerator {
           ..build()))
         ..constructors.addAll(_generateClassConstructors)
         ..methods.add(_generateWhenMethod)
+        ..methods.add(_generateWhenOrElseMethod)
         ..methods.add(Method((m) {
           return m
             ..name = 'props'
@@ -79,9 +80,55 @@ class ClassGenerator {
     return Method((m) => m
       ..name = 'when'
       ..types.add(references.generic_R)
-      //..annotations.add(References.protected)
       ..returns = references.generic_R
       ..docs.add('//ignore: missing_return')
+      ..optionalParameters.addAll(_params)
+      ..body = Code(_bodyBuffer.toString())
+      ..build());
+  }
+
+  Method get _generateWhenOrElseMethod {
+    final List<Parameter> _params = [];
+    final StringBuffer _bodyBuffer = StringBuffer();
+
+    _bodyBuffer.write(
+      "assert(() {"
+      "if (orElse == null) throw 'Missing orElse case';"
+      "return true;"
+      "}());",
+    );
+
+    _bodyBuffer.writeln('switch(this._type){');
+
+    for (var field in _fields) {
+      _bodyBuffer.writeln('case ${element.name}.${field.name}:');
+      _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
+      _bodyBuffer.writeln(
+          'return ${getCamelCase(field.name)}(this as ${field.name});');
+
+      _params.add(Parameter((p) => p
+        ..name = '${getCamelCase(field.name)}'
+        ..named = true
+        ..type = refer('R Function(${field.name})')
+        ..build()));
+    }
+
+    _params.add(Parameter((p) => p
+      ..name = 'orElse'
+      ..named = true
+      ..annotations.add(references.required)
+      ..type = refer('R Function(${element.name.replaceFirst('_', '')})')
+      ..build()));
+
+    _bodyBuffer.write(
+      '}'
+      'return orElse(this);',
+    );
+
+    return Method((m) => m
+      ..name = 'whenOrElse'
+      ..types.add(references.generic_R)
+      ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());

@@ -14,7 +14,8 @@ dependencies:
 
   # Specify a specific version or a version constraint
   # for "super_enum" before publishing the package.
-  super_enum: ^0.2.0
+  super_enum:
+    path: ../super_enum
   source_gen: ^0.9.4+6
   analyzer: '>=0.37.1 <0.39.1'
   build: '>=0.12.6 <2.0.0'

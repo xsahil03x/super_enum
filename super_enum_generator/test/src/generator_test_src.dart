@@ -25,6 +25,25 @@ abstract class Result<T> extends Equatable {
     }
   }
 
+  R whenOrElse<R>(
+      {R Function(Success) success,
+      R Function(Error) error,
+      @required R Function(Result) orElse}) {
+    assert(() {
+      if (orElse == null) throw 'Missing orElse case';
+      return true;
+    }());
+    switch (this._type) {
+      case _Result.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _Result.Error:
+        if (error == null) break;
+        return error(this as Error);
+    }
+    return orElse(this);
+  }
+
   @override
   List get props => null;
 }
