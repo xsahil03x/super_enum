@@ -37,6 +37,7 @@ class ClassGenerator {
         ..constructors.addAll(_generateClassConstructors)
         ..methods.add(_generateWhenMethod)
         ..methods.add(_generateWhenOrElseMethod)
+        ..methods.add(_generateWhenPartialMethod)
         ..methods.add(Method((m) {
           return m
             ..name = 'props'
@@ -44,7 +45,7 @@ class ClassGenerator {
             ..returns = references.dynamic_list
             ..annotations.add(references.override)
             ..type = MethodType.getter
-            ..body = Code('null')
+            ..body = Code('[]')
             ..build();
         }))
         ..build());
@@ -129,6 +130,45 @@ class ClassGenerator {
       ..name = 'whenOrElse'
       ..types.add(references.generic_R)
       ..returns = references.generic_R
+      ..optionalParameters.addAll(_params)
+      ..body = Code(_bodyBuffer.toString())
+      ..build());
+  }
+
+  Method get _generateWhenPartialMethod {
+    final List<Parameter> _params = [];
+    final StringBuffer _bodyBuffer = StringBuffer();
+
+    final assertionCondition =
+        _fields.map((f) => '${getCamelCase(f.name)} == null').join(' && ');
+
+    _bodyBuffer.write(
+      "assert(() {"
+      "if ($assertionCondition) throw 'provide at least one branch';"
+      "return true;"
+      "}());",
+    );
+
+    _bodyBuffer.writeln('switch(this._type){');
+
+    for (var field in _fields) {
+      _bodyBuffer.writeln('case ${element.name}.${field.name}:');
+      _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
+      _bodyBuffer.writeln(
+          'return ${getCamelCase(field.name)}(this as ${field.name});');
+
+      _params.add(Parameter((p) => p
+        ..name = '${getCamelCase(field.name)}'
+        ..named = true
+        ..type = refer('FutureOr<void> Function(${field.name})')
+        ..build()));
+    }
+
+    _bodyBuffer.writeln('}');
+
+    return Method((m) => m
+      ..name = 'whenPartial'
+      ..returns = references.futureOr
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());

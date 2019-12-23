@@ -1,5 +1,6 @@
 library super_enum;
 
+export 'dart:async';
 export 'package:meta/meta.dart';
 export 'package:equatable/equatable.dart' show Equatable;
 export 'src/annotations.dart'

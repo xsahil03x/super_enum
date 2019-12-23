@@ -44,8 +44,25 @@ abstract class Result<T> extends Equatable {
     return orElse(this);
   }
 
+  FutureOr<void> whenPartial(
+      {FutureOr<void> Function(Success) success,
+      FutureOr<void> Function(Error) error}) {
+    assert(() {
+      if (success == null && error == null) throw 'provide at least one branch';
+      return true;
+    }());
+    switch (this._type) {
+      case _Result.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _Result.Error:
+        if (error == null) break;
+        return error(this as Error);
+    }
+  }
+
   @override
-  List get props => null;
+  List get props => [];
 }
 
 @immutable

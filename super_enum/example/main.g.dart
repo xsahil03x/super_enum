@@ -39,8 +39,63 @@ abstract class MoviesResponse extends Equatable {
     }
   }
 
+  R whenOrElse<R>(
+      {R Function(Success) success,
+      R Function(Unauthorized) unauthorized,
+      R Function(NoNetwork) noNetwork,
+      R Function(UnexpectedException) unexpectedException,
+      @required R Function(MoviesResponse) orElse}) {
+    assert(() {
+      if (orElse == null) throw 'Missing orElse case';
+      return true;
+    }());
+    switch (this._type) {
+      case _MoviesResponse.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _MoviesResponse.Unauthorized:
+        if (unauthorized == null) break;
+        return unauthorized(this as Unauthorized);
+      case _MoviesResponse.NoNetwork:
+        if (noNetwork == null) break;
+        return noNetwork(this as NoNetwork);
+      case _MoviesResponse.UnexpectedException:
+        if (unexpectedException == null) break;
+        return unexpectedException(this as UnexpectedException);
+    }
+    return orElse(this);
+  }
+
+  FutureOr<void> whenPartial(
+      {FutureOr<void> Function(Success) success,
+      FutureOr<void> Function(Unauthorized) unauthorized,
+      FutureOr<void> Function(NoNetwork) noNetwork,
+      FutureOr<void> Function(UnexpectedException) unexpectedException}) {
+    assert(() {
+      if (success == null &&
+          unauthorized == null &&
+          noNetwork == null &&
+          unexpectedException == null) throw 'provide at least one branch';
+      return true;
+    }());
+    switch (this._type) {
+      case _MoviesResponse.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _MoviesResponse.Unauthorized:
+        if (unauthorized == null) break;
+        return unauthorized(this as Unauthorized);
+      case _MoviesResponse.NoNetwork:
+        if (noNetwork == null) break;
+        return noNetwork(this as NoNetwork);
+      case _MoviesResponse.UnexpectedException:
+        if (unexpectedException == null) break;
+        return unexpectedException(this as UnexpectedException);
+    }
+  }
+
   @override
-  List get props => null;
+  List get props => [];
 }
 
 @immutable
@@ -51,6 +106,7 @@ class Success extends MoviesResponse {
 
   @override
   String toString() => 'Success(movies:${this.movies})';
+
   @override
   List get props => [movies];
 }
@@ -88,6 +144,7 @@ class UnexpectedException extends MoviesResponse {
 
   @override
   String toString() => 'UnexpectedException(exception:${this.exception})';
+
   @override
   List get props => [exception];
 }

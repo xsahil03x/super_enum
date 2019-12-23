@@ -66,8 +66,36 @@ abstract class MoviesResponse extends Equatable {
     return orElse(this);
   }
 
+  FutureOr<void> whenPartial(
+      {FutureOr<void> Function(Success) success,
+      FutureOr<void> Function(Unauthorized) unauthorized,
+      FutureOr<void> Function(NoNetwork) noNetwork,
+      FutureOr<void> Function(UnexpectedException) unexpectedException}) {
+    assert(() {
+      if (success == null &&
+          unauthorized == null &&
+          noNetwork == null &&
+          unexpectedException == null) throw 'provide at least one branch';
+      return true;
+    }());
+    switch (this._type) {
+      case _MoviesResponse.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _MoviesResponse.Unauthorized:
+        if (unauthorized == null) break;
+        return unauthorized(this as Unauthorized);
+      case _MoviesResponse.NoNetwork:
+        if (noNetwork == null) break;
+        return noNetwork(this as NoNetwork);
+      case _MoviesResponse.UnexpectedException:
+        if (unexpectedException == null) break;
+        return unexpectedException(this as UnexpectedException);
+    }
+  }
+
   @override
-  List get props => null;
+  List get props => [];
 }
 
 @immutable
