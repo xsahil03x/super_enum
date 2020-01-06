@@ -61,6 +61,17 @@ class ClassGenerator {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
+    final assertionCondition =
+    _fields.map((f) => '${getCamelCase(f.name)} == null').join(' || ');
+
+    _bodyBuffer.write(
+      "assert(() {"
+          "if ($assertionCondition) throw 'check for all possible cases';"
+          "return true;"
+          "}());",
+    );
+
+
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
@@ -72,7 +83,7 @@ class ClassGenerator {
         ..name = '${getCamelCase(field.name)}'
         ..named = true
         ..annotations.add(references.required)
-        ..type = refer('R Function(${field.name})')
+        ..type = refer('FutureOr<R> Function(${field.name})')
         ..build()));
     }
 
@@ -81,7 +92,7 @@ class ClassGenerator {
     return Method((m) => m
       ..name = 'when'
       ..types.add(references.generic_R)
-      ..returns = references.generic_R
+      ..returns = references.futureOr_Generic_R
       ..docs.add('//ignore: missing_return')
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
@@ -110,7 +121,7 @@ class ClassGenerator {
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
         ..named = true
-        ..type = refer('R Function(${field.name})')
+        ..type = refer('FutureOr<R> Function(${field.name})')
         ..build()));
     }
 
@@ -118,7 +129,7 @@ class ClassGenerator {
       ..name = 'orElse'
       ..named = true
       ..annotations.add(references.required)
-      ..type = refer('R Function(${element.name.replaceFirst('_', '')})')
+      ..type = refer('FutureOr<R> Function(${element.name.replaceFirst('_', '')})')
       ..build()));
 
     _bodyBuffer.write(
@@ -129,7 +140,7 @@ class ClassGenerator {
     return Method((m) => m
       ..name = 'whenOrElse'
       ..types.add(references.generic_R)
-      ..returns = references.generic_R
+      ..returns = references.futureOr_Generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());

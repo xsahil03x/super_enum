@@ -14,9 +14,14 @@ abstract class Result<T> extends Equatable {
   final _Result _type;
 
 //ignore: missing_return
-  R when<R>(
-      {@required R Function(Success) success,
-      @required R Function(Error) error}) {
+  FutureOr<R> when<R>(
+      {@required FutureOr<R> Function(Success) success,
+      @required FutureOr<R> Function(Error) error}) {
+    assert(() {
+      if (success == null || error == null)
+        throw 'check for all possible cases';
+      return true;
+    }());
     switch (this._type) {
       case _Result.Success:
         return success(this as Success);
@@ -25,10 +30,10 @@ abstract class Result<T> extends Equatable {
     }
   }
 
-  R whenOrElse<R>(
-      {R Function(Success) success,
-      R Function(Error) error,
-      @required R Function(Result) orElse}) {
+  FutureOr<R> whenOrElse<R>(
+      {FutureOr<R> Function(Success) success,
+      FutureOr<R> Function(Error) error,
+      @required FutureOr<R> Function(Result) orElse}) {
     assert(() {
       if (orElse == null) throw 'Missing orElse case';
       return true;

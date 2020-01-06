@@ -12,3 +12,4 @@ const bool = Reference('bool');
 const dynamic_list = Reference('List');
 const equatable = Reference('Equatable');
 const futureOr = Reference('FutureOr<void>');
+const futureOr_Generic_R = Reference('FutureOr<R>');
