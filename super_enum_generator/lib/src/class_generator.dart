@@ -36,6 +36,8 @@ class ClassGenerator {
           ..build()))
         ..constructors.addAll(_generateClassConstructors)
         ..methods.add(_generateWhenMethod)
+        ..methods.add(_generateWhenOrElseMethod)
+        ..methods.add(_generateWhenPartialMethod)
         ..methods.add(Method((m) {
           return m
             ..name = 'props'
@@ -43,7 +45,7 @@ class ClassGenerator {
             ..returns = references.dynamic_list
             ..annotations.add(references.override)
             ..type = MethodType.getter
-            ..body = Code('null')
+            ..body = Code('const []')
             ..build();
         }))
         ..build());
@@ -59,6 +61,16 @@ class ClassGenerator {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
+    final assertionCondition =
+        _fields.map((f) => '${getCamelCase(f.name)} == null').join(' || ');
+
+    _bodyBuffer.write(
+      "assert(() {"
+      "if ($assertionCondition) throw 'check for all possible cases';"
+      "return true;"
+      "}());",
+    );
+
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
@@ -70,7 +82,7 @@ class ClassGenerator {
         ..name = '${getCamelCase(field.name)}'
         ..named = true
         ..annotations.add(references.required)
-        ..type = refer('R Function(${field.name})')
+        ..type = refer('FutureOr<R> Function(${field.name})')
         ..build()));
     }
 
@@ -79,9 +91,95 @@ class ClassGenerator {
     return Method((m) => m
       ..name = 'when'
       ..types.add(references.generic_R)
-      //..annotations.add(References.protected)
-      ..returns = references.generic_R
+      ..returns = references.futureOr_Generic_R
       ..docs.add('//ignore: missing_return')
+      ..optionalParameters.addAll(_params)
+      ..body = Code(_bodyBuffer.toString())
+      ..build());
+  }
+
+  Method get _generateWhenOrElseMethod {
+    final List<Parameter> _params = [];
+    final StringBuffer _bodyBuffer = StringBuffer();
+
+    _bodyBuffer.write(
+      "assert(() {"
+      "if (orElse == null) throw 'Missing orElse case';"
+      "return true;"
+      "}());",
+    );
+
+    _bodyBuffer.writeln('switch(this._type){');
+
+    for (var field in _fields) {
+      _bodyBuffer.writeln('case ${element.name}.${field.name}:');
+      _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
+      _bodyBuffer.writeln(
+          'return ${getCamelCase(field.name)}(this as ${field.name});');
+
+      _params.add(Parameter((p) => p
+        ..name = '${getCamelCase(field.name)}'
+        ..named = true
+        ..type = refer('FutureOr<R> Function(${field.name})')
+        ..build()));
+    }
+
+    _params.add(Parameter((p) => p
+      ..name = 'orElse'
+      ..named = true
+      ..annotations.add(references.required)
+      ..type =
+          refer('FutureOr<R> Function(${element.name.replaceFirst('_', '')})')
+      ..build()));
+
+    _bodyBuffer.write(
+      '}'
+      'return orElse(this);',
+    );
+
+    return Method((m) => m
+      ..name = 'whenOrElse'
+      ..types.add(references.generic_R)
+      ..returns = references.futureOr_Generic_R
+      ..optionalParameters.addAll(_params)
+      ..body = Code(_bodyBuffer.toString())
+      ..build());
+  }
+
+  Method get _generateWhenPartialMethod {
+    final List<Parameter> _params = [];
+    final StringBuffer _bodyBuffer = StringBuffer();
+
+    final assertionCondition =
+        _fields.map((f) => '${getCamelCase(f.name)} == null').join(' && ');
+
+    _bodyBuffer.write(
+      "assert(() {"
+      "if ($assertionCondition) throw 'provide at least one branch';"
+      "return true;"
+      "}());",
+    );
+
+    _bodyBuffer.writeln('switch(this._type){');
+
+    for (var field in _fields) {
+      _bodyBuffer.writeln('case ${element.name}.${field.name}:');
+      _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
+      _bodyBuffer.writeln(
+          'return ${getCamelCase(field.name)}(this as ${field.name});');
+
+      _params.add(Parameter((p) => p
+        ..name = '${getCamelCase(field.name)}'
+        ..named = true
+        ..type = refer('FutureOr<void> Function(${field.name})')
+        ..build()));
+    }
+
+    _bodyBuffer.writeln('}');
+
+    return Method((m) => m
+      ..name = 'whenPartial'
+      ..returns = references.futureOr
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());

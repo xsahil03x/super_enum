@@ -22,11 +22,22 @@ abstract class MoviesResponse extends Equatable {
   final _MoviesResponse _type;
 
 //ignore: missing_return
-  R when<R>(
-      {@required R Function(Success) success,
-      @required R Function(Unauthorized) unauthorized,
-      @required R Function(NoNetwork) noNetwork,
-      @required R Function(UnexpectedException) unexpectedException}) {
+  FutureOr<R> when<R>(
+      {@required
+          FutureOr<R> Function(Success) success,
+      @required
+          FutureOr<R> Function(Unauthorized) unauthorized,
+      @required
+          FutureOr<R> Function(NoNetwork) noNetwork,
+      @required
+          FutureOr<R> Function(UnexpectedException) unexpectedException}) {
+    assert(() {
+      if (success == null ||
+          unauthorized == null ||
+          noNetwork == null ||
+          unexpectedException == null) throw 'check for all possible cases';
+      return true;
+    }());
     switch (this._type) {
       case _MoviesResponse.Success:
         return success(this as Success);
@@ -39,8 +50,63 @@ abstract class MoviesResponse extends Equatable {
     }
   }
 
+  FutureOr<R> whenOrElse<R>(
+      {FutureOr<R> Function(Success) success,
+      FutureOr<R> Function(Unauthorized) unauthorized,
+      FutureOr<R> Function(NoNetwork) noNetwork,
+      FutureOr<R> Function(UnexpectedException) unexpectedException,
+      @required FutureOr<R> Function(MoviesResponse) orElse}) {
+    assert(() {
+      if (orElse == null) throw 'Missing orElse case';
+      return true;
+    }());
+    switch (this._type) {
+      case _MoviesResponse.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _MoviesResponse.Unauthorized:
+        if (unauthorized == null) break;
+        return unauthorized(this as Unauthorized);
+      case _MoviesResponse.NoNetwork:
+        if (noNetwork == null) break;
+        return noNetwork(this as NoNetwork);
+      case _MoviesResponse.UnexpectedException:
+        if (unexpectedException == null) break;
+        return unexpectedException(this as UnexpectedException);
+    }
+    return orElse(this);
+  }
+
+  FutureOr<void> whenPartial(
+      {FutureOr<void> Function(Success) success,
+      FutureOr<void> Function(Unauthorized) unauthorized,
+      FutureOr<void> Function(NoNetwork) noNetwork,
+      FutureOr<void> Function(UnexpectedException) unexpectedException}) {
+    assert(() {
+      if (success == null &&
+          unauthorized == null &&
+          noNetwork == null &&
+          unexpectedException == null) throw 'provide at least one branch';
+      return true;
+    }());
+    switch (this._type) {
+      case _MoviesResponse.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _MoviesResponse.Unauthorized:
+        if (unauthorized == null) break;
+        return unauthorized(this as Unauthorized);
+      case _MoviesResponse.NoNetwork:
+        if (noNetwork == null) break;
+        return noNetwork(this as NoNetwork);
+      case _MoviesResponse.UnexpectedException:
+        if (unexpectedException == null) break;
+        return unexpectedException(this as UnexpectedException);
+    }
+  }
+
   @override
-  List get props => null;
+  List get props => const [];
 }
 
 @immutable

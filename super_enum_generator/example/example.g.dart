@@ -25,13 +25,22 @@ abstract class Attribute extends Equatable {
   final _Attribute _type;
 
 //ignore: missing_return
-  R when<R>(
-      {@required R Function(Strength) strength,
-      @required R Function(Intelligence) intelligence,
-      @required R Function(Agility) agility,
-      @required R Function(Dexterity) dexterity,
-      @required R Function(Endurance) endurance,
-      @required R Function(Speed) speed}) {
+  FutureOr<R> when<R>(
+      {@required FutureOr<R> Function(Strength) strength,
+      @required FutureOr<R> Function(Intelligence) intelligence,
+      @required FutureOr<R> Function(Agility) agility,
+      @required FutureOr<R> Function(Dexterity) dexterity,
+      @required FutureOr<R> Function(Endurance) endurance,
+      @required FutureOr<R> Function(Speed) speed}) {
+    assert(() {
+      if (strength == null ||
+          intelligence == null ||
+          agility == null ||
+          dexterity == null ||
+          endurance == null ||
+          speed == null) throw 'check for all possible cases';
+      return true;
+    }());
     switch (this._type) {
       case _Attribute.Strength:
         return strength(this as Strength);
@@ -48,8 +57,81 @@ abstract class Attribute extends Equatable {
     }
   }
 
+  FutureOr<R> whenOrElse<R>(
+      {FutureOr<R> Function(Strength) strength,
+      FutureOr<R> Function(Intelligence) intelligence,
+      FutureOr<R> Function(Agility) agility,
+      FutureOr<R> Function(Dexterity) dexterity,
+      FutureOr<R> Function(Endurance) endurance,
+      FutureOr<R> Function(Speed) speed,
+      @required FutureOr<R> Function(Attribute) orElse}) {
+    assert(() {
+      if (orElse == null) throw 'Missing orElse case';
+      return true;
+    }());
+    switch (this._type) {
+      case _Attribute.Strength:
+        if (strength == null) break;
+        return strength(this as Strength);
+      case _Attribute.Intelligence:
+        if (intelligence == null) break;
+        return intelligence(this as Intelligence);
+      case _Attribute.Agility:
+        if (agility == null) break;
+        return agility(this as Agility);
+      case _Attribute.Dexterity:
+        if (dexterity == null) break;
+        return dexterity(this as Dexterity);
+      case _Attribute.Endurance:
+        if (endurance == null) break;
+        return endurance(this as Endurance);
+      case _Attribute.Speed:
+        if (speed == null) break;
+        return speed(this as Speed);
+    }
+    return orElse(this);
+  }
+
+  FutureOr<void> whenPartial(
+      {FutureOr<void> Function(Strength) strength,
+      FutureOr<void> Function(Intelligence) intelligence,
+      FutureOr<void> Function(Agility) agility,
+      FutureOr<void> Function(Dexterity) dexterity,
+      FutureOr<void> Function(Endurance) endurance,
+      FutureOr<void> Function(Speed) speed}) {
+    assert(() {
+      if (strength == null &&
+          intelligence == null &&
+          agility == null &&
+          dexterity == null &&
+          endurance == null &&
+          speed == null) throw 'provide at least one branch';
+      return true;
+    }());
+    switch (this._type) {
+      case _Attribute.Strength:
+        if (strength == null) break;
+        return strength(this as Strength);
+      case _Attribute.Intelligence:
+        if (intelligence == null) break;
+        return intelligence(this as Intelligence);
+      case _Attribute.Agility:
+        if (agility == null) break;
+        return agility(this as Agility);
+      case _Attribute.Dexterity:
+        if (dexterity == null) break;
+        return dexterity(this as Dexterity);
+      case _Attribute.Endurance:
+        if (endurance == null) break;
+        return endurance(this as Endurance);
+      case _Attribute.Speed:
+        if (speed == null) break;
+        return speed(this as Speed);
+    }
+  }
+
   @override
-  List get props => null;
+  List get props => const [];
 }
 
 @immutable

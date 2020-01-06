@@ -1,6 +1,6 @@
 <img src="https://user-images.githubusercontent.com/25670178/68855928-5590b800-0705-11ea-98f2-43f98fb5b06e.png?sanitize=true" width="500px">
 
-[![Dart CI](https://github.com/xsahil03x/super_enum/workflows/Dart%20CI/badge.svg)](https://github.com/xsahil03x/super_enum/actions) [![codecov](https://codecov.io/gh/xsahil03x/super_enum/branch/master/graph/badge.svg)](https://codecov.io/gh/xsahil03x/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum)](https://pub.dartlang.org/packages/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum_generator)](https://pub.dartlang.org/packages/super_enum_generator) 
+[![Dart CI](https://github.com/xsahil03x/super_enum/workflows/Dart%20CI/badge.svg)](https://github.com/xsahil03x/super_enum/actions) [![codecov](https://codecov.io/gh/xsahil03x/super_enum/branch/master/graph/badge.svg)](https://codecov.io/gh/xsahil03x/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum)](https://pub.dartlang.org/packages/super_enum) [![Version](https://img.shields.io/pub/v/super_enum_generator?label=super_enum_generator)](https://pub.dartlang.org/packages/super_enum_generator)
 
 *Super-powered enums similar to sealed classes in Kotlin*
 
@@ -41,7 +41,7 @@ enum _Result {
 `@Data()` marks an enum value to be treated as a Data class.
  * One should supply a list of possible fields inside the annotation.
  * If you don't want to add fields, use `@object` annotation instead.
- * Fields are supplied in the form of `DataField` objects. 
+ * Fields are supplied in the form of `DataField` objects.
  * Each `DataField` must contain the `name` and the `type` of the field.
  * If the field type needs to be generic use `Generic` type and annotate the enum value with `@generic` annotation.
 
@@ -67,9 +67,14 @@ abstract class Result<T> extends Equatable {
   final _Result _type;
 
 //ignore: missing_return
-  R when<R>(
-      {@required R Function(Success) success,
-      @required R Function(Error) error}) {
+  FutureOr<R> when<R>(
+      {@required FutureOr<R> Function(Success) success,
+      @required FutureOr<R> Function(Error) error}) {
+    assert(() {
+      if (success == null || error == null)
+        throw 'check for all possible cases';
+      return true;
+    }());
     switch (this._type) {
       case _Result.Success:
         return success(this as Success);
@@ -78,8 +83,44 @@ abstract class Result<T> extends Equatable {
     }
   }
 
+  FutureOr<R> whenOrElse<R>(
+      {FutureOr<R> Function(Success) success,
+      FutureOr<R> Function(Error) error,
+      @required FutureOr<R> Function(Result) orElse}) {
+    assert(() {
+      if (orElse == null) throw 'Missing orElse case';
+      return true;
+    }());
+    switch (this._type) {
+      case _Result.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _Result.Error:
+        if (error == null) break;
+        return error(this as Error);
+    }
+    return orElse(this);
+  }
+
+  FutureOr<void> whenPartial(
+      {FutureOr<void> Function(Success) success,
+      FutureOr<void> Function(Error) error}) {
+    assert(() {
+      if (success == null && error == null) throw 'provide at least one branch';
+      return true;
+    }());
+    switch (this._type) {
+      case _Result.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _Result.Error:
+        if (error == null) break;
+        return error(this as Error);
+    }
+  }
+
   @override
-  List get props => null;
+  List get props => const [];
 }
 
 @immutable
@@ -130,7 +171,7 @@ _resultController.add(Result.error()),
 _resultController.stream.listen((result) {
       result.when(
         onSuccess: (data) => print(data.message), // Success
-        onError: (_) => print('Error Occured'), // Error Occured
+        onError: (_) => print('Error Occurred'), // Error Occurred
       );
     });
 ```
@@ -142,6 +183,6 @@ This project is a starting point for a Dart
 a library module containing code that can be shared easily across
 multiple Flutter or Dart projects.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
+For help getting started with Flutter, view our
+[online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.

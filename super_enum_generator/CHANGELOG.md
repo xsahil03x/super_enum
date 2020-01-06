@@ -1,3 +1,11 @@
+0.3.0
+    
+    1. Added two new 'whenX' methods.
+        - whenOrElse
+        - whenPartial
+    
+    2. Bug fixes and improvements.
+
 0.2.0+1
     
     Set version range for 'analyzer' and 'build' 
