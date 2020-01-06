@@ -3,10 +3,6 @@ description: Create super-powered enums similar to sealed classes in Kotlin.
 version: 0.3.0
 homepage: https://github.com/xsahil03x/super_enum
 
-authors:
-  - Sahil Kumar <xdsahil@gmail.com>
-  - Jai Sachdeva <sachdeva.jai@outlook.com>
-
 environment:
   sdk: ">=2.1.0 <3.0.0"
 
