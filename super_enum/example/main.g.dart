@@ -22,11 +22,22 @@ abstract class MoviesResponse extends Equatable {
   final _MoviesResponse _type;
 
 //ignore: missing_return
-  R when<R>(
-      {@required R Function(Success) success,
-      @required R Function(Unauthorized) unauthorized,
-      @required R Function(NoNetwork) noNetwork,
-      @required R Function(UnexpectedException) unexpectedException}) {
+  FutureOr<R> when<R>(
+      {@required
+          FutureOr<R> Function(Success) success,
+      @required
+          FutureOr<R> Function(Unauthorized) unauthorized,
+      @required
+          FutureOr<R> Function(NoNetwork) noNetwork,
+      @required
+          FutureOr<R> Function(UnexpectedException) unexpectedException}) {
+    assert(() {
+      if (success == null ||
+          unauthorized == null ||
+          noNetwork == null ||
+          unexpectedException == null) throw 'check for all possible cases';
+      return true;
+    }());
     switch (this._type) {
       case _MoviesResponse.Success:
         return success(this as Success);
@@ -39,12 +50,12 @@ abstract class MoviesResponse extends Equatable {
     }
   }
 
-  R whenOrElse<R>(
-      {R Function(Success) success,
-      R Function(Unauthorized) unauthorized,
-      R Function(NoNetwork) noNetwork,
-      R Function(UnexpectedException) unexpectedException,
-      @required R Function(MoviesResponse) orElse}) {
+  FutureOr<R> whenOrElse<R>(
+      {FutureOr<R> Function(Success) success,
+      FutureOr<R> Function(Unauthorized) unauthorized,
+      FutureOr<R> Function(NoNetwork) noNetwork,
+      FutureOr<R> Function(UnexpectedException) unexpectedException,
+      @required FutureOr<R> Function(MoviesResponse) orElse}) {
     assert(() {
       if (orElse == null) throw 'Missing orElse case';
       return true;
@@ -95,7 +106,7 @@ abstract class MoviesResponse extends Equatable {
   }
 
   @override
-  List get props => [];
+  List get props => const [];
 }
 
 @immutable
@@ -106,7 +117,6 @@ class Success extends MoviesResponse {
 
   @override
   String toString() => 'Success(movies:${this.movies})';
-
   @override
   List get props => [movies];
 }
@@ -144,7 +154,6 @@ class UnexpectedException extends MoviesResponse {
 
   @override
   String toString() => 'UnexpectedException(exception:${this.exception})';
-
   @override
   List get props => [exception];
 }

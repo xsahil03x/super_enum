@@ -45,7 +45,7 @@ class ClassGenerator {
             ..returns = references.dynamic_list
             ..annotations.add(references.override)
             ..type = MethodType.getter
-            ..body = Code('[]')
+            ..body = Code('const []')
             ..build();
         }))
         ..build());

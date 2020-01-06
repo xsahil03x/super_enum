@@ -67,7 +67,7 @@ abstract class Result<T> extends Equatable {
   }
 
   @override
-  List get props => [];
+  List get props => const [];
 }
 
 @immutable
