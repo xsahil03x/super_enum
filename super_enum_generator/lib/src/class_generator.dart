@@ -62,15 +62,14 @@ class ClassGenerator {
     final StringBuffer _bodyBuffer = StringBuffer();
 
     final assertionCondition =
-    _fields.map((f) => '${getCamelCase(f.name)} == null').join(' || ');
+        _fields.map((f) => '${getCamelCase(f.name)} == null').join(' || ');
 
     _bodyBuffer.write(
       "assert(() {"
-          "if ($assertionCondition) throw 'check for all possible cases';"
-          "return true;"
-          "}());",
+      "if ($assertionCondition) throw 'check for all possible cases';"
+      "return true;"
+      "}());",
     );
-
 
     _bodyBuffer.writeln('switch(this._type){');
 
@@ -129,7 +128,8 @@ class ClassGenerator {
       ..name = 'orElse'
       ..named = true
       ..annotations.add(references.required)
-      ..type = refer('FutureOr<R> Function(${element.name.replaceFirst('_', '')})')
+      ..type =
+          refer('FutureOr<R> Function(${element.name.replaceFirst('_', '')})')
       ..build()));
 
     _bodyBuffer.write(
