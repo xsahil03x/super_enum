@@ -35,3 +35,10 @@ class DataField {
 
   const DataField(this.name, this.type);
 }
+
+@immutable
+class UseClass {
+  final Type type;
+
+  const UseClass(this.type);
+}

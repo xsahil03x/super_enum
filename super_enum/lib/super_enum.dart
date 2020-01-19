@@ -12,4 +12,5 @@ export 'src/annotations.dart'
         object,
         Object,
         DataField,
-        Data;
+        Data,
+        UseClass;
