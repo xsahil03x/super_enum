@@ -3,14 +3,14 @@ import 'package:super_enum/super_enum.dart';
 
 @ShouldGenerate(r'''
 @immutable
-abstract class Result2 extends Equatable {
-  const Result2(this._type);
+abstract class ResultUnion extends Equatable {
+  const ResultUnion(this._type);
 
-  factory Result2.success(MySuccess mySuccess) = MySuccessWrapper;
+  factory ResultUnion.success(MySuccess mySuccess) = MySuccessWrapper;
 
-  factory Result2.error(MyError myError) = MyErrorWrapper;
+  factory ResultUnion.error(MyError myError) = MyErrorWrapper;
 
-  final _Result2 _type;
+  final _ResultUnion _type;
 
 //ignore: missing_return
   FutureOr<R> when<R>(
@@ -22,9 +22,9 @@ abstract class Result2 extends Equatable {
       return true;
     }());
     switch (this._type) {
-      case _Result2.Success:
+      case _ResultUnion.Success:
         return success((this as MySuccessWrapper).mySuccess);
-      case _Result2.Error:
+      case _ResultUnion.Error:
         return error((this as MyErrorWrapper).myError);
     }
   }
@@ -32,16 +32,16 @@ abstract class Result2 extends Equatable {
   FutureOr<R> whenOrElse<R>(
       {FutureOr<R> Function(MySuccess) success,
       FutureOr<R> Function(MyError) error,
-      @required FutureOr<R> Function(Result2) orElse}) {
+      @required FutureOr<R> Function(ResultUnion) orElse}) {
     assert(() {
       if (orElse == null) throw 'Missing orElse case';
       return true;
     }());
     switch (this._type) {
-      case _Result2.Success:
+      case _ResultUnion.Success:
         if (success == null) break;
         return success((this as MySuccessWrapper).mySuccess);
-      case _Result2.Error:
+      case _ResultUnion.Error:
         if (error == null) break;
         return error((this as MyErrorWrapper).myError);
     }
@@ -56,10 +56,10 @@ abstract class Result2 extends Equatable {
       return true;
     }());
     switch (this._type) {
-      case _Result2.Success:
+      case _ResultUnion.Success:
         if (success == null) break;
         return success((this as MySuccessWrapper).mySuccess);
-      case _Result2.Error:
+      case _ResultUnion.Error:
         if (error == null) break;
         return error((this as MyErrorWrapper).myError);
     }
@@ -70,8 +70,8 @@ abstract class Result2 extends Equatable {
 }
 
 @immutable
-class MySuccessWrapper extends Result2 {
-  const MySuccessWrapper(this.mySuccess) : super(_Result2.Success);
+class MySuccessWrapper extends ResultUnion {
+  const MySuccessWrapper(this.mySuccess) : super(_ResultUnion.Success);
 
   final MySuccess mySuccess;
 
@@ -82,8 +82,8 @@ class MySuccessWrapper extends Result2 {
 }
 
 @immutable
-class MyErrorWrapper extends Result2 {
-  const MyErrorWrapper(this.myError) : super(_Result2.Error);
+class MyErrorWrapper extends ResultUnion {
+  const MyErrorWrapper(this.myError) : super(_ResultUnion.Error);
 
   final MyError myError;
 
@@ -95,7 +95,7 @@ class MyErrorWrapper extends Result2 {
 ''')
 @superEnum
 // ignore: unused_element
-enum _Result2 {
+enum _ResultUnion {
   @UseClass(MySuccess)
   Success,
 
