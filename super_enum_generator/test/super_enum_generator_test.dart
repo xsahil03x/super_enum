@@ -9,6 +9,6 @@ Future<void> main() async {
   testAnnotatedElements<SuperEnum>(generator_test_src, SuperEnumGenerator());
 
   final use_class_test = await initializeLibraryReaderForDirectory(
-      'test/src', 'use_class_test.dart');
+      'test/src', 'use_class_test_src.dart');
   testAnnotatedElements<SuperEnum>(use_class_test, SuperEnumGenerator());
 }
