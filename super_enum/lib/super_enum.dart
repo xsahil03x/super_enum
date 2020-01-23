@@ -12,6 +12,4 @@ export 'src/annotations.dart'
         object,
         Object,
         DataField,
-        DataList,
-        DataMap,
         Data;

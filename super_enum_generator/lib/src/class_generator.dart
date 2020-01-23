@@ -66,7 +66,7 @@ class ClassGenerator {
 
     _bodyBuffer.write(
       "assert(() {"
-      "if ($assertionCondition) throw 'check for all possible cases';"
+      "if ($assertionCondition) {throw 'check for all possible cases';}"
       "return true;"
       "}());",
     );
@@ -104,7 +104,7 @@ class ClassGenerator {
 
     _bodyBuffer.write(
       "assert(() {"
-      "if (orElse == null) throw 'Missing orElse case';"
+      "if (orElse == null) {throw 'Missing orElse case';}"
       "return true;"
       "}());",
     );
@@ -155,7 +155,7 @@ class ClassGenerator {
 
     _bodyBuffer.write(
       "assert(() {"
-      "if ($assertionCondition) throw 'provide at least one branch';"
+      "if ($assertionCondition){ throw 'provide at least one branch';}"
       "return true;"
       "}());",
     );
@@ -208,9 +208,7 @@ class ClassGenerator {
     final fields = type_processor.listTypeFieldOf<Data>(element, 'fields');
     return fields.map((e) => Parameter((f) => f
       ..name = '${type_processor.dataFieldName(e)}'
-      ..type = type_processor.dataFieldType(e) != "Generic"
-          ? refer(type_processor.dataFieldType(e))
-          : references.generic_T
+      ..type = refer(type_processor.dataFieldType(e))
       ..named = true
       ..annotations.add(references.required)
       ..build()));
@@ -302,13 +300,14 @@ class ClassGenerator {
 
     if (isGeneric) {
       if (_classFields
-          .every((e) => type_processor.dataFieldType(e) != "Generic")) {
+          .every((e) => !type_processor.dataFieldType(e).contains('T'))) {
         throw InvalidGenerationSourceError(
             '${field.name} must have atleast one Generic field');
       }
     }
 
-    if (_classFields.any((e) => type_processor.dataFieldType(e) == "Generic")) {
+    if (_classFields
+        .any((e) => type_processor.dataFieldType(e).contains('T'))) {
       if (!isGeneric) {
         throw InvalidGenerationSourceError(
             '${field.name} must be annotated with @generic');
@@ -325,9 +324,7 @@ class ClassGenerator {
       ..fields.addAll(_classFields.map((e) => Field((f) => f
         ..name = type_processor.dataFieldName(e)
         ..modifier = FieldModifier.final$
-        ..type = type_processor.dataFieldType(e) != "Generic"
-            ? refer(type_processor.dataFieldType(e))
-            : references.generic_T
+        ..type = refer(type_processor.dataFieldType(e))
         ..build())))
       ..constructors.add(Constructor((constructor) => constructor
         ..constant = true

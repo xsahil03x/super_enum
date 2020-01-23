@@ -6,12 +6,12 @@ part 'movie_response.g.dart';
 
 @superEnum
 enum _MoviesResponse {
-  @Data(fields: [DataField('movies', Movies)])
+  @Data(fields: [DataField<Movies>('movies')])
   Success,
   @object
   Unauthorized,
   @object
   NoNetwork,
-  @Data(fields: [DataField('exception', Exception)])
+  @Data(fields: [DataField<Exception>('exception')])
   UnexpectedException
 }
