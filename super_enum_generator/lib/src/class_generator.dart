@@ -1,11 +1,12 @@
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:super_enum/super_enum.dart';
-import 'package:super_enum_generator/src/type_processor.dart' as type_processor;
 import 'package:super_enum_generator/src/extension.dart';
-import 'package:dart_style/dart_style.dart';
 import 'package:super_enum_generator/src/references.dart' as references;
+import 'package:super_enum_generator/src/type_processor.dart' as type_processor;
 
 class ClassGenerator {
   final ClassElement element;
@@ -74,16 +75,29 @@ class ClassGenerator {
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
+      final DartObject usedClass =
+          type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
-      _bodyBuffer.writeln(
-          'return ${getCamelCase(field.name)}(this as ${field.name});');
+      if (usedClass != null) {
+        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+            '((this as ${usedClass.toTypeValue().name}Wrapper)'
+            '.${getCamelCase(usedClass.toTypeValue().name)});');
+      } else {
+        _bodyBuffer.writeln(
+            'return ${getCamelCase(field.name)}(this as ${field.name});');
+      }
 
-      _params.add(Parameter((p) => p
-        ..name = '${getCamelCase(field.name)}'
-        ..named = true
-        ..annotations.add(references.required)
-        ..type = refer('FutureOr<R> Function(${field.name})')
-        ..build()));
+      final callbackArgType = usedClass != null
+          ? '${usedClass.toTypeValue().name}'
+          : '${field.name}';
+      _params.add(Parameter((p) {
+        return p
+          ..name = '${getCamelCase(field.name)}'
+          ..named = true
+          ..annotations.add(references.required)
+          ..type = refer('FutureOr<R> Function(${callbackArgType})')
+          ..build();
+      }));
     }
 
     _bodyBuffer.writeln('}');
@@ -112,15 +126,26 @@ class ClassGenerator {
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
+      final DartObject usedClass =
+          type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
       _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
-      _bodyBuffer.writeln(
-          'return ${getCamelCase(field.name)}(this as ${field.name});');
+      if (usedClass != null) {
+        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+            '((this as ${usedClass.toTypeValue().name}Wrapper)'
+            '.${getCamelCase(usedClass.toTypeValue().name)});');
+      } else {
+        _bodyBuffer.writeln(
+            'return ${getCamelCase(field.name)}(this as ${field.name});');
+      }
 
+      final callbackArgType = usedClass != null
+          ? '${usedClass.toTypeValue().name}'
+          : '${field.name}';
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
         ..named = true
-        ..type = refer('FutureOr<R> Function(${field.name})')
+        ..type = refer('FutureOr<R> Function($callbackArgType)')
         ..build()));
     }
 
@@ -163,15 +188,26 @@ class ClassGenerator {
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
+      final DartObject usedClass =
+          type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
       _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
-      _bodyBuffer.writeln(
-          'return ${getCamelCase(field.name)}(this as ${field.name});');
+      if (usedClass != null) {
+        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+            '((this as ${usedClass.toTypeValue().name}Wrapper)'
+            '.${getCamelCase(usedClass.toTypeValue().name)});');
+      } else {
+        _bodyBuffer.writeln(
+            'return ${getCamelCase(field.name)}(this as ${field.name});');
+      }
 
+      final callbackArgType = usedClass != null
+          ? '${usedClass.toTypeValue().name}'
+          : '${field.name}';
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
         ..named = true
-        ..type = refer('FutureOr<void> Function(${field.name})')
+        ..type = refer('FutureOr<void> Function($callbackArgType)')
         ..build()));
     }
 
@@ -185,24 +221,39 @@ class ClassGenerator {
       ..build());
   }
 
-  Iterable<Constructor> get _generateClassConstructors => [
-        Constructor((constructor) => constructor
-          ..constant = true
-          ..requiredParameters.add(Parameter((p) => p
-            ..name = 'this._type'
-            ..build()))
-          ..build()),
-      ].followedBy(_fields.map((field) => Constructor((constructor) =>
-          constructor
-            ..factory = true
-            ..name = '${getCamelCase(field.name)}'
-            ..optionalParameters.addAll(
-                type_processor.hasAnnotation<Data>(field)
-                    ? _generateClassConstructorFields(field)
-                    : [])
-            ..redirect =
-                refer('${field.name}${_isNamespaceGeneric ? '<T>' : ''}')
-            ..build())));
+  Iterable<Constructor> get _generateClassConstructors {
+    final defaultConstructor = Constructor((constructor) => constructor
+      ..constant = true
+      ..requiredParameters.add(Parameter((p) => p
+        ..name = 'this._type'
+        ..build()))
+      ..build());
+    final fieldConstructors = _fields.map((field) {
+      final annotation =
+          TypeChecker.fromRuntime(UseClass).firstAnnotationOfExact(field);
+      var redirectConstructorName =
+          '${field.name}${_isNamespaceGeneric ? '<T>' : ''}';
+      final reqParams = <Parameter>[];
+      if (annotation != null) {
+        final DartObject usedClass = annotation.getField('type');
+        redirectConstructorName = "${usedClass.toTypeValue().name}Wrapper";
+        reqParams.add(Parameter((p) => p
+          ..name = '${getCamelCase(usedClass.toTypeValue().name)}'
+          ..type = Reference(usedClass.toTypeValue().name)
+          ..build()));
+      }
+      return Constructor((constructor) => constructor
+        ..factory = true
+        ..name = '${getCamelCase(field.name)}'
+        ..optionalParameters.addAll(type_processor.hasAnnotation<Data>(field)
+            ? _generateClassConstructorFields(field)
+            : [])
+        ..requiredParameters.addAll(reqParams)
+        ..redirect = refer(redirectConstructorName)
+        ..build());
+    });
+    return [defaultConstructor].followedBy(fieldConstructors);
+  }
 
   Iterable<Parameter> _generateClassConstructorFields(FieldElement element) {
     final fields = type_processor.listTypeFieldOf<Data>(element, 'fields');
@@ -227,6 +278,8 @@ class ClassGenerator {
                 'Data annotation must contain at least one DataField');
           }
           return '${_generateDataClass(field).accept(DartEmitter())}';
+        } else if (type_processor.hasAnnotation<UseClass>(field)) {
+          return '${_generateClassWrapper(field).accept(DartEmitter())}';
         } else {
           return null;
         }
@@ -338,6 +391,57 @@ class ClassGenerator {
           ..annotations.add(references.required)
           ..build())))
         ..build()))
+      ..build());
+  }
+
+  Class _generateClassWrapper(FieldElement field) {
+    final usedClass = type_processor.usedClassFromAnnotation(field);
+    final usedClassType = usedClass.toTypeValue().name;
+
+    Method toString = Method((m) {
+      return m
+        ..name = 'toString'
+        ..lambda = true
+        ..annotations.add(references.override)
+        ..body =
+            Code("'${usedClassType}Wrapper(\$${getCamelCase(usedClassType)})'")
+        ..returns = references.string
+        ..build();
+    });
+
+    Method getProps = Method((m) {
+      return m
+        ..name = 'props'
+        ..lambda = true
+        ..returns = references.dynamic_list
+        ..annotations.add(references.override)
+        ..type = MethodType.getter
+        ..body = Code('[${getCamelCase(usedClassType)}]')
+        ..build();
+    });
+
+    return Class((c) => c
+      ..name = '${usedClassType}Wrapper'
+      ..annotations.add(references.immutable)
+      ..fields.add(Field((f) {
+        return f
+          ..name = getCamelCase(usedClass.toTypeValue().name)
+          ..modifier = FieldModifier.final$
+          ..type = Reference(usedClass.toTypeValue().name);
+      }))
+      ..methods.addAll([toString, getProps])
+      ..extend = refer('${element.name.replaceFirst('_', '')}')
+      ..constructors.add(Constructor((constructor) {
+        return constructor
+          ..constant = true
+          ..initializers.add(Code('super(${element.name}.${field.name})'))
+          ..requiredParameters.add(
+            Parameter((p) => p
+              ..name = "this.${getCamelCase(usedClassType)}"
+              ..named = false
+              ..build()),
+          );
+      }))
       ..build());
   }
 }

@@ -18,9 +18,7 @@ jobs:
       - name: Run tests
         run: cd super_enum_generator && pub run test
       - name: Collect coverage
-        run: |
-          cd super_enum_generator && pub global activate test_coverage
-          pub global run test_coverage
+        run: cd super_enum_generator && ./tool/run_coverage.sh
       - name: Report CodeCov
         uses: codecov/codecov-action@v1.0.0
         with:
