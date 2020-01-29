@@ -55,3 +55,10 @@ class DataField<T> {
 //
 //  const DataMap(String name, this.keyType, this.valueType) : super(name);
 //}
+
+@immutable
+class UseClass {
+  final Type type;
+
+  const UseClass(this.type);
+}

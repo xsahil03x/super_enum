@@ -1,9 +1,10 @@
-name: Release
+name: Pull Request
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches-ignore:
+      - 'master'
+  pull_request:
 
 jobs:
   test:
@@ -25,12 +26,3 @@ jobs:
       - name: Collect coverage
         working-directory: "super_enum_generator"
         run: ./tool/run_coverage.sh
-      - name: Report CodeCov
-        uses: codecov/codecov-action@v1.0.0
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: super_enum_generator/coverage/lcov.info
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
