@@ -1,6 +1,9 @@
 name: Dart CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   test:
@@ -12,15 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
-        run: cd super_enum_generator && pub get
+        working-directory: "super_enum_generator"
+        run: pub get
       - name: format
         run: dartfmt -n --set-exit-if-changed .
       - name: Run tests
-        run: cd super_enum_generator && pub run test
+        working-directory: "super_enum_generator"
+        run: pub run test
       - name: Collect coverage
-        run: cd super_enum_generator && ./tool/run_coverage.sh
+        working-directory: "super_enum_generator"
+        run: ./tool/run_coverage.sh
       - name: Report CodeCov
         uses: codecov/codecov-action@v1.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: super_enum_generator/coverage/lcov.info
+          file: super_enum_generator/out/coverage/lcov.info
