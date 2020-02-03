@@ -1,6 +1,5 @@
 import 'package:super_enum/super_enum.dart';
 
-
 @superEnum
 enum _Attribute {
   @Data(fields: [DataField<int>('value')])
@@ -16,4 +15,3 @@ enum _Attribute {
   @Data(fields: [DataField<int>('value')])
   Speed
 }
-

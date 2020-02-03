@@ -5,7 +5,6 @@ import 'package:source_gen/source_gen.dart';
 import 'package:super_enum/super_enum.dart';
 import 'package:analyzer/dart/element/type.dart';
 
-
 TypeChecker _typeChecker(Type t) => TypeChecker.fromRuntime(t);
 
 String dataFieldName(obj) => ConstantReader(obj).read('name').stringValue;
@@ -25,8 +24,11 @@ bool isGeneric(Element element) =>
     _typeChecker(Generic).hasAnnotationOfExact(element);
 
 String dataFieldType(obj) {
-  return _genericOf(ConstantReader(obj).objectValue.type).displayName.replaceAll('Generic', 'T');
+  return _genericOf(ConstantReader(obj).objectValue.type)
+      .displayName
+      .replaceAll('Generic', 'T');
 }
+
 DartType _genericOf(DartType type) {
   return type is InterfaceType && type.typeArguments.isNotEmpty
       ? type.typeArguments.first

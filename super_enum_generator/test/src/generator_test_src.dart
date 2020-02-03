@@ -1,7 +1,7 @@
- import 'package:super_enum/super_enum.dart';
- import 'package:source_gen_test/source_gen_test.dart';
+import 'package:super_enum/super_enum.dart';
+import 'package:source_gen_test/source_gen_test.dart';
 
- @ShouldGenerate(r'''
+@ShouldGenerate(r'''
 @immutable
 abstract class Result<T> extends Equatable {
   const Result(this._type);
@@ -102,16 +102,16 @@ class Error<T> extends Result<T> {
   static Error _instance;
 }
  ''')
- @superEnum
- // ignore: unused_element
- enum _Result {
-   @generic
-   @Data(fields: [
-     DataField<Generic>('data'),
-     DataField<String>('message'),
-   ])
-   Success,
+@superEnum
+// ignore: unused_element
+enum _Result {
+  @generic
+  @Data(fields: [
+    DataField<Generic>('data'),
+    DataField<String>('message'),
+  ])
+  Success,
 
-   @object
-   Error,
- }
+  @object
+  Error,
+}
