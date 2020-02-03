@@ -10,7 +10,6 @@ dependencies:
 
   # Specify a specific version or a version constraint
   # for "super_enum" before publishing the package.
-  #super_enum: ^0.3.0
   super_enum:
     path: ../super_enum
   source_gen: ^0.9.4+6

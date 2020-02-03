@@ -4,16 +4,16 @@ part 'example.g.dart';
 
 @superEnum
 enum _Attribute {
-  @Data(fields: [DataField('value', int)])
+  @Data(fields: [DataField<int>('value')])
   Strength,
-  @Data(fields: [DataField('value', int)])
+  @Data(fields: [DataField<int>('value')])
   Intelligence,
-  @Data(fields: [DataField('value', int)])
+  @Data(fields: [DataField<int>('value')])
   Agility,
-  @Data(fields: [DataField('value', int)])
+  @Data(fields: [DataField<int>('value')])
   Dexterity,
-  @Data(fields: [DataField('value', int)])
+  @Data(fields: [DataField<int>('value')])
   Endurance,
-  @Data(fields: [DataField('value', int)])
+  @Data(fields: [DataField<int>('value')])
   Speed
 }

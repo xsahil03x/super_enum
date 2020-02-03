@@ -18,8 +18,9 @@ abstract class Result<T> extends Equatable {
       {@required FutureOr<R> Function(Success) success,
       @required FutureOr<R> Function(Error) error}) {
     assert(() {
-      if (success == null || error == null)
+      if (success == null || error == null) {
         throw 'check for all possible cases';
+      }
       return true;
     }());
     switch (this._type) {
@@ -35,7 +36,9 @@ abstract class Result<T> extends Equatable {
       FutureOr<R> Function(Error) error,
       @required FutureOr<R> Function(Result) orElse}) {
     assert(() {
-      if (orElse == null) throw 'Missing orElse case';
+      if (orElse == null) {
+        throw 'Missing orElse case';
+      }
       return true;
     }());
     switch (this._type) {
@@ -53,7 +56,9 @@ abstract class Result<T> extends Equatable {
       {FutureOr<void> Function(Success) success,
       FutureOr<void> Function(Error) error}) {
     assert(() {
-      if (success == null && error == null) throw 'provide at least one branch';
+      if (success == null && error == null) {
+        throw 'provide at least one branch';
+      }
       return true;
     }());
     switch (this._type) {
@@ -102,8 +107,8 @@ class Error<T> extends Result<T> {
 enum _Result {
   @generic
   @Data(fields: [
-    DataField('data', Generic),
-    DataField('message', String),
+    DataField<Generic>('data'),
+    DataField<String>('message'),
   ])
   Success,
 

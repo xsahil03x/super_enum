@@ -38,7 +38,9 @@ abstract class Attribute extends Equatable {
           agility == null ||
           dexterity == null ||
           endurance == null ||
-          speed == null) throw 'check for all possible cases';
+          speed == null) {
+        throw 'check for all possible cases';
+      }
       return true;
     }());
     switch (this._type) {
@@ -66,7 +68,9 @@ abstract class Attribute extends Equatable {
       FutureOr<R> Function(Speed) speed,
       @required FutureOr<R> Function(Attribute) orElse}) {
     assert(() {
-      if (orElse == null) throw 'Missing orElse case';
+      if (orElse == null) {
+        throw 'Missing orElse case';
+      }
       return true;
     }());
     switch (this._type) {
@@ -105,7 +109,9 @@ abstract class Attribute extends Equatable {
           agility == null &&
           dexterity == null &&
           endurance == null &&
-          speed == null) throw 'provide at least one branch';
+          speed == null) {
+        throw 'provide at least one branch';
+      }
       return true;
     }());
     switch (this._type) {

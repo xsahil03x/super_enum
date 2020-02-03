@@ -35,7 +35,9 @@ abstract class MoviesResponse extends Equatable {
       if (success == null ||
           unauthorized == null ||
           noNetwork == null ||
-          unexpectedException == null) throw 'check for all possible cases';
+          unexpectedException == null) {
+        throw 'check for all possible cases';
+      }
       return true;
     }());
     switch (this._type) {
@@ -57,7 +59,9 @@ abstract class MoviesResponse extends Equatable {
       FutureOr<R> Function(UnexpectedException) unexpectedException,
       @required FutureOr<R> Function(MoviesResponse) orElse}) {
     assert(() {
-      if (orElse == null) throw 'Missing orElse case';
+      if (orElse == null) {
+        throw 'Missing orElse case';
+      }
       return true;
     }());
     switch (this._type) {
@@ -86,7 +90,9 @@ abstract class MoviesResponse extends Equatable {
       if (success == null &&
           unauthorized == null &&
           noNetwork == null &&
-          unexpectedException == null) throw 'provide at least one branch';
+          unexpectedException == null) {
+        throw 'provide at least one branch';
+      }
       return true;
     }());
     switch (this._type) {

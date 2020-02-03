@@ -29,11 +29,10 @@ class Generic {
 }
 
 @immutable
-class DataField {
+class DataField<T> {
   final String name;
-  final Type type;
 
-  const DataField(this.name, this.type);
+  const DataField(this.name);
 }
 
 @immutable

@@ -17,8 +17,9 @@ abstract class ResultUnion extends Equatable {
       {@required FutureOr<R> Function(MySuccess) success,
       @required FutureOr<R> Function(MyError) error}) {
     assert(() {
-      if (success == null || error == null)
+      if (success == null || error == null) {
         throw 'check for all possible cases';
+      }
       return true;
     }());
     switch (this._type) {
@@ -34,7 +35,9 @@ abstract class ResultUnion extends Equatable {
       FutureOr<R> Function(MyError) error,
       @required FutureOr<R> Function(ResultUnion) orElse}) {
     assert(() {
-      if (orElse == null) throw 'Missing orElse case';
+      if (orElse == null) {
+        throw 'Missing orElse case';
+      }
       return true;
     }());
     switch (this._type) {
@@ -52,7 +55,9 @@ abstract class ResultUnion extends Equatable {
       {FutureOr<void> Function(MySuccess) success,
       FutureOr<void> Function(MyError) error}) {
     assert(() {
-      if (success == null && error == null) throw 'provide at least one branch';
+      if (success == null && error == null) {
+        throw 'provide at least one branch';
+      }
       return true;
     }());
     switch (this._type) {
