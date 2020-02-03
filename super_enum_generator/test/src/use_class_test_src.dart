@@ -101,11 +101,11 @@ class MyErrorWrapper extends ResultUnion {
 @superEnum
 // ignore: unused_element
 enum _ResultUnion {
-@UseClass(MySuccess)
-Success,
+  @UseClass(MySuccess)
+  Success,
 
-@UseClass(MyError)
-Error,
+  @UseClass(MyError)
+  Error,
 }
 
 class MySuccess {
