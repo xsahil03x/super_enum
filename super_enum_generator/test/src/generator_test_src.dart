@@ -101,7 +101,7 @@ class Error<T> extends Result<T> {
 
   static Error _instance;
 }
- ''')
+''')
 @superEnum
 // ignore: unused_element
 enum _Result {

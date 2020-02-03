@@ -1,5 +1,7 @@
 import 'package:super_enum/super_enum.dart';
 
+part 'example.g.dart';
+
 @superEnum
 enum _Attribute {
   @Data(fields: [DataField<int>('value')])
