@@ -4,6 +4,12 @@
 
 *Super-powered enums similar to sealed classes in Kotlin*
 
+## Migration From v0.3.0 to v0.4.0
+
+- DataField signature has been changed.
+   -  `DataField(String,Type)` should be replaced with `DataField<Type>(String)`
+   - Should specify generic data types (eg: `List`, `Map`) in the following manner- `DataField<List<Foo>>('foos')`
+
 ## Installation
 Add the following to you `pubspec.yaml` and replace `[version]` with the latest version:
 
@@ -28,8 +34,8 @@ part "result.g.dart";
 enum _Result {
   @generic
   @Data(fields: [
-    DataField('data', Generic),
-    DataField('message', String),
+    DataField<Generic>('data'),
+    DataField<String>('message'),
   ])
   Success,
 
@@ -68,8 +74,8 @@ abstract class Result<T> extends Equatable {
 
 //ignore: missing_return
   FutureOr<R> when<R>(
-      {@required FutureOr<R> Function(Success) success,
-      @required FutureOr<R> Function(Error) error}) {
+      {@required FutureOr<R> Function(Success<T>) success,
+      @required FutureOr<R> Function(Error<T>) error}) {
     assert(() {
       if (success == null || error == null)
         throw 'check for all possible cases';
@@ -84,9 +90,9 @@ abstract class Result<T> extends Equatable {
   }
 
   FutureOr<R> whenOrElse<R>(
-      {FutureOr<R> Function(Success) success,
-      FutureOr<R> Function(Error) error,
-      @required FutureOr<R> Function(Result) orElse}) {
+      {FutureOr<R> Function(Success<T>) success,
+      FutureOr<R> Function(Error<T>) error,
+      @required FutureOr<R> Function(Result<T>) orElse}) {
     assert(() {
       if (orElse == null) throw 'Missing orElse case';
       return true;
@@ -103,8 +109,8 @@ abstract class Result<T> extends Equatable {
   }
 
   FutureOr<void> whenPartial(
-      {FutureOr<void> Function(Success) success,
-      FutureOr<void> Function(Error) error}) {
+      {FutureOr<void> Function(Success<T>) success,
+      FutureOr<void> Function(Error<T>) error}) {
     assert(() {
       if (success == null && error == null) throw 'provide at least one branch';
       return true;
