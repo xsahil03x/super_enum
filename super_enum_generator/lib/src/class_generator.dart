@@ -53,7 +53,7 @@ class ClassGenerator {
 
       final emitter = DartEmitter();
       return _dartFmt.format('${cls.accept(emitter)}$_generateDerivedClasses');
-    } catch (e, stackTrace) {
+    } catch (e, _) {
       return "/*$e*/";
     }
   }
