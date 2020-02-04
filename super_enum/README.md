@@ -1,3 +1,4 @@
+
 <img src="https://user-images.githubusercontent.com/25670178/68855928-5590b800-0705-11ea-98f2-43f98fb5b06e.png?sanitize=true" width="500px">
 
 [![Dart CI](https://github.com/xsahil03x/super_enum/workflows/Dart%20CI/badge.svg)](https://github.com/xsahil03x/super_enum/actions) [![codecov](https://codecov.io/gh/xsahil03x/super_enum/branch/master/graph/badge.svg)](https://codecov.io/gh/xsahil03x/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum)](https://pub.dartlang.org/packages/super_enum) [![Version](https://img.shields.io/pub/v/super_enum_generator?label=super_enum_generator)](https://pub.dartlang.org/packages/super_enum_generator)
@@ -52,6 +53,8 @@ enum _Result {
  * If the field type needs to be generic use `Generic` type and annotate the enum value with `@generic` annotation.
 
 `@object` marks an enum value to be treated as an object.
+
+> **_NOTE:_** If you want to use existing classes directly without having them auto-generated and wrapped use [`@UseClass()`](#useclass-example).
 
 Run the `build_runner` command to generate the `filename.g.dart` part file.
 ```dart
@@ -180,6 +183,32 @@ _resultController.stream.listen((result) {
         onError: (_) => print('Error Occurred'), // Error Occurred
       );
     });
+```
+
+## UseClass Example
+A sample `UseClass()` example.
+```dart
+class MySuccess {
+  MySuccess(this.fieldA);
+
+  final String fieldA;
+}
+
+class MyError {
+  MyError(this.fieldA, this.fieldB);
+
+  final String fieldA;
+  final int fieldB;
+}
+
+@superEnum
+enum _ResultUnion {
+  @UseClass(MySuccess)
+  Success,
+
+  @UseClass(MyError)
+  Error,
+}
 ```
 
 ## Getting Started
