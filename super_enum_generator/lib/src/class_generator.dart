@@ -53,7 +53,7 @@ class ClassGenerator {
 
       final emitter = DartEmitter();
       return _dartFmt.format('${cls.accept(emitter)}$_generateDerivedClasses');
-    } catch (e, stackTrace) {
+    } catch (e, _) {
       return "/*$e*/";
     }
   }
@@ -95,7 +95,11 @@ class ClassGenerator {
           ..name = '${getCamelCase(field.name)}'
           ..named = true
           ..annotations.add(references.required)
-          ..type = refer('FutureOr<R> Function(${callbackArgType})')
+          ..type = refer(
+            'FutureOr<R> Function('
+            '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
+            ')',
+          )
           ..build();
       }));
     }
@@ -145,7 +149,11 @@ class ClassGenerator {
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
         ..named = true
-        ..type = refer('FutureOr<R> Function($callbackArgType)')
+        ..type = refer(
+          'FutureOr<R> Function('
+          '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
+          ')',
+        )
         ..build()));
     }
 
@@ -153,8 +161,11 @@ class ClassGenerator {
       ..name = 'orElse'
       ..named = true
       ..annotations.add(references.required)
-      ..type =
-          refer('FutureOr<R> Function(${element.name.replaceFirst('_', '')})')
+      ..type = refer(
+        'FutureOr<R> Function('
+        '${_isNamespaceGeneric ? '${element.name.replaceFirst('_', '')}<T>' : element.name.replaceFirst('_', '')}'
+        ')',
+      )
       ..build()));
 
     _bodyBuffer.write(
@@ -207,7 +218,11 @@ class ClassGenerator {
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
         ..named = true
-        ..type = refer('FutureOr<void> Function($callbackArgType)')
+        ..type = refer(
+          'FutureOr<void> Function('
+          '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
+          ')',
+        )
         ..build()));
     }
 

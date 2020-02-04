@@ -15,8 +15,8 @@ abstract class Result<T> extends Equatable {
 
 //ignore: missing_return
   FutureOr<R> when<R>(
-      {@required FutureOr<R> Function(Success) success,
-      @required FutureOr<R> Function(Error) error}) {
+      {@required FutureOr<R> Function(Success<T>) success,
+      @required FutureOr<R> Function(Error<T>) error}) {
     assert(() {
       if (success == null || error == null) {
         throw 'check for all possible cases';
@@ -32,9 +32,9 @@ abstract class Result<T> extends Equatable {
   }
 
   FutureOr<R> whenOrElse<R>(
-      {FutureOr<R> Function(Success) success,
-      FutureOr<R> Function(Error) error,
-      @required FutureOr<R> Function(Result) orElse}) {
+      {FutureOr<R> Function(Success<T>) success,
+      FutureOr<R> Function(Error<T>) error,
+      @required FutureOr<R> Function(Result<T>) orElse}) {
     assert(() {
       if (orElse == null) {
         throw 'Missing orElse case';
@@ -53,8 +53,8 @@ abstract class Result<T> extends Equatable {
   }
 
   FutureOr<void> whenPartial(
-      {FutureOr<void> Function(Success) success,
-      FutureOr<void> Function(Error) error}) {
+      {FutureOr<void> Function(Success<T>) success,
+      FutureOr<void> Function(Error<T>) error}) {
     assert(() {
       if (success == null && error == null) {
         throw 'provide at least one branch';

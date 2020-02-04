@@ -1,8 +1,15 @@
+
 <img src="https://user-images.githubusercontent.com/25670178/68855928-5590b800-0705-11ea-98f2-43f98fb5b06e.png?sanitize=true" width="500px">
 
 [![Dart CI](https://github.com/xsahil03x/super_enum/workflows/Dart%20CI/badge.svg)](https://github.com/xsahil03x/super_enum/actions) [![codecov](https://codecov.io/gh/xsahil03x/super_enum/branch/master/graph/badge.svg)](https://codecov.io/gh/xsahil03x/super_enum) [![Version](https://img.shields.io/pub/v/super_enum?label=super_enum)](https://pub.dartlang.org/packages/super_enum) [![Version](https://img.shields.io/pub/v/super_enum_generator?label=super_enum_generator)](https://pub.dartlang.org/packages/super_enum_generator)
 
 *Super-powered enums similar to sealed classes in Kotlin*
+
+## Migration From v0.3.0 to v0.4.0
+
+- DataField signature has been changed.
+   -  `DataField(String,Type)` should be replaced with `DataField<Type>(String)`
+   - Should specify generic data types (eg: `List`, `Map`) in the following manner- `DataField<List<Foo>>('foos')`
 
 ## Installation
 Add the following to you `pubspec.yaml` and replace `[version]` with the latest version:
@@ -28,8 +35,8 @@ part "result.g.dart";
 enum _Result {
   @generic
   @Data(fields: [
-    DataField('data', Generic),
-    DataField('message', String),
+    DataField<Generic>('data'),
+    DataField<String>('message'),
   ])
   Success,
 
@@ -46,6 +53,8 @@ enum _Result {
  * If the field type needs to be generic use `Generic` type and annotate the enum value with `@generic` annotation.
 
 `@object` marks an enum value to be treated as an object.
+
+> **_NOTE:_** If you want to use existing classes directly without having them auto-generated and wrapped use [`@UseClass()`](#useclass-example).
 
 Run the `build_runner` command to generate the `filename.g.dart` part file.
 ```dart
@@ -68,8 +77,8 @@ abstract class Result<T> extends Equatable {
 
 //ignore: missing_return
   FutureOr<R> when<R>(
-      {@required FutureOr<R> Function(Success) success,
-      @required FutureOr<R> Function(Error) error}) {
+      {@required FutureOr<R> Function(Success<T>) success,
+      @required FutureOr<R> Function(Error<T>) error}) {
     assert(() {
       if (success == null || error == null)
         throw 'check for all possible cases';
@@ -84,9 +93,9 @@ abstract class Result<T> extends Equatable {
   }
 
   FutureOr<R> whenOrElse<R>(
-      {FutureOr<R> Function(Success) success,
-      FutureOr<R> Function(Error) error,
-      @required FutureOr<R> Function(Result) orElse}) {
+      {FutureOr<R> Function(Success<T>) success,
+      FutureOr<R> Function(Error<T>) error,
+      @required FutureOr<R> Function(Result<T>) orElse}) {
     assert(() {
       if (orElse == null) throw 'Missing orElse case';
       return true;
@@ -103,8 +112,8 @@ abstract class Result<T> extends Equatable {
   }
 
   FutureOr<void> whenPartial(
-      {FutureOr<void> Function(Success) success,
-      FutureOr<void> Function(Error) error}) {
+      {FutureOr<void> Function(Success<T>) success,
+      FutureOr<void> Function(Error<T>) error}) {
     assert(() {
       if (success == null && error == null) throw 'provide at least one branch';
       return true;
@@ -174,6 +183,32 @@ _resultController.stream.listen((result) {
         onError: (_) => print('Error Occurred'), // Error Occurred
       );
     });
+```
+
+## UseClass Example
+A sample `UseClass()` example.
+```dart
+class MySuccess {
+  MySuccess(this.fieldA);
+
+  final String fieldA;
+}
+
+class MyError {
+  MyError(this.fieldA, this.fieldB);
+
+  final String fieldA;
+  final int fieldB;
+}
+
+@superEnum
+enum _ResultUnion {
+  @UseClass(MySuccess)
+  Success,
+
+  @UseClass(MyError)
+  Error,
+}
 ```
 
 ## Getting Started
