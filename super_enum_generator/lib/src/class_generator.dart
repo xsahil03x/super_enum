@@ -367,15 +367,17 @@ class ClassGenerator {
     });
 
     if (isGeneric) {
-      if (_classFields
-          .every((e) => !type_processor.dataFieldType(e).contains('T'))) {
+      if (_classFields.where((e) =>
+          type_processor.dataFieldType(e).contains('<T>') ||
+          type_processor.dataFieldType(e) == 'T').length < 1) {
         throw InvalidGenerationSourceError(
             '${field.name} must have atleast one Generic field');
       }
     }
 
-    if (_classFields
-        .any((e) => type_processor.dataFieldType(e).contains('T'))) {
+    if (_classFields.any((e) =>
+        type_processor.dataFieldType(e).contains('<T>') ||
+        type_processor.dataFieldType(e) == 'T')) {
       if (!isGeneric) {
         throw InvalidGenerationSourceError(
             '${field.name} must be annotated with @generic');
