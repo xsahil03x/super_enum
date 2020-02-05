@@ -367,9 +367,11 @@ class ClassGenerator {
     });
 
     if (isGeneric) {
-      if (_classFields.where((e) =>
-          type_processor.dataFieldType(e).contains('<T>') ||
-          type_processor.dataFieldType(e) == 'T').length < 1) {
+      if (_classFields
+          .where((e) =>
+              type_processor.dataFieldType(e).contains('<T>') ||
+              type_processor.dataFieldType(e) == 'T')
+          .isEmpty) {
         throw InvalidGenerationSourceError(
             '${field.name} must have atleast one Generic field');
       }
