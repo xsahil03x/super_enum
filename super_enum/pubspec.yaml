@@ -1,6 +1,6 @@
 name: super_enum
 description: Create super-powered enums similar to sealed classes in Kotlin.
-version: 0.4.0
+version: 0.4.1
 homepage: https://github.com/xsahil03x/super_enum
 
 environment:

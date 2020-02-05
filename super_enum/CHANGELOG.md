@@ -1,3 +1,9 @@
+0.4.1
+
+    1. Hotfix for "DataFields with a name including 'T' break code generation"
+
+    2. Updated equatable to ^1.0.3
+
 0.4.0
 
     1. Added support for generic data types `DataField<List<foo>>('foos')`

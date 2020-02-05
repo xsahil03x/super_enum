@@ -1,6 +1,6 @@
 name: super_enum_generator
 description: Dev-dependency to generate sealed classes and when statements together with the super_enum.dart package.
-version: 0.4.0
+version: 0.4.1
 homepage: https://github.com/xsahil03x/super_enum
 
 environment:
@@ -10,7 +10,7 @@ dependencies:
 
   # Specify a specific version or a version constraint
   # for "super_enum" before publishing the package.
-  super_enum: ^0.4.0
+  super_enum: ^0.4.1
   source_gen: ^0.9.4+7
   analyzer: '>=0.36.0 <0.40.0'
   build: '>=0.12.6 <2.0.0'
