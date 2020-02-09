@@ -47,7 +47,7 @@ String usedWrapperNameFromAnnotation(FieldElement field) {
       TypeChecker.fromRuntime(UseClass).firstAnnotationOfExact(field);
   if (annotation == null) return null;
   final DartObject usedClass = annotation.getField('name');
-  return usedClass.toStringValue() ?? _defaultWrapper(field);
+  return usedClass?.toStringValue() ?? _defaultWrapper(field);
 }
 
 String _defaultWrapper(FieldElement field) {
