@@ -38,6 +38,7 @@ class DataField<T> {
 @immutable
 class UseClass {
   final Type type;
+  final String name;
 
-  const UseClass(this.type);
+  const UseClass(this.type, {this.name});
 }

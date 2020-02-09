@@ -11,11 +11,13 @@ import 'package:super_enum_generator/src/type_processor.dart' as type_processor;
 class ClassGenerator {
   final ClassElement element;
 
-  const ClassGenerator(this.element);
+  ClassGenerator(this.element);
 
   Iterable<FieldElement> get _fields => element.fields.skip(2);
 
   bool get _isNamespaceGeneric => _fields.any(type_processor.isGeneric);
+
+  final Set<String> wrapper = {};
 
   String generate(DartFormatter _dartFmt) {
     if (!element.isEnum || !element.isPrivate) {
@@ -79,8 +81,9 @@ class ClassGenerator {
           type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
       if (usedClass != null) {
+        final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
         _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
-            '((this as ${usedClass.toTypeValue().name}Wrapper)'
+            '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().name)});');
       } else {
         _bodyBuffer.writeln(
@@ -135,8 +138,9 @@ class ClassGenerator {
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
       _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
       if (usedClass != null) {
+        final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
         _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
-            '((this as ${usedClass.toTypeValue().name}Wrapper)'
+            '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().name)});');
       } else {
         _bodyBuffer.writeln(
@@ -204,8 +208,9 @@ class ClassGenerator {
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
       _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
       if (usedClass != null) {
+        final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
         _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
-            '((this as ${usedClass.toTypeValue().name}Wrapper)'
+            '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().name)});');
       } else {
         _bodyBuffer.writeln(
@@ -251,7 +256,8 @@ class ClassGenerator {
       final reqParams = <Parameter>[];
       if (annotation != null) {
         final DartObject usedClass = annotation.getField('type');
-        redirectConstructorName = "${usedClass.toTypeValue().name}Wrapper";
+        redirectConstructorName =
+            type_processor.usedWrapperNameFromAnnotation(field);
         reqParams.add(Parameter((p) => p
           ..name = '${getCamelCase(usedClass.toTypeValue().name)}'
           ..type = Reference(usedClass.toTypeValue().name)
@@ -292,7 +298,9 @@ class ClassGenerator {
           }
           return '${_generateDataClass(field).accept(DartEmitter())}';
         } else if (type_processor.hasAnnotation<UseClass>(field)) {
-          return '${_generateClassWrapper(field).accept(DartEmitter())}';
+          final clazz = _generateClassWrapper(field);
+          if (clazz == null) return null;
+          return '${clazz.accept(DartEmitter())}';
         } else {
           return null;
         }
@@ -413,14 +421,20 @@ class ClassGenerator {
   Class _generateClassWrapper(FieldElement field) {
     final usedClass = type_processor.usedClassFromAnnotation(field);
     final usedClassType = usedClass.toTypeValue().name;
+    final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
+    if (wrapper.contains(wrapperName)) {
+      // Skip wrapper generation, wrapper already exists
+      return null;
+    } else {
+      wrapper.add(wrapperName);
+    }
 
     Method toString = Method((m) {
       return m
         ..name = 'toString'
         ..lambda = true
         ..annotations.add(references.override)
-        ..body =
-            Code("'${usedClassType}Wrapper(\$${getCamelCase(usedClassType)})'")
+        ..body = Code("'$wrapperName(\$${getCamelCase(usedClassType)})'")
         ..returns = references.string
         ..build();
     });
@@ -437,7 +451,7 @@ class ClassGenerator {
     });
 
     return Class((c) => c
-      ..name = '${usedClassType}Wrapper'
+      ..name = wrapperName
       ..annotations.add(references.immutable)
       ..fields.add(Field((f) {
         return f

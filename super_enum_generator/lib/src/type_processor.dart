@@ -41,3 +41,17 @@ DartObject usedClassFromAnnotation(FieldElement field) {
   final DartObject usedClass = annotation.getField('type');
   return usedClass;
 }
+
+String usedWrapperNameFromAnnotation(FieldElement field) {
+  final annotation =
+      TypeChecker.fromRuntime(UseClass).firstAnnotationOfExact(field);
+  if (annotation == null) return null;
+  final DartObject usedClass = annotation.getField('name');
+  return usedClass.toStringValue() ?? _defaultWrapper(field);
+}
+
+String _defaultWrapper(FieldElement field) {
+  final usedClass = usedClassFromAnnotation(field);
+  final usedClassType = usedClass.toTypeValue().name;
+  return '${usedClassType}Wrapper';
+}
