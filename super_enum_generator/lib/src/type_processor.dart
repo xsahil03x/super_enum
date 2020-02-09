@@ -24,7 +24,7 @@ bool isGeneric(Element element) =>
 
 String dataFieldType(obj) {
   return _genericOf(ConstantReader(obj).objectValue.type)
-      .displayName
+      .getDisplayString()
       .replaceAll('Generic', 'T');
 }
 
@@ -52,6 +52,6 @@ String usedWrapperNameFromAnnotation(FieldElement field) {
 
 String _defaultWrapper(FieldElement field) {
   final usedClass = usedClassFromAnnotation(field);
-  final usedClassType = usedClass.toTypeValue().name;
+  final usedClassType = usedClass.toTypeValue().getDisplayString();
   return '${usedClassType}Wrapper';
 }

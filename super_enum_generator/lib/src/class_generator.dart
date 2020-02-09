@@ -84,14 +84,14 @@ class ClassGenerator {
         final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
         _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
             '((this as $wrapperName)'
-            '.${getCamelCase(usedClass.toTypeValue().name)});');
+            '.${getCamelCase(usedClass.toTypeValue().getDisplayString())});');
       } else {
         _bodyBuffer.writeln(
             'return ${getCamelCase(field.name)}(this as ${field.name});');
       }
 
       final callbackArgType = usedClass != null
-          ? '${usedClass.toTypeValue().name}'
+          ? '${usedClass.toTypeValue().getDisplayString()}'
           : '${field.name}';
       _params.add(Parameter((p) {
         return p
@@ -141,14 +141,14 @@ class ClassGenerator {
         final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
         _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
             '((this as $wrapperName)'
-            '.${getCamelCase(usedClass.toTypeValue().name)});');
+            '.${getCamelCase(usedClass.toTypeValue().getDisplayString())});');
       } else {
         _bodyBuffer.writeln(
             'return ${getCamelCase(field.name)}(this as ${field.name});');
       }
 
       final callbackArgType = usedClass != null
-          ? '${usedClass.toTypeValue().name}'
+          ? '${usedClass.toTypeValue().getDisplayString()}'
           : '${field.name}';
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
@@ -211,14 +211,14 @@ class ClassGenerator {
         final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
         _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
             '((this as $wrapperName)'
-            '.${getCamelCase(usedClass.toTypeValue().name)});');
+            '.${getCamelCase(usedClass.toTypeValue().getDisplayString())});');
       } else {
         _bodyBuffer.writeln(
             'return ${getCamelCase(field.name)}(this as ${field.name});');
       }
 
       final callbackArgType = usedClass != null
-          ? '${usedClass.toTypeValue().name}'
+          ? '${usedClass.toTypeValue().getDisplayString()}'
           : '${field.name}';
       _params.add(Parameter((p) => p
         ..name = '${getCamelCase(field.name)}'
@@ -259,8 +259,8 @@ class ClassGenerator {
         redirectConstructorName =
             type_processor.usedWrapperNameFromAnnotation(field);
         reqParams.add(Parameter((p) => p
-          ..name = '${getCamelCase(usedClass.toTypeValue().name)}'
-          ..type = Reference(usedClass.toTypeValue().name)
+          ..name = '${getCamelCase(usedClass.toTypeValue().getDisplayString())}'
+          ..type = Reference(usedClass.toTypeValue().getDisplayString())
           ..build()));
       }
       return Constructor((constructor) => constructor
@@ -420,7 +420,7 @@ class ClassGenerator {
 
   Class _generateClassWrapper(FieldElement field) {
     final usedClass = type_processor.usedClassFromAnnotation(field);
-    final usedClassType = usedClass.toTypeValue().name;
+    final usedClassType = usedClass.toTypeValue().getDisplayString();
     final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
     if (wrapper.contains(wrapperName)) {
       // Skip wrapper generation, wrapper already exists
@@ -455,9 +455,9 @@ class ClassGenerator {
       ..annotations.add(references.immutable)
       ..fields.add(Field((f) {
         return f
-          ..name = getCamelCase(usedClass.toTypeValue().name)
+          ..name = getCamelCase(usedClass.toTypeValue().getDisplayString())
           ..modifier = FieldModifier.final$
-          ..type = Reference(usedClass.toTypeValue().name);
+          ..type = Reference(usedClass.toTypeValue().getDisplayString());
       }))
       ..methods.addAll([toString, getProps])
       ..extend = refer('${element.name.replaceFirst('_', '')}')
