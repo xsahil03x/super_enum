@@ -10,14 +10,23 @@ abstract class ResultUnion extends Equatable {
 
   factory ResultUnion.error(MyError myError) = MyErrorWrapper;
 
+  factory ResultUnion.specialError(MyError myError) = MyErrorWrapper;
+
+  factory ResultUnion.yetAnotherError(MyError myError) = YaeWrapper;
+
   final _ResultUnion _type;
 
 //ignore: missing_return
   FutureOr<R> when<R>(
       {@required FutureOr<R> Function(MySuccess) success,
-      @required FutureOr<R> Function(MyError) error}) {
+      @required FutureOr<R> Function(MyError) error,
+      @required FutureOr<R> Function(MyError) specialError,
+      @required FutureOr<R> Function(MyError) yetAnotherError}) {
     assert(() {
-      if (success == null || error == null) {
+      if (success == null ||
+          error == null ||
+          specialError == null ||
+          yetAnotherError == null) {
         throw 'check for all possible cases';
       }
       return true;
@@ -27,12 +36,18 @@ abstract class ResultUnion extends Equatable {
         return success((this as MySuccessWrapper).mySuccess);
       case _ResultUnion.Error:
         return error((this as MyErrorWrapper).myError);
+      case _ResultUnion.SpecialError:
+        return specialError((this as MyErrorWrapper).myError);
+      case _ResultUnion.YetAnotherError:
+        return yetAnotherError((this as YaeWrapper).myError);
     }
   }
 
   FutureOr<R> whenOrElse<R>(
       {FutureOr<R> Function(MySuccess) success,
       FutureOr<R> Function(MyError) error,
+      FutureOr<R> Function(MyError) specialError,
+      FutureOr<R> Function(MyError) yetAnotherError,
       @required FutureOr<R> Function(ResultUnion) orElse}) {
     assert(() {
       if (orElse == null) {
@@ -47,15 +62,26 @@ abstract class ResultUnion extends Equatable {
       case _ResultUnion.Error:
         if (error == null) break;
         return error((this as MyErrorWrapper).myError);
+      case _ResultUnion.SpecialError:
+        if (specialError == null) break;
+        return specialError((this as MyErrorWrapper).myError);
+      case _ResultUnion.YetAnotherError:
+        if (yetAnotherError == null) break;
+        return yetAnotherError((this as YaeWrapper).myError);
     }
     return orElse(this);
   }
 
   FutureOr<void> whenPartial(
       {FutureOr<void> Function(MySuccess) success,
-      FutureOr<void> Function(MyError) error}) {
+      FutureOr<void> Function(MyError) error,
+      FutureOr<void> Function(MyError) specialError,
+      FutureOr<void> Function(MyError) yetAnotherError}) {
     assert(() {
-      if (success == null && error == null) {
+      if (success == null &&
+          error == null &&
+          specialError == null &&
+          yetAnotherError == null) {
         throw 'provide at least one branch';
       }
       return true;
@@ -67,6 +93,12 @@ abstract class ResultUnion extends Equatable {
       case _ResultUnion.Error:
         if (error == null) break;
         return error((this as MyErrorWrapper).myError);
+      case _ResultUnion.SpecialError:
+        if (specialError == null) break;
+        return specialError((this as MyErrorWrapper).myError);
+      case _ResultUnion.YetAnotherError:
+        if (yetAnotherError == null) break;
+        return yetAnotherError((this as YaeWrapper).myError);
     }
   }
 
@@ -97,6 +129,18 @@ class MyErrorWrapper extends ResultUnion {
   @override
   List get props => [myError];
 }
+
+@immutable
+class YaeWrapper extends ResultUnion {
+  const YaeWrapper(this.myError) : super(_ResultUnion.YetAnotherError);
+
+  final MyError myError;
+
+  @override
+  String toString() => 'YaeWrapper($myError)';
+  @override
+  List get props => [myError];
+}
 ''')
 @superEnum
 // ignore: unused_element
@@ -104,8 +148,17 @@ enum _ResultUnion {
   @UseClass(MySuccess)
   Success,
 
+  // duplicate class without custom name, doesn't result in double wrapper
   @UseClass(MyError)
   Error,
+
+  // duplicate class without custom name, doesn't result in double wrapper
+  @UseClass(MyError)
+  SpecialError,
+
+  // Custom name for the wrapper
+  @UseClass(MyError, name: "YaeWrapper")
+  YetAnotherError,
 }
 
 class MySuccess {
