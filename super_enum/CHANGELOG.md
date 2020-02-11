@@ -1,6 +1,14 @@
+0.4.2
+
+    1. Fix for "Same @UseClass() generates the wrapper twice"
+       (https://github.com/xsahil03x/super_enum/issues/42)
+
+    2. Updated equatable to ^1.1.0
+
 0.4.1
 
     1. Hotfix for "DataFields with a name including 'T' break code generation"
+       (https://github.com/xsahil03x/super_enum/issues/39)
 
     2. Updated equatable to ^1.0.3
 
