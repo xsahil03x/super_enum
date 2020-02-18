@@ -17,7 +17,7 @@ abstract class ResultUnion extends Equatable {
   final _ResultUnion _type;
 
 //ignore: missing_return
-  FutureOr<R> when<R>(
+  R when<R>(
       {@required FutureOr<R> Function(MySuccess) success,
       @required FutureOr<R> Function(MyError) error,
       @required FutureOr<R> Function(MyError) specialError,
@@ -43,7 +43,7 @@ abstract class ResultUnion extends Equatable {
     }
   }
 
-  FutureOr<R> whenOrElse<R>(
+  R whenOrElse<R>(
       {FutureOr<R> Function(MySuccess) success,
       FutureOr<R> Function(MyError) error,
       FutureOr<R> Function(MyError) specialError,

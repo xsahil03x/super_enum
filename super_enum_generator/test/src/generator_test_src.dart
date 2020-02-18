@@ -14,7 +14,7 @@ abstract class Result<T> extends Equatable {
   final _Result _type;
 
 //ignore: missing_return
-  FutureOr<R> when<R>(
+  R when<R>(
       {@required FutureOr<R> Function(Success<T>) success,
       @required FutureOr<R> Function(Error<T>) error}) {
     assert(() {
@@ -31,7 +31,7 @@ abstract class Result<T> extends Equatable {
     }
   }
 
-  FutureOr<R> whenOrElse<R>(
+  R whenOrElse<R>(
       {FutureOr<R> Function(Success<T>) success,
       FutureOr<R> Function(Error<T>) error,
       @required FutureOr<R> Function(Result<T>) orElse}) {
