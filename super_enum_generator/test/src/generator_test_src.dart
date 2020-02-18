@@ -15,6 +15,24 @@ abstract class Result<T> extends Equatable {
 
 //ignore: missing_return
   R when<R>(
+      {@required R Function(Success<T>) success,
+      @required R Function(Error<T>) error}) {
+    assert(() {
+      if (success == null || error == null) {
+        throw 'check for all possible cases';
+      }
+      return true;
+    }());
+    switch (this._type) {
+      case _Result.Success:
+        return success(this as Success);
+      case _Result.Error:
+        return error(this as Error);
+    }
+  }
+
+//ignore: missing_return
+  Future<R> asyncWhen<R>(
       {@required FutureOr<R> Function(Success<T>) success,
       @required FutureOr<R> Function(Error<T>) error}) {
     assert(() {
@@ -32,6 +50,27 @@ abstract class Result<T> extends Equatable {
   }
 
   R whenOrElse<R>(
+      {R Function(Success<T>) success,
+      R Function(Error<T>) error,
+      @required R Function(Result<T>) orElse}) {
+    assert(() {
+      if (orElse == null) {
+        throw 'Missing orElse case';
+      }
+      return true;
+    }());
+    switch (this._type) {
+      case _Result.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _Result.Error:
+        if (error == null) break;
+        return error(this as Error);
+    }
+    return orElse(this);
+  }
+
+  Future<R> asyncWhenOrElse<R>(
       {FutureOr<R> Function(Success<T>) success,
       FutureOr<R> Function(Error<T>) error,
       @required FutureOr<R> Function(Result<T>) orElse}) {
@@ -52,7 +91,8 @@ abstract class Result<T> extends Equatable {
     return orElse(this);
   }
 
-  FutureOr<void> whenPartial(
+//ignore: missing_return
+  Future<void> whenPartial(
       {FutureOr<void> Function(Success<T>) success,
       FutureOr<void> Function(Error<T>) error}) {
     assert(() {
@@ -95,7 +135,7 @@ class Error<T> extends Result<T> {
   const Error._() : super(_Result.Error);
 
   factory Error() {
-    _instance ??= Error._();
+    _instance ??= const Error._();
     return _instance;
   }
 

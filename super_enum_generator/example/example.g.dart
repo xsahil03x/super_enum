@@ -25,7 +25,42 @@ abstract class Attribute extends Equatable {
   final _Attribute _type;
 
 //ignore: missing_return
-  FutureOr<R> when<R>(
+  R when<R>(
+      {@required R Function(Strength) strength,
+      @required R Function(Intelligence) intelligence,
+      @required R Function(Agility) agility,
+      @required R Function(Dexterity) dexterity,
+      @required R Function(Endurance) endurance,
+      @required R Function(Speed) speed}) {
+    assert(() {
+      if (strength == null ||
+          intelligence == null ||
+          agility == null ||
+          dexterity == null ||
+          endurance == null ||
+          speed == null) {
+        throw 'check for all possible cases';
+      }
+      return true;
+    }());
+    switch (this._type) {
+      case _Attribute.Strength:
+        return strength(this as Strength);
+      case _Attribute.Intelligence:
+        return intelligence(this as Intelligence);
+      case _Attribute.Agility:
+        return agility(this as Agility);
+      case _Attribute.Dexterity:
+        return dexterity(this as Dexterity);
+      case _Attribute.Endurance:
+        return endurance(this as Endurance);
+      case _Attribute.Speed:
+        return speed(this as Speed);
+    }
+  }
+
+//ignore: missing_return
+  Future<R> asyncWhen<R>(
       {@required FutureOr<R> Function(Strength) strength,
       @required FutureOr<R> Function(Intelligence) intelligence,
       @required FutureOr<R> Function(Agility) agility,
@@ -59,7 +94,44 @@ abstract class Attribute extends Equatable {
     }
   }
 
-  FutureOr<R> whenOrElse<R>(
+  R whenOrElse<R>(
+      {R Function(Strength) strength,
+      R Function(Intelligence) intelligence,
+      R Function(Agility) agility,
+      R Function(Dexterity) dexterity,
+      R Function(Endurance) endurance,
+      R Function(Speed) speed,
+      @required R Function(Attribute) orElse}) {
+    assert(() {
+      if (orElse == null) {
+        throw 'Missing orElse case';
+      }
+      return true;
+    }());
+    switch (this._type) {
+      case _Attribute.Strength:
+        if (strength == null) break;
+        return strength(this as Strength);
+      case _Attribute.Intelligence:
+        if (intelligence == null) break;
+        return intelligence(this as Intelligence);
+      case _Attribute.Agility:
+        if (agility == null) break;
+        return agility(this as Agility);
+      case _Attribute.Dexterity:
+        if (dexterity == null) break;
+        return dexterity(this as Dexterity);
+      case _Attribute.Endurance:
+        if (endurance == null) break;
+        return endurance(this as Endurance);
+      case _Attribute.Speed:
+        if (speed == null) break;
+        return speed(this as Speed);
+    }
+    return orElse(this);
+  }
+
+  Future<R> asyncWhenOrElse<R>(
       {FutureOr<R> Function(Strength) strength,
       FutureOr<R> Function(Intelligence) intelligence,
       FutureOr<R> Function(Agility) agility,
@@ -96,7 +168,8 @@ abstract class Attribute extends Equatable {
     return orElse(this);
   }
 
-  FutureOr<void> whenPartial(
+//ignore: missing_return
+  Future<void> whenPartial(
       {FutureOr<void> Function(Strength) strength,
       FutureOr<void> Function(Intelligence) intelligence,
       FutureOr<void> Function(Agility) agility,

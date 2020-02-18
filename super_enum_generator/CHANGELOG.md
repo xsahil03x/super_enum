@@ -1,3 +1,13 @@
+0.5.0
+
+    1. Generate separate async 'whenX' methods for handling asynchronous calls.
+         - asyncWhen
+         - asyncWhenOrElse
+       (https://github.com/xsahil03x/super_enum/issues/46)
+
+    2. Fix for "use const constructor in object classes"
+       (https://github.com/xsahil03x/super_enum/issues/41)
+
 0.4.3
 
     1. Fix for "whenXXX methods return FutureOr"
