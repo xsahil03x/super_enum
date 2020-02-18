@@ -38,8 +38,10 @@ class ClassGenerator {
           ..type = refer(element.name)
           ..build()))
         ..constructors.addAll(_generateClassConstructors)
-        ..methods.add(_generateWhenMethod)
-        ..methods.add(_generateWhenOrElseMethod)
+        ..methods.add(_generateWhenMethod())
+        ..methods.add(_generateWhenMethod(isAsync: true))
+        ..methods.add(_generateWhenOrElseMethod())
+        ..methods.add(_generateWhenOrElseMethod(isAsync: true))
         ..methods.add(_generateWhenPartialMethod)
         ..methods.add(Method((m) {
           return m
@@ -60,7 +62,7 @@ class ClassGenerator {
     }
   }
 
-  Method get _generateWhenMethod {
+  Method _generateWhenMethod({bool isAsync = false}) {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
@@ -99,7 +101,7 @@ class ClassGenerator {
           ..named = true
           ..annotations.add(references.required)
           ..type = refer(
-            'FutureOr<R> Function('
+            '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
             '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
             ')',
           )
@@ -110,16 +112,16 @@ class ClassGenerator {
     _bodyBuffer.writeln('}');
 
     return Method((m) => m
-      ..name = 'when'
+      ..name = isAsync ? 'asyncWhen' : 'when'
       ..types.add(references.generic_R)
-      ..returns = references.generic_R
+      ..returns = isAsync ? references.future_Generic_R : references.generic_R
       ..docs.add('//ignore: missing_return')
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());
   }
 
-  Method get _generateWhenOrElseMethod {
+  Method _generateWhenOrElseMethod({bool isAsync = false}) {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
@@ -154,7 +156,7 @@ class ClassGenerator {
         ..name = '${getCamelCase(field.name)}'
         ..named = true
         ..type = refer(
-          'FutureOr<R> Function('
+          '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
           '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
           ')',
         )
@@ -166,7 +168,7 @@ class ClassGenerator {
       ..named = true
       ..annotations.add(references.required)
       ..type = refer(
-        'FutureOr<R> Function('
+        '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
         '${_isNamespaceGeneric ? '${element.name.replaceFirst('_', '')}<T>' : element.name.replaceFirst('_', '')}'
         ')',
       )
@@ -178,9 +180,9 @@ class ClassGenerator {
     );
 
     return Method((m) => m
-      ..name = 'whenOrElse'
+      ..name = isAsync ? 'asyncWhenOrElse' : 'whenOrElse'
       ..types.add(references.generic_R)
-      ..returns = references.generic_R
+      ..returns = isAsync ? references.future_Generic_R : references.generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());
@@ -224,7 +226,7 @@ class ClassGenerator {
         ..name = '${getCamelCase(field.name)}'
         ..named = true
         ..type = refer(
-          'FutureOr<void> Function('
+          '${references.futureOr.symbol} Function('
           '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
           ')',
         )
@@ -235,8 +237,9 @@ class ClassGenerator {
 
     return Method((m) => m
       ..name = 'whenPartial'
-      ..returns = references.futureOr
+      ..returns = references.future
       ..optionalParameters.addAll(_params)
+      ..docs.add('//ignore: missing_return')
       ..body = Code(_bodyBuffer.toString())
       ..build());
   }
@@ -332,7 +335,7 @@ class ClassGenerator {
       ..constructors.add(Constructor((c) => c
         ..factory = true
         ..body = Code('''
-        _instance ??= ${field.name}._();
+        _instance ??= const ${field.name}._();
         return _instance;
         ''')
         ..build()))

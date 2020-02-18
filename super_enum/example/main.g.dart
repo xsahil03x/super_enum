@@ -23,6 +23,33 @@ abstract class MoviesResponse extends Equatable {
 
 //ignore: missing_return
   R when<R>(
+      {@required R Function(Success) success,
+      @required R Function(Unauthorized) unauthorized,
+      @required R Function(NoNetwork) noNetwork,
+      @required R Function(UnexpectedException) unexpectedException}) {
+    assert(() {
+      if (success == null ||
+          unauthorized == null ||
+          noNetwork == null ||
+          unexpectedException == null) {
+        throw 'check for all possible cases';
+      }
+      return true;
+    }());
+    switch (this._type) {
+      case _MoviesResponse.Success:
+        return success(this as Success);
+      case _MoviesResponse.Unauthorized:
+        return unauthorized(this as Unauthorized);
+      case _MoviesResponse.NoNetwork:
+        return noNetwork(this as NoNetwork);
+      case _MoviesResponse.UnexpectedException:
+        return unexpectedException(this as UnexpectedException);
+    }
+  }
+
+//ignore: missing_return
+  Future<R> asyncWhen<R>(
       {@required
           FutureOr<R> Function(Success) success,
       @required
@@ -53,6 +80,35 @@ abstract class MoviesResponse extends Equatable {
   }
 
   R whenOrElse<R>(
+      {R Function(Success) success,
+      R Function(Unauthorized) unauthorized,
+      R Function(NoNetwork) noNetwork,
+      R Function(UnexpectedException) unexpectedException,
+      @required R Function(MoviesResponse) orElse}) {
+    assert(() {
+      if (orElse == null) {
+        throw 'Missing orElse case';
+      }
+      return true;
+    }());
+    switch (this._type) {
+      case _MoviesResponse.Success:
+        if (success == null) break;
+        return success(this as Success);
+      case _MoviesResponse.Unauthorized:
+        if (unauthorized == null) break;
+        return unauthorized(this as Unauthorized);
+      case _MoviesResponse.NoNetwork:
+        if (noNetwork == null) break;
+        return noNetwork(this as NoNetwork);
+      case _MoviesResponse.UnexpectedException:
+        if (unexpectedException == null) break;
+        return unexpectedException(this as UnexpectedException);
+    }
+    return orElse(this);
+  }
+
+  Future<R> asyncWhenOrElse<R>(
       {FutureOr<R> Function(Success) success,
       FutureOr<R> Function(Unauthorized) unauthorized,
       FutureOr<R> Function(NoNetwork) noNetwork,
@@ -81,7 +137,8 @@ abstract class MoviesResponse extends Equatable {
     return orElse(this);
   }
 
-  FutureOr<void> whenPartial(
+//ignore: missing_return
+  Future<void> whenPartial(
       {FutureOr<void> Function(Success) success,
       FutureOr<void> Function(Unauthorized) unauthorized,
       FutureOr<void> Function(NoNetwork) noNetwork,
@@ -132,7 +189,7 @@ class Unauthorized extends MoviesResponse {
   const Unauthorized._() : super(_MoviesResponse.Unauthorized);
 
   factory Unauthorized() {
-    _instance ??= Unauthorized._();
+    _instance ??= const Unauthorized._();
     return _instance;
   }
 
@@ -144,7 +201,7 @@ class NoNetwork extends MoviesResponse {
   const NoNetwork._() : super(_MoviesResponse.NoNetwork);
 
   factory NoNetwork() {
-    _instance ??= NoNetwork._();
+    _instance ??= const NoNetwork._();
     return _instance;
   }
 
