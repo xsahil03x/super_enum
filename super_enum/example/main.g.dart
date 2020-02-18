@@ -22,7 +22,7 @@ abstract class MoviesResponse extends Equatable {
   final _MoviesResponse _type;
 
 //ignore: missing_return
-  FutureOr<R> when<R>(
+  R when<R>(
       {@required
           FutureOr<R> Function(Success) success,
       @required
@@ -52,7 +52,7 @@ abstract class MoviesResponse extends Equatable {
     }
   }
 
-  FutureOr<R> whenOrElse<R>(
+  R whenOrElse<R>(
       {FutureOr<R> Function(Success) success,
       FutureOr<R> Function(Unauthorized) unauthorized,
       FutureOr<R> Function(NoNetwork) noNetwork,

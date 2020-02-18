@@ -1,3 +1,8 @@
+0.4.3
+
+    1. Fix for "whenXXX methods return FutureOr"
+       (https://github.com/xsahil03x/super_enum/issues/27)
+
 0.4.2
 
     1. Fix for "Same @UseClass() generates the wrapper twice"

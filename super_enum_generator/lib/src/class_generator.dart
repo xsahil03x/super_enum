@@ -112,7 +112,7 @@ class ClassGenerator {
     return Method((m) => m
       ..name = 'when'
       ..types.add(references.generic_R)
-      ..returns = references.futureOr_Generic_R
+      ..returns = references.generic_R
       ..docs.add('//ignore: missing_return')
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
@@ -180,7 +180,7 @@ class ClassGenerator {
     return Method((m) => m
       ..name = 'whenOrElse'
       ..types.add(references.generic_R)
-      ..returns = references.futureOr_Generic_R
+      ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());
