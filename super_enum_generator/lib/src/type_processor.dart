@@ -8,6 +8,8 @@ TypeChecker _typeChecker(Type t) => TypeChecker.fromRuntime(t);
 
 String dataFieldName(obj) => ConstantReader(obj).read('name').stringValue;
 
+bool dataFieldRequired(obj) => ConstantReader(obj).read('required').boolValue;
+
 ConstantReader annotationOf<T>(obj) =>
     ConstantReader(_typeChecker(T).firstAnnotationOfExact(obj));
 

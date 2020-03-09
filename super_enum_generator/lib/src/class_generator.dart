@@ -281,12 +281,16 @@ class ClassGenerator {
 
   Iterable<Parameter> _generateClassConstructorFields(FieldElement element) {
     final fields = type_processor.listTypeFieldOf<Data>(element, 'fields');
-    return fields.map((e) => Parameter((f) => f
-      ..name = '${type_processor.dataFieldName(e)}'
-      ..type = refer(type_processor.dataFieldType(e))
-      ..named = true
-      ..annotations.add(references.required)
-      ..build()));
+    return fields.map((e) => Parameter((f) {
+          if (type_processor.dataFieldRequired(e)) {
+            f..annotations.add(references.required);
+          }
+          return f
+            ..name = '${type_processor.dataFieldName(e)}'
+            ..type = refer(type_processor.dataFieldType(e))
+            ..named = true
+            ..build();
+        }));
   }
 
   String get _generateDerivedClasses => _fields
@@ -412,11 +416,15 @@ class ClassGenerator {
       ..constructors.add(Constructor((constructor) => constructor
         ..constant = true
         ..initializers.add(Code('super(${element.name}.${field.name})'))
-        ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) => f
-          ..name = 'this.${type_processor.dataFieldName(e)}'
-          ..named = true
-          ..annotations.add(references.required)
-          ..build())))
+        ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
+              if (type_processor.dataFieldRequired(e)) {
+                f..annotations.add(references.required);
+              }
+              return f
+                ..name = 'this.${type_processor.dataFieldName(e)}'
+                ..named = true
+                ..build();
+            })))
         ..build()))
       ..build());
   }
