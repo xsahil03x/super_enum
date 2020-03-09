@@ -31,8 +31,9 @@ class Generic {
 @immutable
 class DataField<T> {
   final String name;
+  final bool required;
 
-  const DataField(this.name);
+  const DataField(this.name, {this.required = true});
 }
 
 @immutable
