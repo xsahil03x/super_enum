@@ -357,7 +357,7 @@ class ClassGenerator {
       final String values = _classFields
           .map((f) =>
               '${type_processor.dataFieldName(f)}:\${this.${type_processor.dataFieldName(f)}}')
-          .join(',');
+          .join(', ');
       return m
         ..name = 'toString'
         ..lambda = true
@@ -378,6 +378,24 @@ class ClassGenerator {
         ..annotations.add(references.override)
         ..type = MethodType.getter
         ..body = Code('[$values]')
+        ..build();
+    });
+
+    Method copyWith = Method((m) {
+      final String values = _classFields.map((e) {
+        final dataFieldName = type_processor.dataFieldName(e);
+        return '$dataFieldName: $dataFieldName ?? this.$dataFieldName';
+      }).join(', ');
+      return m
+        ..name = 'copyWith'
+        ..lambda = true
+        ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) => f
+          ..name = type_processor.dataFieldName(e)
+          ..type = Reference(type_processor.dataFieldType(e))
+          ..named = true
+          ..build())))
+        ..returns = Reference(field.name)
+        ..body = Code("${field.name}($values)")
         ..build();
     });
 
@@ -406,7 +424,7 @@ class ClassGenerator {
       ..extend = refer(
           '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
       ..annotations.add(references.immutable)
-      ..methods.addAll([toString, getProps])
+      ..methods.addAll([copyWith, toString, getProps])
       ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
       ..fields.addAll(_classFields.map((e) => Field((f) => f
         ..name = type_processor.dataFieldName(e)
@@ -461,6 +479,20 @@ class ClassGenerator {
         ..build();
     });
 
+    Method copyWith = Method((m) {
+      final classType = getCamelCase(usedClassType);
+      return m
+        ..name = 'copyWith'
+        ..lambda = true
+        ..optionalParameters.add(Parameter((p) => p
+          ..name = classType
+          ..type = Reference(usedClassType)
+          ..build()))
+        ..returns = Reference(wrapperName)
+        ..body = Code("$wrapperName($classType ?? this.$classType)")
+        ..build();
+    });
+
     return Class((c) => c
       ..name = wrapperName
       ..annotations.add(references.immutable)
@@ -470,7 +502,7 @@ class ClassGenerator {
           ..modifier = FieldModifier.final$
           ..type = Reference(usedClass.toTypeValue().getDisplayString());
       }))
-      ..methods.addAll([toString, getProps])
+      ..methods.addAll([copyWith, toString, getProps])
       ..extend = refer('${element.name.replaceFirst('_', '')}')
       ..constructors.add(Constructor((constructor) {
         return constructor
