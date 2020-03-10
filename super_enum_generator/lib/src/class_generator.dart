@@ -295,7 +295,7 @@ class ClassGenerator {
 
   String get _generateDerivedClasses => _fields
       .map((field) {
-        if (type_processor.hasAnnotation<Object>(field)) {
+        if (type_processor.hasAnnotation<ObjectClass>(field)) {
           return '${_generateObjectClass(field).accept(DartEmitter())}';
         } else if (type_processor.hasAnnotation<Data>(field)) {
           if (type_processor.listTypeFieldOf<Data>(field, 'fields')?.isEmpty ??

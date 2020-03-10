@@ -7,11 +7,11 @@ class SuperEnum {
   const SuperEnum._();
 }
 
-const object = Object._();
+const object = ObjectClass._();
 
 @immutable
-class Object {
-  const Object._();
+class ObjectClass {
+  const ObjectClass._();
 }
 
 @immutable
