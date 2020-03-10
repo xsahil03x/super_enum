@@ -50,6 +50,7 @@ enum _Result {
  * If you don't want to add fields, use `@object` annotation instead.
  * Fields are supplied in the form of `DataField` objects.
  * Each `DataField` must contain the `name` and the `type` of the field.
+ * If you want some `DataField` to be optional, set `required` param to `false`.
  * If the field type needs to be generic use `Generic` type and annotate the enum value with `@generic` annotation.
 
 `@object` marks an enum value to be treated as an object.
@@ -75,6 +76,7 @@ abstract class Result<T> extends Equatable {
 
   final _Result _type;
 
+//ignore: missing_return
   R when<R>(
       {@required R Function(Success<T>) success,
       @required R Function(Error<T>) error}) {
@@ -92,6 +94,7 @@ abstract class Result<T> extends Equatable {
     }
   }
 
+//ignore: missing_return
   Future<R> asyncWhen<R>(
       {@required FutureOr<R> Function(Success<T>) success,
       @required FutureOr<R> Function(Error<T>) error}) {
@@ -151,6 +154,7 @@ abstract class Result<T> extends Equatable {
     return orElse(this);
   }
 
+//ignore: missing_return
   Future<void> whenPartial(
       {FutureOr<void> Function(Success<T>) success,
       FutureOr<void> Function(Error<T>) error}) {
@@ -183,8 +187,10 @@ class Success<T> extends Result<T> {
 
   final String message;
 
+  Success copyWith({T data, String message}) =>
+      Success(data: data ?? this.data, message: message ?? this.message);
   @override
-  String toString() => 'Success(data:${this.data},message:${this.message})';
+  String toString() => 'Success(data:${this.data}, message:${this.message})';
   @override
   List get props => [data, message];
 }
