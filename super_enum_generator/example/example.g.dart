@@ -219,6 +219,7 @@ class Strength extends Attribute {
 
   final int value;
 
+  Strength copyWith({int value}) => Strength(value: value ?? this.value);
   @override
   String toString() => 'Strength(value:${this.value})';
   @override
@@ -231,6 +232,8 @@ class Intelligence extends Attribute {
 
   final int value;
 
+  Intelligence copyWith({int value}) =>
+      Intelligence(value: value ?? this.value);
   @override
   String toString() => 'Intelligence(value:${this.value})';
   @override
@@ -243,6 +246,7 @@ class Agility extends Attribute {
 
   final int value;
 
+  Agility copyWith({int value}) => Agility(value: value ?? this.value);
   @override
   String toString() => 'Agility(value:${this.value})';
   @override
@@ -255,6 +259,7 @@ class Dexterity extends Attribute {
 
   final int value;
 
+  Dexterity copyWith({int value}) => Dexterity(value: value ?? this.value);
   @override
   String toString() => 'Dexterity(value:${this.value})';
   @override
@@ -267,6 +272,7 @@ class Endurance extends Attribute {
 
   final int value;
 
+  Endurance copyWith({int value}) => Endurance(value: value ?? this.value);
   @override
   String toString() => 'Endurance(value:${this.value})';
   @override
@@ -279,6 +285,7 @@ class Speed extends Attribute {
 
   final int value;
 
+  Speed copyWith({int value}) => Speed(value: value ?? this.value);
   @override
   String toString() => 'Speed(value:${this.value})';
   @override

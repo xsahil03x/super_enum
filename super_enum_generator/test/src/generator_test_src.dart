@@ -124,8 +124,10 @@ class Success<T> extends Result<T> {
 
   final String message;
 
+  Success copyWith({T data, String message}) =>
+      Success(data: data ?? this.data, message: message ?? this.message);
   @override
-  String toString() => 'Success(data:${this.data},message:${this.message})';
+  String toString() => 'Success(data:${this.data}, message:${this.message})';
   @override
   List get props => [data, message];
 }

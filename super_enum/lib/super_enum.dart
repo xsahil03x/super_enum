@@ -10,7 +10,7 @@ export 'src/annotations.dart'
         Generic,
         SuperEnum,
         object,
-        Object,
+        ObjectClass,
         DataField,
         Data,
         UseClass;

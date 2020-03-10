@@ -178,6 +178,7 @@ class Success extends MoviesResponse {
 
   final Movies movies;
 
+  Success copyWith({Movies movies}) => Success(movies: movies ?? this.movies);
   @override
   String toString() => 'Success(movies:${this.movies})';
   @override
@@ -215,6 +216,8 @@ class UnexpectedException extends MoviesResponse {
 
   final Exception exception;
 
+  UnexpectedException copyWith({Exception exception}) =>
+      UnexpectedException(exception: exception ?? this.exception);
   @override
   String toString() => 'UnexpectedException(exception:${this.exception})';
   @override
