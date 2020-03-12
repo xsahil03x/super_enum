@@ -169,8 +169,6 @@ class MySuccessWrapper extends ResultUnion {
 
   final MySuccess mySuccess;
 
-  MySuccessWrapper copyWith([MySuccess mySuccess]) =>
-      MySuccessWrapper(mySuccess ?? this.mySuccess);
   @override
   String toString() => 'MySuccessWrapper($mySuccess)';
   @override
@@ -183,8 +181,6 @@ class MyErrorWrapper extends ResultUnion {
 
   final MyError myError;
 
-  MyErrorWrapper copyWith([MyError myError]) =>
-      MyErrorWrapper(myError ?? this.myError);
   @override
   String toString() => 'MyErrorWrapper($myError)';
   @override
@@ -197,7 +193,6 @@ class YaeWrapper extends ResultUnion {
 
   final MyError myError;
 
-  YaeWrapper copyWith([MyError myError]) => YaeWrapper(myError ?? this.myError);
   @override
   String toString() => 'YaeWrapper($myError)';
   @override

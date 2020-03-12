@@ -79,6 +79,8 @@ class ClassGenerator {
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
+      final hasObjectAnnotation =
+          type_processor.hasAnnotation<ObjectClass>(field);
       final DartObject usedClass =
           type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
@@ -88,8 +90,8 @@ class ClassGenerator {
             '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().getDisplayString())});');
       } else {
-        _bodyBuffer.writeln(
-            'return ${getCamelCase(field.name)}(this as ${field.name});');
+        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+            '${hasObjectAnnotation ? '()' : '(this as ${field.name})'};');
       }
 
       final callbackArgType = usedClass != null
@@ -102,7 +104,7 @@ class ClassGenerator {
           ..annotations.add(references.required)
           ..type = refer(
             '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
-            '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
+            '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'}'
             ')',
           )
           ..build();
@@ -135,6 +137,8 @@ class ClassGenerator {
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
+      final hasObjectAnnotation =
+          type_processor.hasAnnotation<ObjectClass>(field);
       final DartObject usedClass =
           type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
@@ -145,8 +149,8 @@ class ClassGenerator {
             '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().getDisplayString())});');
       } else {
-        _bodyBuffer.writeln(
-            'return ${getCamelCase(field.name)}(this as ${field.name});');
+        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+            '${hasObjectAnnotation ? '()' : '(this as ${field.name})'};');
       }
 
       final callbackArgType = usedClass != null
@@ -157,7 +161,7 @@ class ClassGenerator {
         ..named = true
         ..type = refer(
           '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
-          '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
+          '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'}'
           ')',
         )
         ..build()));
@@ -205,6 +209,8 @@ class ClassGenerator {
     _bodyBuffer.writeln('switch(this._type){');
 
     for (var field in _fields) {
+      final hasObjectAnnotation =
+          type_processor.hasAnnotation<ObjectClass>(field);
       final DartObject usedClass =
           type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
@@ -215,8 +221,8 @@ class ClassGenerator {
             '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().getDisplayString())});');
       } else {
-        _bodyBuffer.writeln(
-            'return ${getCamelCase(field.name)}(this as ${field.name});');
+        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+            '${hasObjectAnnotation ? '()' : '(this as ${field.name})'};');
       }
 
       final callbackArgType = usedClass != null
@@ -227,7 +233,7 @@ class ClassGenerator {
         ..named = true
         ..type = refer(
           '${references.futureOr.symbol} Function('
-          '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'
+          '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'}'
           ')',
         )
         ..build()));
