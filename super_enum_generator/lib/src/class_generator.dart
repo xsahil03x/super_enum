@@ -47,7 +47,7 @@ class ClassGenerator {
           return m
             ..name = 'props'
             ..lambda = true
-            ..returns = references.dynamic_list
+            ..returns = references.object_list
             ..annotations.add(references.override)
             ..type = MethodType.getter
             ..body = Code('const []')
@@ -279,9 +279,9 @@ class ClassGenerator {
             ? _generateClassConstructorFields(field)
             : [])
         ..requiredParameters.addAll(reqParams)
-        ..redirect = refer(type_processor.hasAnnotation<Data>(field)
-            ? '${redirectConstructorName}.create'
-            : '${redirectConstructorName}')
+        ..redirect = refer(type_processor.hasAnnotation<UseClass>(field)
+            ? '${redirectConstructorName}'
+            : '${redirectConstructorName}.create')
         ..build());
     });
     return [defaultConstructor].followedBy(fieldConstructors);
@@ -323,7 +323,7 @@ class ClassGenerator {
       .where((e) => e != null)
       .join('');
 
-  Class _generateObjectClass(FieldElement field) {
+  ImplementedClass _generateObjectClass(FieldElement field) {
     final isGeneric = type_processor.isGeneric(field);
 
     if (isGeneric) {
@@ -331,30 +331,51 @@ class ClassGenerator {
           'Can\'t use @generic on object classes');
     }
 
-    return Class((c) => c
+    Method toString = Method((m) => m
+      ..name = 'toString'
+      ..lambda = true
+      ..annotations.add(references.override)
+      ..body = Code("'${field.name}()'")
+      ..returns = references.string
+      ..build());
+
+    final _objectClass = Class((c) => c
       ..name = '${field.name}'
-      ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
-      ..fields.add(Field((f) => f
-        ..name = '_instance'
-        ..static = true
-        ..type = refer('${field.name}')
-        ..build()))
-      ..constructors.add(Constructor((c) => c
-        ..constant = true
-        ..name = '_'
-        ..initializers.add(Code('super(${element.name}.${field.name})'))
-        ..build()))
-      ..constructors.add(Constructor((c) => c
-        ..factory = true
-        ..body = Code('''
-        _instance ??= const ${field.name}._();
-        return _instance;
-        ''')
-        ..build()))
+      ..abstract = true
       ..extend = refer(
           '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
       ..annotations.add(references.immutable)
+      ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
+      ..constructors.addAll([
+        Constructor((c) => c
+          ..constant = true
+          ..initializers.add(Code('super(${element.name}.${field.name})'))
+          ..build()),
+        Constructor((c) => c
+          ..name = 'create'
+          ..factory = true
+          ..redirect =
+              refer('_${field.name}Impl${_isNamespaceGeneric ? '<T>' : ''}')
+          ..build())
+      ])
       ..build());
+
+    final _objectClassImpl = Class((c) => c
+      ..name = '_${field.name}Impl'
+      ..extend = refer('${field.name}${_isNamespaceGeneric ? '<T>' : ''}')
+      ..annotations.add(references.immutable)
+      ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
+      ..methods.add(toString)
+      ..constructors.add(Constructor((c) => c
+        ..constant = true
+        ..initializers.add(Code('super()'))
+        ..build()))
+      ..build());
+
+    return ImplementedClass(
+      abstractClass: _objectClass,
+      abstractClassImpl: _objectClassImpl,
+    );
   }
 
   ImplementedClass _generateDataClass(FieldElement field) {
@@ -364,7 +385,7 @@ class ClassGenerator {
     Method toString = Method((m) {
       final String values = _classFields
           .map((f) =>
-              '${type_processor.dataFieldName(f)}:\${this.${type_processor.dataFieldName(f)}}')
+              '${type_processor.dataFieldName(f)}: \${this.${type_processor.dataFieldName(f)}}')
           .join(', ');
       return m
         ..name = 'toString'
@@ -382,7 +403,7 @@ class ClassGenerator {
       return m
         ..name = 'props'
         ..lambda = true
-        ..returns = references.dynamic_list
+        ..returns = references.object_list
         ..annotations.add(references.override)
         ..type = MethodType.getter
         ..body = Code('[$values]')
@@ -465,7 +486,7 @@ class ClassGenerator {
           ..type = refer(type_processor.dataFieldType(e))
           ..build())))
         ..constructors.addAll([
-          Constructor((constructor) => constructor
+          Constructor((c) => c
             ..constant = true
             ..initializers.add(Code('super(${element.name}.${field.name})'))
             ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
@@ -548,26 +569,22 @@ class ClassGenerator {
       wrapper.add(wrapperName);
     }
 
-    Method toString = Method((m) {
-      return m
-        ..name = 'toString'
-        ..lambda = true
-        ..annotations.add(references.override)
-        ..body = Code("'$wrapperName(\$${getCamelCase(usedClassType)})'")
-        ..returns = references.string
-        ..build();
-    });
+    Method toString = Method((m) => m
+      ..name = 'toString'
+      ..lambda = true
+      ..annotations.add(references.override)
+      ..body = Code("'$wrapperName(\$${getCamelCase(usedClassType)})'")
+      ..returns = references.string
+      ..build());
 
-    Method getProps = Method((m) {
-      return m
-        ..name = 'props'
-        ..lambda = true
-        ..returns = references.dynamic_list
-        ..annotations.add(references.override)
-        ..type = MethodType.getter
-        ..body = Code('[${getCamelCase(usedClassType)}]')
-        ..build();
-    });
+    Method getProps = Method((m) => m
+      ..name = 'props'
+      ..lambda = true
+      ..returns = references.object_list
+      ..annotations.add(references.override)
+      ..type = MethodType.getter
+      ..body = Code('[${getCamelCase(usedClassType)}]')
+      ..build());
 
     return Class((c) => c
       ..name = wrapperName

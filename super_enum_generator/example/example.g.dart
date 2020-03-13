@@ -210,7 +210,7 @@ abstract class Attribute extends Equatable {
   }
 
   @override
-  List get props => const [];
+  List<Object> get props => const [];
 }
 
 @immutable
@@ -236,9 +236,9 @@ class _StrengthImpl extends Strength {
         value: value == superEnum ? this.value : value as int,
       );
   @override
-  String toString() => 'Strength(value:${this.value})';
+  String toString() => 'Strength(value: ${this.value})';
   @override
-  List get props => [value];
+  List<Object> get props => [value];
 }
 
 @immutable
@@ -264,9 +264,9 @@ class _IntelligenceImpl extends Intelligence {
         value: value == superEnum ? this.value : value as int,
       );
   @override
-  String toString() => 'Intelligence(value:${this.value})';
+  String toString() => 'Intelligence(value: ${this.value})';
   @override
-  List get props => [value];
+  List<Object> get props => [value];
 }
 
 @immutable
@@ -292,9 +292,9 @@ class _AgilityImpl extends Agility {
         value: value == superEnum ? this.value : value as int,
       );
   @override
-  String toString() => 'Agility(value:${this.value})';
+  String toString() => 'Agility(value: ${this.value})';
   @override
-  List get props => [value];
+  List<Object> get props => [value];
 }
 
 @immutable
@@ -320,9 +320,9 @@ class _DexterityImpl extends Dexterity {
         value: value == superEnum ? this.value : value as int,
       );
   @override
-  String toString() => 'Dexterity(value:${this.value})';
+  String toString() => 'Dexterity(value: ${this.value})';
   @override
-  List get props => [value];
+  List<Object> get props => [value];
 }
 
 @immutable
@@ -348,9 +348,9 @@ class _EnduranceImpl extends Endurance {
         value: value == superEnum ? this.value : value as int,
       );
   @override
-  String toString() => 'Endurance(value:${this.value})';
+  String toString() => 'Endurance(value: ${this.value})';
   @override
-  List get props => [value];
+  List<Object> get props => [value];
 }
 
 @immutable
@@ -376,7 +376,7 @@ class _SpeedImpl extends Speed {
         value: value == superEnum ? this.value : value as int,
       );
   @override
-  String toString() => 'Speed(value:${this.value})';
+  String toString() => 'Speed(value: ${this.value})';
   @override
-  List get props => [value];
+  List<Object> get props => [value];
 }

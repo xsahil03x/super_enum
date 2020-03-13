@@ -9,7 +9,7 @@ abstract class Result<T> extends Equatable {
   factory Result.success({@required T data, @required String message}) =
       Success<T>.create;
 
-  factory Result.error() = Error<T>;
+  factory Result.error() = Error<T>.create;
 
   final _Result _type;
 
@@ -112,7 +112,7 @@ abstract class Result<T> extends Equatable {
   }
 
   @override
-  List get props => const [];
+  List<Object> get props => const [];
 }
 
 @immutable
@@ -149,21 +149,24 @@ class _SuccessImpl<T> extends Success<T> {
         message: message == superEnum ? this.message : message as String,
       );
   @override
-  String toString() => 'Success(data:${this.data}, message:${this.message})';
+  String toString() => 'Success(data: ${this.data}, message: ${this.message})';
   @override
-  List get props => [data, message];
+  List<Object> get props => [data, message];
 }
 
 @immutable
-class Error<T> extends Result<T> {
-  const Error._() : super(_Result.Error);
+abstract class Error<T> extends Result<T> {
+  const Error() : super(_Result.Error);
 
-  factory Error() {
-    _instance ??= const Error._();
-    return _instance;
-  }
+  factory Error.create() = _ErrorImpl<T>;
+}
 
-  static Error _instance;
+@immutable
+class _ErrorImpl<T> extends Error<T> {
+  const _ErrorImpl() : super();
+
+  @override
+  String toString() => 'Error()';
 }
 ''')
 @superEnum

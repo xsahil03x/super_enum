@@ -12,9 +12,9 @@ abstract class MoviesResponse extends Equatable {
 
   factory MoviesResponse.success({@required Movies movies}) = Success.create;
 
-  factory MoviesResponse.unauthorized() = Unauthorized;
+  factory MoviesResponse.unauthorized() = Unauthorized.create;
 
-  factory MoviesResponse.noNetwork() = NoNetwork;
+  factory MoviesResponse.noNetwork() = NoNetwork.create;
 
   factory MoviesResponse.unexpectedException({@required Exception exception}) =
       UnexpectedException.create;
@@ -169,7 +169,7 @@ abstract class MoviesResponse extends Equatable {
   }
 
   @override
-  List get props => const [];
+  List<Object> get props => const [];
 }
 
 @immutable
@@ -195,33 +195,39 @@ class _SuccessImpl extends Success {
         movies: movies == superEnum ? this.movies : movies as Movies,
       );
   @override
-  String toString() => 'Success(movies:${this.movies})';
+  String toString() => 'Success(movies: ${this.movies})';
   @override
-  List get props => [movies];
+  List<Object> get props => [movies];
 }
 
 @immutable
-class Unauthorized extends MoviesResponse {
-  const Unauthorized._() : super(_MoviesResponse.Unauthorized);
+abstract class Unauthorized extends MoviesResponse {
+  const Unauthorized() : super(_MoviesResponse.Unauthorized);
 
-  factory Unauthorized() {
-    _instance ??= const Unauthorized._();
-    return _instance;
-  }
-
-  static Unauthorized _instance;
+  factory Unauthorized.create() = _UnauthorizedImpl;
 }
 
 @immutable
-class NoNetwork extends MoviesResponse {
-  const NoNetwork._() : super(_MoviesResponse.NoNetwork);
+class _UnauthorizedImpl extends Unauthorized {
+  const _UnauthorizedImpl() : super();
 
-  factory NoNetwork() {
-    _instance ??= const NoNetwork._();
-    return _instance;
-  }
+  @override
+  String toString() => 'Unauthorized()';
+}
 
-  static NoNetwork _instance;
+@immutable
+abstract class NoNetwork extends MoviesResponse {
+  const NoNetwork() : super(_MoviesResponse.NoNetwork);
+
+  factory NoNetwork.create() = _NoNetworkImpl;
+}
+
+@immutable
+class _NoNetworkImpl extends NoNetwork {
+  const _NoNetworkImpl() : super();
+
+  @override
+  String toString() => 'NoNetwork()';
 }
 
 @immutable
@@ -252,7 +258,7 @@ class _UnexpectedExceptionImpl extends UnexpectedException {
             exception == superEnum ? this.exception : exception as Exception,
       );
   @override
-  String toString() => 'UnexpectedException(exception:${this.exception})';
+  String toString() => 'UnexpectedException(exception: ${this.exception})';
   @override
-  List get props => [exception];
+  List<Object> get props => [exception];
 }
