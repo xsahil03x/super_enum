@@ -47,8 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
           if (snapshot.hasData) {
             return snapshot.data.when<Widget>(
               success: (data) => MovieList(movieList: data.movies.results),
-              unauthorized: (_) => Error(errorMessage: 'Invalid ApiKey'),
-              noNetwork: (_) => Error(
+              unauthorized: () => Error(errorMessage: 'Invalid ApiKey'),
+              noNetwork: () => Error(
                   errorMessage:
                       'No Internet, Please check your internet connection'),
               unexpectedException: (error) =>

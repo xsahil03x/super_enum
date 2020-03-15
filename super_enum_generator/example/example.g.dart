@@ -10,17 +10,17 @@ part of 'example.dart';
 abstract class Attribute extends Equatable {
   const Attribute(this._type);
 
-  factory Attribute.strength({@required int value}) = Strength;
+  factory Attribute.strength({@required int value}) = Strength.create;
 
-  factory Attribute.intelligence({@required int value}) = Intelligence;
+  factory Attribute.intelligence({@required int value}) = Intelligence.create;
 
-  factory Attribute.agility({@required int value}) = Agility;
+  factory Attribute.agility({@required int value}) = Agility.create;
 
-  factory Attribute.dexterity({@required int value}) = Dexterity;
+  factory Attribute.dexterity({@required int value}) = Dexterity.create;
 
-  factory Attribute.endurance({@required int value}) = Endurance;
+  factory Attribute.endurance({@required int value}) = Endurance.create;
 
-  factory Attribute.speed({@required int value}) = Speed;
+  factory Attribute.speed({@required int value}) = Speed.create;
 
   final _Attribute _type;
 
@@ -210,84 +210,173 @@ abstract class Attribute extends Equatable {
   }
 
   @override
-  List get props => const [];
+  List<Object> get props => const [];
 }
 
 @immutable
-class Strength extends Attribute {
+abstract class Strength extends Attribute {
   const Strength({@required this.value}) : super(_Attribute.Strength);
 
+  factory Strength.create({@required int value}) = _StrengthImpl;
+
   final int value;
 
-  Strength copyWith({int value}) => Strength(value: value ?? this.value);
-  @override
-  String toString() => 'Strength(value:${this.value})';
-  @override
-  List get props => [value];
+  Strength copyWith({int value});
 }
 
 @immutable
-class Intelligence extends Attribute {
+class _StrengthImpl extends Strength {
+  const _StrengthImpl({@required this.value}) : super(value: value);
+
+  @override
+  final int value;
+
+  @override
+  _StrengthImpl copyWith({Object value = superEnum}) => _StrengthImpl(
+        value: value == superEnum ? this.value : value as int,
+      );
+  @override
+  String toString() => 'Strength(value: ${this.value})';
+  @override
+  List<Object> get props => [value];
+}
+
+@immutable
+abstract class Intelligence extends Attribute {
   const Intelligence({@required this.value}) : super(_Attribute.Intelligence);
 
+  factory Intelligence.create({@required int value}) = _IntelligenceImpl;
+
   final int value;
 
-  Intelligence copyWith({int value}) =>
-      Intelligence(value: value ?? this.value);
-  @override
-  String toString() => 'Intelligence(value:${this.value})';
-  @override
-  List get props => [value];
+  Intelligence copyWith({int value});
 }
 
 @immutable
-class Agility extends Attribute {
+class _IntelligenceImpl extends Intelligence {
+  const _IntelligenceImpl({@required this.value}) : super(value: value);
+
+  @override
+  final int value;
+
+  @override
+  _IntelligenceImpl copyWith({Object value = superEnum}) => _IntelligenceImpl(
+        value: value == superEnum ? this.value : value as int,
+      );
+  @override
+  String toString() => 'Intelligence(value: ${this.value})';
+  @override
+  List<Object> get props => [value];
+}
+
+@immutable
+abstract class Agility extends Attribute {
   const Agility({@required this.value}) : super(_Attribute.Agility);
 
+  factory Agility.create({@required int value}) = _AgilityImpl;
+
   final int value;
 
-  Agility copyWith({int value}) => Agility(value: value ?? this.value);
-  @override
-  String toString() => 'Agility(value:${this.value})';
-  @override
-  List get props => [value];
+  Agility copyWith({int value});
 }
 
 @immutable
-class Dexterity extends Attribute {
+class _AgilityImpl extends Agility {
+  const _AgilityImpl({@required this.value}) : super(value: value);
+
+  @override
+  final int value;
+
+  @override
+  _AgilityImpl copyWith({Object value = superEnum}) => _AgilityImpl(
+        value: value == superEnum ? this.value : value as int,
+      );
+  @override
+  String toString() => 'Agility(value: ${this.value})';
+  @override
+  List<Object> get props => [value];
+}
+
+@immutable
+abstract class Dexterity extends Attribute {
   const Dexterity({@required this.value}) : super(_Attribute.Dexterity);
 
+  factory Dexterity.create({@required int value}) = _DexterityImpl;
+
   final int value;
 
-  Dexterity copyWith({int value}) => Dexterity(value: value ?? this.value);
-  @override
-  String toString() => 'Dexterity(value:${this.value})';
-  @override
-  List get props => [value];
+  Dexterity copyWith({int value});
 }
 
 @immutable
-class Endurance extends Attribute {
+class _DexterityImpl extends Dexterity {
+  const _DexterityImpl({@required this.value}) : super(value: value);
+
+  @override
+  final int value;
+
+  @override
+  _DexterityImpl copyWith({Object value = superEnum}) => _DexterityImpl(
+        value: value == superEnum ? this.value : value as int,
+      );
+  @override
+  String toString() => 'Dexterity(value: ${this.value})';
+  @override
+  List<Object> get props => [value];
+}
+
+@immutable
+abstract class Endurance extends Attribute {
   const Endurance({@required this.value}) : super(_Attribute.Endurance);
 
+  factory Endurance.create({@required int value}) = _EnduranceImpl;
+
   final int value;
 
-  Endurance copyWith({int value}) => Endurance(value: value ?? this.value);
-  @override
-  String toString() => 'Endurance(value:${this.value})';
-  @override
-  List get props => [value];
+  Endurance copyWith({int value});
 }
 
 @immutable
-class Speed extends Attribute {
+class _EnduranceImpl extends Endurance {
+  const _EnduranceImpl({@required this.value}) : super(value: value);
+
+  @override
+  final int value;
+
+  @override
+  _EnduranceImpl copyWith({Object value = superEnum}) => _EnduranceImpl(
+        value: value == superEnum ? this.value : value as int,
+      );
+  @override
+  String toString() => 'Endurance(value: ${this.value})';
+  @override
+  List<Object> get props => [value];
+}
+
+@immutable
+abstract class Speed extends Attribute {
   const Speed({@required this.value}) : super(_Attribute.Speed);
+
+  factory Speed.create({@required int value}) = _SpeedImpl;
 
   final int value;
 
-  Speed copyWith({int value}) => Speed(value: value ?? this.value);
+  Speed copyWith({int value});
+}
+
+@immutable
+class _SpeedImpl extends Speed {
+  const _SpeedImpl({@required this.value}) : super(value: value);
+
   @override
-  String toString() => 'Speed(value:${this.value})';
+  final int value;
+
   @override
-  List get props => [value];
+  _SpeedImpl copyWith({Object value = superEnum}) => _SpeedImpl(
+        value: value == superEnum ? this.value : value as int,
+      );
+  @override
+  String toString() => 'Speed(value: ${this.value})';
+  @override
+  List<Object> get props => [value];
 }

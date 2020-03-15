@@ -1,9 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:super_enum/super_enum.dart';
-import 'dart:io';
 
 import 'movies.dart';
 
@@ -55,8 +54,8 @@ void main() async {
 
   _moviesResponse.when(
     success: (data) => print('Total Movies: ${data.movies.totalPages}'),
-    unauthorized: (_) => print('Invalid ApiKey'),
-    noNetwork: (_) => print(
+    unauthorized: () => print('Invalid ApiKey'),
+    noNetwork: () => print(
       'No Internet, Please check your internet connection',
     ),
     unexpectedException: (error) => print(error.exception),

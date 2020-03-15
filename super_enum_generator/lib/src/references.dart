@@ -10,6 +10,7 @@ const string = Reference('String');
 const int = Reference('int');
 const bool = Reference('bool');
 const dynamic_list = Reference('List');
+const object_list = Reference('List<Object>');
 const equatable = Reference('Equatable');
 const futureOr = Reference('FutureOr<void>');
 const future = Reference('Future<void>');

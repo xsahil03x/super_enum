@@ -160,7 +160,7 @@ abstract class ResultUnion extends Equatable {
   }
 
   @override
-  List get props => const [];
+  List<Object> get props => const [];
 }
 
 @immutable
@@ -169,12 +169,10 @@ class MySuccessWrapper extends ResultUnion {
 
   final MySuccess mySuccess;
 
-  MySuccessWrapper copyWith([MySuccess mySuccess]) =>
-      MySuccessWrapper(mySuccess ?? this.mySuccess);
   @override
   String toString() => 'MySuccessWrapper($mySuccess)';
   @override
-  List get props => [mySuccess];
+  List<Object> get props => [mySuccess];
 }
 
 @immutable
@@ -183,12 +181,10 @@ class MyErrorWrapper extends ResultUnion {
 
   final MyError myError;
 
-  MyErrorWrapper copyWith([MyError myError]) =>
-      MyErrorWrapper(myError ?? this.myError);
   @override
   String toString() => 'MyErrorWrapper($myError)';
   @override
-  List get props => [myError];
+  List<Object> get props => [myError];
 }
 
 @immutable
@@ -197,11 +193,10 @@ class YaeWrapper extends ResultUnion {
 
   final MyError myError;
 
-  YaeWrapper copyWith([MyError myError]) => YaeWrapper(myError ?? this.myError);
   @override
   String toString() => 'YaeWrapper($myError)';
   @override
-  List get props => [myError];
+  List<Object> get props => [myError];
 }
 ''')
 @superEnum
