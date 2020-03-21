@@ -1,6 +1,6 @@
 import 'package:super_enum/super_enum.dart';
 
-part 'example.g.dart';
+part 'example.super.dart';
 
 @superEnum
 enum _Attribute {
