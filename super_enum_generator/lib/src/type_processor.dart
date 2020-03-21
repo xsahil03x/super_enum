@@ -6,9 +6,11 @@ import 'package:super_enum/super_enum.dart';
 
 TypeChecker _typeChecker(Type t) => TypeChecker.fromRuntime(t);
 
-String dataFieldName(DartObject obj) => ConstantReader(obj).read('name').stringValue;
+String dataFieldName(DartObject obj) =>
+    ConstantReader(obj).read('name').stringValue;
 
-bool dataFieldRequired(DartObject obj) => ConstantReader(obj).read('required').boolValue;
+bool dataFieldRequired(DartObject obj) =>
+    ConstantReader(obj).read('required').boolValue;
 
 ConstantReader annotationOf<T>(Element obj) =>
     ConstantReader(_typeChecker(T).firstAnnotationOfExact(obj));

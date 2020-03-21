@@ -15,4 +15,3 @@ enum _MoviesResponse {
   @Data(fields: [DataField<Exception>('exception')])
   UnexpectedException
 }
-
