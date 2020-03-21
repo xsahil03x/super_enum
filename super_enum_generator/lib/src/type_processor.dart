@@ -6,25 +6,25 @@ import 'package:super_enum/super_enum.dart';
 
 TypeChecker _typeChecker(Type t) => TypeChecker.fromRuntime(t);
 
-String dataFieldName(obj) => ConstantReader(obj).read('name').stringValue;
+String dataFieldName(DartObject obj) => ConstantReader(obj).read('name').stringValue;
 
-bool dataFieldRequired(obj) => ConstantReader(obj).read('required').boolValue;
+bool dataFieldRequired(DartObject obj) => ConstantReader(obj).read('required').boolValue;
 
-ConstantReader annotationOf<T>(obj) =>
+ConstantReader annotationOf<T>(Element obj) =>
     ConstantReader(_typeChecker(T).firstAnnotationOfExact(obj));
 
-ConstantReader fieldOf<T>(obj, String fieldName) =>
+ConstantReader fieldOf<T>(Element obj, String fieldName) =>
     annotationOf<T>(obj)?.read(fieldName);
 
-Iterable listTypeFieldOf<T>(obj, String fieldName) =>
+Iterable<DartObject> listTypeFieldOf<T>(Element obj, String fieldName) =>
     fieldOf<T>(obj, fieldName)?.listValue ?? [];
 
-bool hasAnnotation<T>(obj) => _typeChecker(T).hasAnnotationOfExact(obj);
+bool hasAnnotation<T>(Element obj) => _typeChecker(T).hasAnnotationOfExact(obj);
 
 bool isGeneric(Element element) =>
     _typeChecker(Generic).hasAnnotationOfExact(element);
 
-String dataFieldType(obj) {
+String dataFieldType(DartObject obj) {
   return _genericOf(ConstantReader(obj).objectValue.type)
       .getDisplayString()
       .replaceAll('Generic', 'T');
