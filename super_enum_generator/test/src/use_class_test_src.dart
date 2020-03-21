@@ -16,7 +16,6 @@ abstract class ResultUnion extends Equatable {
 
   final _ResultUnion _type;
 
-//ignore: missing_return
   R when<R>(
       {@required R Function(MySuccess) success,
       @required R Function(MyError) error,
@@ -43,7 +42,6 @@ abstract class ResultUnion extends Equatable {
     }
   }
 
-//ignore: missing_return
   Future<R> asyncWhen<R>(
       {@required FutureOr<R> Function(MySuccess) success,
       @required FutureOr<R> Function(MyError) error,
@@ -128,7 +126,6 @@ abstract class ResultUnion extends Equatable {
     return orElse(this);
   }
 
-//ignore: missing_return
   Future<void> whenPartial(
       {FutureOr<void> Function(MySuccess) success,
       FutureOr<void> Function(MyError) error,

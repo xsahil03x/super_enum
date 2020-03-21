@@ -13,7 +13,6 @@ abstract class Result<T> extends Equatable {
 
   final _Result _type;
 
-//ignore: missing_return
   R when<R>(
       {@required R Function(Success<T>) success,
       @required R Function() error}) {
@@ -31,7 +30,6 @@ abstract class Result<T> extends Equatable {
     }
   }
 
-//ignore: missing_return
   Future<R> asyncWhen<R>(
       {@required FutureOr<R> Function(Success<T>) success,
       @required FutureOr<R> Function() error}) {
@@ -91,7 +89,6 @@ abstract class Result<T> extends Equatable {
     return orElse(this);
   }
 
-//ignore: missing_return
   Future<void> whenPartial(
       {FutureOr<void> Function(Success<T>) success,
       FutureOr<void> Function() error}) {
