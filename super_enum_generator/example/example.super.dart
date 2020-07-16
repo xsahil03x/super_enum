@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: return_of_invalid_type, constant_identifier_names, prefer_const_constructors_in_immutables, unnecessary_this, sort_unnamed_constructors_first, join_return_with_assignment, missing_return, lines_longer_than_80_chars
 
 part of 'example.dart';
 
@@ -24,7 +25,6 @@ abstract class Attribute extends Equatable {
 
   final _Attribute _type;
 
-//ignore: missing_return
   R when<R>(
       {@required R Function(Strength) strength,
       @required R Function(Intelligence) intelligence,
@@ -59,7 +59,6 @@ abstract class Attribute extends Equatable {
     }
   }
 
-//ignore: missing_return
   Future<R> asyncWhen<R>(
       {@required FutureOr<R> Function(Strength) strength,
       @required FutureOr<R> Function(Intelligence) intelligence,
@@ -168,7 +167,6 @@ abstract class Attribute extends Equatable {
     return orElse(this);
   }
 
-//ignore: missing_return
   Future<void> whenPartial(
       {FutureOr<void> Function(Strength) strength,
       FutureOr<void> Function(Intelligence) intelligence,

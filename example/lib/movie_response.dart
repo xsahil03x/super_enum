@@ -2,7 +2,7 @@ import 'package:super_enum/super_enum.dart';
 
 import 'movies.dart';
 
-part 'movie_response.g.dart';
+part 'movie_response.super.dart';
 
 @superEnum
 enum _MoviesResponse {

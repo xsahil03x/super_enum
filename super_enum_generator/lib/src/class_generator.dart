@@ -10,7 +10,6 @@ import 'package:super_enum_generator/src/type_processor.dart' as type_processor;
 
 class ClassGenerator {
   final ClassElement element;
-
   ClassGenerator(this.element);
 
   Iterable<FieldElement> get _fields => element.fields.skip(2);
@@ -104,7 +103,7 @@ class ClassGenerator {
           ..annotations.add(references.required)
           ..type = refer(
             '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
-            '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'}'
+            '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
             ')',
           )
           ..build();
@@ -117,7 +116,6 @@ class ClassGenerator {
       ..name = isAsync ? 'asyncWhen' : 'when'
       ..types.add(references.generic_R)
       ..returns = isAsync ? references.future_Generic_R : references.generic_R
-      ..docs.add('//ignore: missing_return')
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());
@@ -161,7 +159,7 @@ class ClassGenerator {
         ..named = true
         ..type = refer(
           '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
-          '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'}'
+          '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
           ')',
         )
         ..build()));
@@ -233,7 +231,7 @@ class ClassGenerator {
         ..named = true
         ..type = refer(
           '${references.futureOr.symbol} Function('
-          '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '${callbackArgType}<T>' : callbackArgType}'}'
+          '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
           ')',
         )
         ..build()));
@@ -245,7 +243,6 @@ class ClassGenerator {
       ..name = 'whenPartial'
       ..returns = references.future
       ..optionalParameters.addAll(_params)
-      ..docs.add('//ignore: missing_return')
       ..body = Code(_bodyBuffer.toString())
       ..build());
   }
@@ -280,8 +277,8 @@ class ClassGenerator {
             : [])
         ..requiredParameters.addAll(reqParams)
         ..redirect = refer(type_processor.hasAnnotation<UseClass>(field)
-            ? '${redirectConstructorName}'
-            : '${redirectConstructorName}.create')
+            ? '$redirectConstructorName'
+            : '$redirectConstructorName.create')
         ..build());
     });
     return [defaultConstructor].followedBy(fieldConstructors);
@@ -291,7 +288,7 @@ class ClassGenerator {
     final fields = type_processor.listTypeFieldOf<Data>(element, 'fields');
     return fields.map((e) => Parameter((f) {
           if (type_processor.dataFieldRequired(e)) {
-            f..annotations.add(references.required);
+            f.annotations.add(references.required);
           }
           return f
             ..name = '${type_processor.dataFieldName(e)}'
@@ -331,7 +328,7 @@ class ClassGenerator {
           'Can\'t use @generic on object classes');
     }
 
-    Method toString = Method((m) => m
+    final Method toString = Method((m) => m
       ..name = 'toString'
       ..lambda = true
       ..annotations.add(references.override)
@@ -368,7 +365,7 @@ class ClassGenerator {
       ..methods.add(toString)
       ..constructors.add(Constructor((c) => c
         ..constant = true
-        ..initializers.add(Code('super()'))
+        ..initializers.add(const Code('super()'))
         ..build()))
       ..build());
 
@@ -382,7 +379,7 @@ class ClassGenerator {
     final _classFields = type_processor.listTypeFieldOf<Data>(field, 'fields');
     final isGeneric = type_processor.isGeneric(field);
 
-    Method toString = Method((m) {
+    final Method toString = Method((m) {
       final String values = _classFields
           .map((f) =>
               '${type_processor.dataFieldName(f)}: \${this.${type_processor.dataFieldName(f)}}')
@@ -420,7 +417,7 @@ class ClassGenerator {
       ..returns = Reference('${field.name}${_isNamespaceGeneric ? '<T>' : ''}')
       ..build());
 
-    Method copyWithImpl = Method((m) {
+    final Method copyWithImpl = Method((m) {
       final String values = _classFields.map((e) {
         final dataFieldName = type_processor.dataFieldName(e);
         final dataFieldType = type_processor.dataFieldType(e);
@@ -437,8 +434,8 @@ class ClassGenerator {
         ..annotations.add(references.override)
         ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) => f
           ..name = type_processor.dataFieldName(e)
-          ..type = Reference('Object')
-          ..defaultTo = Code('superEnum')
+          ..type = const Reference('Object')
+          ..defaultTo = const Code('superEnum')
           ..named = true
           ..build())))
         ..returns =
@@ -467,57 +464,51 @@ class ClassGenerator {
       }
     }
 
-    final _dataClass = Class((c) {
-      final String values = _classFields.map((e) {
-        final dataFieldName = type_processor.dataFieldName(e);
-        return '$dataFieldName: $dataFieldName';
-      }).join(', ');
-      return c
-        ..name = '${field.name}'
-        ..extend = refer(
-            '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
-        ..abstract = true
-        ..annotations.add(references.immutable)
-        ..methods.add(copyWith)
-        ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
-        ..fields.addAll(_classFields.map((e) => Field((f) => f
-          ..name = type_processor.dataFieldName(e)
-          ..modifier = FieldModifier.final$
-          ..type = refer(type_processor.dataFieldType(e))
-          ..build())))
-        ..constructors.addAll([
-          Constructor((c) => c
-            ..constant = true
-            ..initializers.add(Code('super(${element.name}.${field.name})'))
-            ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
-                  if (type_processor.dataFieldRequired(e)) {
-                    f..annotations.add(references.required);
-                  }
-                  return f
-                    ..name = 'this.${type_processor.dataFieldName(e)}'
-                    ..named = true
-                    ..build();
-                })))
-            ..build()),
-          Constructor((c) => c
-            ..name = 'create'
-            ..factory = true
-            ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
-                  if (type_processor.dataFieldRequired(e)) {
-                    f..annotations.add(references.required);
-                  }
-                  return f
-                    ..name =
-                        '${type_processor.dataFieldType(e)} ${type_processor.dataFieldName(e)}'
-                    ..named = true
-                    ..build();
-                })))
-            ..redirect =
-                refer('_${field.name}Impl${_isNamespaceGeneric ? '<T>' : ''}')
-            ..build())
-        ])
-        ..build();
-    });
+    final _dataClass = Class((c) => c
+      ..name = '${field.name}'
+      ..extend = refer(
+          '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
+      ..abstract = true
+      ..annotations.add(references.immutable)
+      ..methods.add(copyWith)
+      ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
+      ..fields.addAll(_classFields.map((e) => Field((f) => f
+        ..name = type_processor.dataFieldName(e)
+        ..modifier = FieldModifier.final$
+        ..type = refer(type_processor.dataFieldType(e))
+        ..build())))
+      ..constructors.addAll([
+        Constructor((c) => c
+          ..constant = true
+          ..initializers.add(Code('super(${element.name}.${field.name})'))
+          ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
+                if (type_processor.dataFieldRequired(e)) {
+                  f.annotations.add(references.required);
+                }
+                return f
+                  ..name = 'this.${type_processor.dataFieldName(e)}'
+                  ..named = true
+                  ..build();
+              })))
+          ..build()),
+        Constructor((c) => c
+          ..name = 'create'
+          ..factory = true
+          ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
+                if (type_processor.dataFieldRequired(e)) {
+                  f.annotations.add(references.required);
+                }
+                return f
+                  ..name =
+                      '${type_processor.dataFieldType(e)} ${type_processor.dataFieldName(e)}'
+                  ..named = true
+                  ..build();
+              })))
+          ..redirect =
+              refer('_${field.name}Impl${_isNamespaceGeneric ? '<T>' : ''}')
+          ..build())
+      ])
+      ..build());
 
     final _dataClassImpl = Class((c) {
       final String values = _classFields.map((e) {
@@ -541,7 +532,7 @@ class ClassGenerator {
           ..initializers.add(Code('super($values)'))
           ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
                 if (type_processor.dataFieldRequired(e)) {
-                  f..annotations.add(references.required);
+                  f.annotations.add(references.required);
                 }
                 return f
                   ..name = 'this.${type_processor.dataFieldName(e)}'
@@ -589,25 +580,21 @@ class ClassGenerator {
     return Class((c) => c
       ..name = wrapperName
       ..annotations.add(references.immutable)
-      ..fields.add(Field((f) {
-        return f
-          ..name = getCamelCase(usedClass.toTypeValue().getDisplayString())
-          ..modifier = FieldModifier.final$
-          ..type = Reference(usedClass.toTypeValue().getDisplayString());
-      }))
+      ..fields.add(Field((f) => f
+        ..name = getCamelCase(usedClass.toTypeValue().getDisplayString())
+        ..modifier = FieldModifier.final$
+        ..type = Reference(usedClass.toTypeValue().getDisplayString())))
       ..methods.addAll([toString, getProps])
       ..extend = refer('${element.name.replaceFirst('_', '')}')
-      ..constructors.add(Constructor((constructor) {
-        return constructor
-          ..constant = true
-          ..initializers.add(Code('super(${element.name}.${field.name})'))
-          ..requiredParameters.add(
-            Parameter((p) => p
-              ..name = "this.${getCamelCase(usedClassType)}"
-              ..named = false
-              ..build()),
-          );
-      }))
+      ..constructors.add(Constructor((constructor) => constructor
+        ..constant = true
+        ..initializers.add(Code('super(${element.name}.${field.name})'))
+        ..requiredParameters.add(
+          Parameter((p) => p
+            ..name = "this.${getCamelCase(usedClassType)}"
+            ..named = false
+            ..build()),
+        )))
       ..build());
   }
 }

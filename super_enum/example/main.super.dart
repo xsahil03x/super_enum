@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: return_of_invalid_type, constant_identifier_names, prefer_const_constructors_in_immutables, unnecessary_this, sort_unnamed_constructors_first, join_return_with_assignment, missing_return, lines_longer_than_80_chars
 
-part of 'movie_response.dart';
+part of 'main.dart';
 
 // **************************************************************************
 // SuperEnumGenerator
@@ -21,7 +22,6 @@ abstract class MoviesResponse extends Equatable {
 
   final _MoviesResponse _type;
 
-//ignore: missing_return
   R when<R>(
       {@required R Function(Success) success,
       @required R Function() unauthorized,
@@ -48,7 +48,6 @@ abstract class MoviesResponse extends Equatable {
     }
   }
 
-//ignore: missing_return
   Future<R> asyncWhen<R>(
       {@required
           FutureOr<R> Function(Success) success,
@@ -137,7 +136,6 @@ abstract class MoviesResponse extends Equatable {
     return orElse(this);
   }
 
-//ignore: missing_return
   Future<void> whenPartial(
       {FutureOr<void> Function(Success) success,
       FutureOr<void> Function() unauthorized,
