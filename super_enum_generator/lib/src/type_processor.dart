@@ -56,6 +56,7 @@ String usedWrapperNameFromAnnotation(FieldElement field) {
 
 String _defaultWrapper(FieldElement field) {
   final usedClass = usedClassFromAnnotation(field);
-  final usedClassType = usedClass.toTypeValue().getDisplayString(withNullability: false);
+  final usedClassType =
+      usedClass.toTypeValue().getDisplayString(withNullability: false);
   return '${usedClassType}Wrapper';
 }

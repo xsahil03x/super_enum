@@ -265,8 +265,10 @@ class ClassGenerator {
         redirectConstructorName =
             type_processor.usedWrapperNameFromAnnotation(field);
         reqParams.add(Parameter((p) => p
-          ..name = '${getCamelCase(usedClass.toTypeValue().getDisplayString(withNullability: false))}'
-          ..type = Reference(usedClass.toTypeValue().getDisplayString(withNullability: false))
+          ..name =
+              '${getCamelCase(usedClass.toTypeValue().getDisplayString(withNullability: false))}'
+          ..type = Reference(
+              usedClass.toTypeValue().getDisplayString(withNullability: false))
           ..build()));
       }
       return Constructor((constructor) => constructor
@@ -551,7 +553,8 @@ class ClassGenerator {
 
   Class _generateClassWrapper(FieldElement field) {
     final usedClass = type_processor.usedClassFromAnnotation(field);
-    final usedClassType = usedClass.toTypeValue().getDisplayString(withNullability: false);
+    final usedClassType =
+        usedClass.toTypeValue().getDisplayString(withNullability: false);
     final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
     if (wrapper.contains(wrapperName)) {
       // Skip wrapper generation, wrapper already exists
@@ -581,9 +584,11 @@ class ClassGenerator {
       ..name = wrapperName
       ..annotations.add(references.immutable)
       ..fields.add(Field((f) => f
-        ..name = getCamelCase(usedClass.toTypeValue().getDisplayString(withNullability: false))
+        ..name = getCamelCase(
+            usedClass.toTypeValue().getDisplayString(withNullability: false))
         ..modifier = FieldModifier.final$
-        ..type = Reference(usedClass.toTypeValue().getDisplayString(withNullability: false))))
+        ..type = Reference(
+            usedClass.toTypeValue().getDisplayString(withNullability: false))))
       ..methods.addAll([toString, getProps])
       ..extend = refer('${element.name.replaceFirst('_', '')}')
       ..constructors.add(Constructor((constructor) => constructor
