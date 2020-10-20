@@ -10,6 +10,7 @@ import 'package:super_enum_generator/src/type_processor.dart' as type_processor;
 
 class ClassGenerator {
   final ClassElement element;
+
   ClassGenerator(this.element);
 
   Iterable<FieldElement> get _fields => element.fields.skip(2);
@@ -37,10 +38,8 @@ class ClassGenerator {
           ..type = refer(element.name)
           ..build()))
         ..constructors.addAll(_generateClassConstructors)
-        ..methods.add(_generateWhenMethod())
-        ..methods.add(_generateWhenMethod(isAsync: true))
-        ..methods.add(_generateWhenOrElseMethod())
-        ..methods.add(_generateWhenOrElseMethod(isAsync: true))
+        ..methods.add(_generateWhenMethod)
+        ..methods.add(_generateWhenOrElseMethod)
         ..methods.add(_generateWhenPartialMethod)
         ..methods.add(Method((m) {
           return m
@@ -61,7 +60,7 @@ class ClassGenerator {
     }
   }
 
-  Method _generateWhenMethod({bool isAsync = false}) {
+  Method get _generateWhenMethod {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
@@ -102,7 +101,7 @@ class ClassGenerator {
           ..named = true
           ..annotations.add(references.required)
           ..type = refer(
-            '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
+            '${references.generic_R.symbol} Function('
             '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
             ')',
           )
@@ -113,15 +112,15 @@ class ClassGenerator {
     _bodyBuffer.writeln('}');
 
     return Method((m) => m
-      ..name = isAsync ? 'asyncWhen' : 'when'
-      ..types.add(references.generic_R)
-      ..returns = isAsync ? references.future_Generic_R : references.generic_R
+      ..name = 'when'
+      ..types.add(references.generic_R_extends_Object)
+      ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());
   }
 
-  Method _generateWhenOrElseMethod({bool isAsync = false}) {
+  Method get _generateWhenOrElseMethod {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
@@ -158,7 +157,7 @@ class ClassGenerator {
         ..name = '${getCamelCase(field.name)}'
         ..named = true
         ..type = refer(
-          '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
+          '${references.generic_R.symbol} Function('
           '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
           ')',
         )
@@ -170,7 +169,7 @@ class ClassGenerator {
       ..named = true
       ..annotations.add(references.required)
       ..type = refer(
-        '${isAsync ? references.futureOr_Generic_R.symbol : references.generic_R.symbol} Function('
+        '${references.generic_R.symbol} Function('
         '${_isNamespaceGeneric ? '${element.name.replaceFirst('_', '')}<T>' : element.name.replaceFirst('_', '')}'
         ')',
       )
@@ -182,9 +181,9 @@ class ClassGenerator {
     );
 
     return Method((m) => m
-      ..name = isAsync ? 'asyncWhenOrElse' : 'whenOrElse'
-      ..types.add(references.generic_R)
-      ..returns = isAsync ? references.future_Generic_R : references.generic_R
+      ..name = 'whenOrElse'
+      ..types.add(references.generic_R_extends_Object)
+      ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());
@@ -230,7 +229,7 @@ class ClassGenerator {
         ..name = '${getCamelCase(field.name)}'
         ..named = true
         ..type = refer(
-          '${references.futureOr.symbol} Function('
+          '${references.ref_void.symbol} Function('
           '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
           ')',
         )
@@ -241,7 +240,7 @@ class ClassGenerator {
 
     return Method((m) => m
       ..name = 'whenPartial'
-      ..returns = references.future
+      ..returns = references.ref_void
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
       ..build());

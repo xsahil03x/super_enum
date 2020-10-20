@@ -16,7 +16,7 @@ abstract class ResultUnion extends Equatable {
 
   final _ResultUnion _type;
 
-  R when<R>(
+  R when<R extends Object>(
       {@required R Function(MySuccess) success,
       @required R Function(MyError) error,
       @required R Function(MyError) specialError,
@@ -42,33 +42,7 @@ abstract class ResultUnion extends Equatable {
     }
   }
 
-  Future<R> asyncWhen<R>(
-      {@required FutureOr<R> Function(MySuccess) success,
-      @required FutureOr<R> Function(MyError) error,
-      @required FutureOr<R> Function(MyError) specialError,
-      @required FutureOr<R> Function(MyError) yetAnotherError}) {
-    assert(() {
-      if (success == null ||
-          error == null ||
-          specialError == null ||
-          yetAnotherError == null) {
-        throw 'check for all possible cases';
-      }
-      return true;
-    }());
-    switch (this._type) {
-      case _ResultUnion.Success:
-        return success((this as MySuccessWrapper).mySuccess);
-      case _ResultUnion.Error:
-        return error((this as MyErrorWrapper).myError);
-      case _ResultUnion.SpecialError:
-        return specialError((this as MyErrorWrapper).myError);
-      case _ResultUnion.YetAnotherError:
-        return yetAnotherError((this as YaeWrapper).myError);
-    }
-  }
-
-  R whenOrElse<R>(
+  R whenOrElse<R extends Object>(
       {R Function(MySuccess) success,
       R Function(MyError) error,
       R Function(MyError) specialError,
@@ -97,40 +71,11 @@ abstract class ResultUnion extends Equatable {
     return orElse(this);
   }
 
-  Future<R> asyncWhenOrElse<R>(
-      {FutureOr<R> Function(MySuccess) success,
-      FutureOr<R> Function(MyError) error,
-      FutureOr<R> Function(MyError) specialError,
-      FutureOr<R> Function(MyError) yetAnotherError,
-      @required FutureOr<R> Function(ResultUnion) orElse}) {
-    assert(() {
-      if (orElse == null) {
-        throw 'Missing orElse case';
-      }
-      return true;
-    }());
-    switch (this._type) {
-      case _ResultUnion.Success:
-        if (success == null) break;
-        return success((this as MySuccessWrapper).mySuccess);
-      case _ResultUnion.Error:
-        if (error == null) break;
-        return error((this as MyErrorWrapper).myError);
-      case _ResultUnion.SpecialError:
-        if (specialError == null) break;
-        return specialError((this as MyErrorWrapper).myError);
-      case _ResultUnion.YetAnotherError:
-        if (yetAnotherError == null) break;
-        return yetAnotherError((this as YaeWrapper).myError);
-    }
-    return orElse(this);
-  }
-
-  Future<void> whenPartial(
-      {FutureOr<void> Function(MySuccess) success,
-      FutureOr<void> Function(MyError) error,
-      FutureOr<void> Function(MyError) specialError,
-      FutureOr<void> Function(MyError) yetAnotherError}) {
+  void whenPartial(
+      {void Function(MySuccess) success,
+      void Function(MyError) error,
+      void Function(MyError) specialError,
+      void Function(MyError) yetAnotherError}) {
     assert(() {
       if (success == null &&
           error == null &&

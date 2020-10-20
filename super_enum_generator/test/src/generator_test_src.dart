@@ -13,7 +13,7 @@ abstract class Result<T> extends Equatable {
 
   final _Result _type;
 
-  R when<R>(
+  R when<R extends Object>(
       {@required R Function(Success<T>) success,
       @required R Function() error}) {
     assert(() {
@@ -30,24 +30,7 @@ abstract class Result<T> extends Equatable {
     }
   }
 
-  Future<R> asyncWhen<R>(
-      {@required FutureOr<R> Function(Success<T>) success,
-      @required FutureOr<R> Function() error}) {
-    assert(() {
-      if (success == null || error == null) {
-        throw 'check for all possible cases';
-      }
-      return true;
-    }());
-    switch (this._type) {
-      case _Result.Success:
-        return success(this as Success);
-      case _Result.Error:
-        return error();
-    }
-  }
-
-  R whenOrElse<R>(
+  R whenOrElse<R extends Object>(
       {R Function(Success<T>) success,
       R Function() error,
       @required R Function(Result<T>) orElse}) {
@@ -68,30 +51,7 @@ abstract class Result<T> extends Equatable {
     return orElse(this);
   }
 
-  Future<R> asyncWhenOrElse<R>(
-      {FutureOr<R> Function(Success<T>) success,
-      FutureOr<R> Function() error,
-      @required FutureOr<R> Function(Result<T>) orElse}) {
-    assert(() {
-      if (orElse == null) {
-        throw 'Missing orElse case';
-      }
-      return true;
-    }());
-    switch (this._type) {
-      case _Result.Success:
-        if (success == null) break;
-        return success(this as Success);
-      case _Result.Error:
-        if (error == null) break;
-        return error();
-    }
-    return orElse(this);
-  }
-
-  Future<void> whenPartial(
-      {FutureOr<void> Function(Success<T>) success,
-      FutureOr<void> Function() error}) {
+  void whenPartial({void Function(Success<T>) success, void Function() error}) {
     assert(() {
       if (success == null && error == null) {
         throw 'provide at least one branch';

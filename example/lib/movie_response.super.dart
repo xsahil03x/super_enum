@@ -22,7 +22,7 @@ abstract class MoviesResponse extends Equatable {
 
   final _MoviesResponse _type;
 
-  R when<R>(
+  R when<R extends Object>(
       {@required R Function(Success) success,
       @required R Function() unauthorized,
       @required R Function() noNetwork,
@@ -48,37 +48,7 @@ abstract class MoviesResponse extends Equatable {
     }
   }
 
-  Future<R> asyncWhen<R>(
-      {@required
-          FutureOr<R> Function(Success) success,
-      @required
-          FutureOr<R> Function() unauthorized,
-      @required
-          FutureOr<R> Function() noNetwork,
-      @required
-          FutureOr<R> Function(UnexpectedException) unexpectedException}) {
-    assert(() {
-      if (success == null ||
-          unauthorized == null ||
-          noNetwork == null ||
-          unexpectedException == null) {
-        throw 'check for all possible cases';
-      }
-      return true;
-    }());
-    switch (this._type) {
-      case _MoviesResponse.Success:
-        return success(this as Success);
-      case _MoviesResponse.Unauthorized:
-        return unauthorized();
-      case _MoviesResponse.NoNetwork:
-        return noNetwork();
-      case _MoviesResponse.UnexpectedException:
-        return unexpectedException(this as UnexpectedException);
-    }
-  }
-
-  R whenOrElse<R>(
+  R whenOrElse<R extends Object>(
       {R Function(Success) success,
       R Function() unauthorized,
       R Function() noNetwork,
@@ -107,40 +77,11 @@ abstract class MoviesResponse extends Equatable {
     return orElse(this);
   }
 
-  Future<R> asyncWhenOrElse<R>(
-      {FutureOr<R> Function(Success) success,
-      FutureOr<R> Function() unauthorized,
-      FutureOr<R> Function() noNetwork,
-      FutureOr<R> Function(UnexpectedException) unexpectedException,
-      @required FutureOr<R> Function(MoviesResponse) orElse}) {
-    assert(() {
-      if (orElse == null) {
-        throw 'Missing orElse case';
-      }
-      return true;
-    }());
-    switch (this._type) {
-      case _MoviesResponse.Success:
-        if (success == null) break;
-        return success(this as Success);
-      case _MoviesResponse.Unauthorized:
-        if (unauthorized == null) break;
-        return unauthorized();
-      case _MoviesResponse.NoNetwork:
-        if (noNetwork == null) break;
-        return noNetwork();
-      case _MoviesResponse.UnexpectedException:
-        if (unexpectedException == null) break;
-        return unexpectedException(this as UnexpectedException);
-    }
-    return orElse(this);
-  }
-
-  Future<void> whenPartial(
-      {FutureOr<void> Function(Success) success,
-      FutureOr<void> Function() unauthorized,
-      FutureOr<void> Function() noNetwork,
-      FutureOr<void> Function(UnexpectedException) unexpectedException}) {
+  void whenPartial(
+      {void Function(Success) success,
+      void Function() unauthorized,
+      void Function() noNetwork,
+      void Function(UnexpectedException) unexpectedException}) {
     assert(() {
       if (success == null &&
           unauthorized == null &&
