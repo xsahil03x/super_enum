@@ -78,7 +78,11 @@ class MovieList extends StatelessWidget {
       itemCount: movieList.length,
       physics: BouncingScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: deviceWidth > 900 ? 8 : deviceWidth > 600 ? 6 : 3,
+        crossAxisCount: deviceWidth > 900
+            ? 8
+            : deviceWidth > 600
+                ? 6
+                : 3,
         childAspectRatio: 1.5 / 1.8,
       ),
       itemBuilder: (context, index) {
