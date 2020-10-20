@@ -12,17 +12,13 @@ dependencies:
   # for "super_enum" before publishing the package.
   super_enum:
     path: ../super_enum
-  source_gen: ^0.9.4+7
-  analyzer: '>=0.39.2 <0.40.0'
+  source_gen: ^0.9.7+1
+  analyzer: '>=0.40.0 <2.0.0'
   build: '>=0.12.6 <2.0.0'
-  code_builder: ^3.2.0
-  dart_style: ^1.3.3
-
+  code_builder: ^3.5.0
+  dart_style: ^1.3.7
 
 dev_dependencies:
-  test: ^1.9.4
-  build_runner: ^1.7.1
-  source_gen_test: ^0.1.0+6
-  lint: ^1.1.1
-  effective_dart: ^1.2.1
-  pedantic:
+  test: ^1.15.4
+  build_runner: ^1.10.3
+  source_gen_test: ^0.1.1+1
