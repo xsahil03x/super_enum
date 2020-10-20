@@ -28,7 +28,7 @@ bool isGeneric(Element element) =>
 
 String dataFieldType(DartObject obj) {
   return _genericOf(ConstantReader(obj).objectValue.type)
-      .getDisplayString()
+      .getDisplayString(withNullability: false)
       .replaceAll('Generic', 'T');
 }
 
@@ -56,6 +56,6 @@ String usedWrapperNameFromAnnotation(FieldElement field) {
 
 String _defaultWrapper(FieldElement field) {
   final usedClass = usedClassFromAnnotation(field);
-  final usedClassType = usedClass.toTypeValue().getDisplayString();
+  final usedClassType = usedClass.toTypeValue().getDisplayString(withNullability: false);
   return '${usedClassType}Wrapper';
 }
