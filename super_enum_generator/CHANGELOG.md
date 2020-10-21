@@ -22,10 +22,9 @@
 - Added support for docComments
   (https://github.com/xsahil03x/super_enum/issues/28)
 
-
 # 0.5.0
 
-- Generate separate async 'whenX' methods for handling asynchronous calls.
+- Generate separate async `whenX` methods for handling asynchronous calls.
    - asyncWhen
    - asyncWhenOrElse
   (https://github.com/xsahil03x/super_enum/issues/46)

@@ -10,6 +10,11 @@
 - PartFile naming has been changed.
     - Should use `filename.super.dart` instead of `filename.g.dart`
 
+- All `asyncWhenX` methods have been removed as they were redundant.
+    - Use regular `whenX` methods with async callback functions instead of them
+    * `asyncWhen` -> `when`
+    * `asyncWhenOrElse` -> `whenOrElse`
+
 ## Migration From v0.3.0 to v0.4.0
 
 - DataField signature has been changed.
