@@ -7,21 +7,28 @@ part of 'movie_response.dart';
 // SuperEnumGenerator
 // **************************************************************************
 
+/// MovieResponse Possible States
 @immutable
 abstract class MoviesResponse extends Equatable {
   const MoviesResponse(this._type);
 
+  /// Success State of the MovieResponse
   factory MoviesResponse.success({@required Movies movies}) = Success.create;
 
+  /// Unauthorized State of the MovieResponse
   factory MoviesResponse.unauthorized() = Unauthorized.create;
 
+  /// NoNetwork State of the MovieResponse
   factory MoviesResponse.noNetwork() = NoNetwork.create;
 
+  /// UnexpectedException State of the MovieResponse
   factory MoviesResponse.unexpectedException({@required Exception exception}) =
       UnexpectedException.create;
 
   final _MoviesResponse _type;
 
+  /// The [when] method is the equivalent to pattern matching.
+  /// Its prototype depends on the _MoviesResponse [_type]s defined.
   R when<R extends Object>(
       {@required R Function(Success) success,
       @required R Function() unauthorized,
@@ -48,6 +55,11 @@ abstract class MoviesResponse extends Equatable {
     }
   }
 
+  /// The [whenOrElse] method is equivalent to [when], but doesn't require
+  /// all callbacks to be specified.
+  ///
+  /// On the other hand, it adds an extra orElse required parameter,
+  /// for fallback behavior.
   R whenOrElse<R extends Object>(
       {R Function(Success) success,
       R Function() unauthorized,
@@ -77,6 +89,8 @@ abstract class MoviesResponse extends Equatable {
     return orElse(this);
   }
 
+  /// The [whenPartial] method is equivalent to [whenOrElse],
+  /// but non-exhaustive.
   void whenPartial(
       {void Function(Success) success,
       void Function() unauthorized,
@@ -111,14 +125,18 @@ abstract class MoviesResponse extends Equatable {
   List<Object> get props => const [];
 }
 
+/// Success State of the MovieResponse
 @immutable
 abstract class Success extends MoviesResponse {
   const Success({@required this.movies}) : super(_MoviesResponse.Success);
 
+  /// Success State of the MovieResponse
   factory Success.create({@required Movies movies}) = _SuccessImpl;
 
   final Movies movies;
 
+  /// Creates a copy of this Success but with the given fields
+  /// replaced with the new values.
   Success copyWith({Movies movies});
 }
 
@@ -139,10 +157,12 @@ class _SuccessImpl extends Success {
   List<Object> get props => [movies];
 }
 
+/// Unauthorized State of the MovieResponse
 @immutable
 abstract class Unauthorized extends MoviesResponse {
   const Unauthorized() : super(_MoviesResponse.Unauthorized);
 
+  /// Unauthorized State of the MovieResponse
   factory Unauthorized.create() = _UnauthorizedImpl;
 }
 
@@ -154,10 +174,12 @@ class _UnauthorizedImpl extends Unauthorized {
   String toString() => 'Unauthorized()';
 }
 
+/// NoNetwork State of the MovieResponse
 @immutable
 abstract class NoNetwork extends MoviesResponse {
   const NoNetwork() : super(_MoviesResponse.NoNetwork);
 
+  /// NoNetwork State of the MovieResponse
   factory NoNetwork.create() = _NoNetworkImpl;
 }
 
@@ -169,16 +191,20 @@ class _NoNetworkImpl extends NoNetwork {
   String toString() => 'NoNetwork()';
 }
 
+/// UnexpectedException State of the MovieResponse
 @immutable
 abstract class UnexpectedException extends MoviesResponse {
   const UnexpectedException({@required this.exception})
       : super(_MoviesResponse.UnexpectedException);
 
+  /// UnexpectedException State of the MovieResponse
   factory UnexpectedException.create({@required Exception exception}) =
       _UnexpectedExceptionImpl;
 
   final Exception exception;
 
+  /// Creates a copy of this UnexpectedException but with the given fields
+  /// replaced with the new values.
   UnexpectedException copyWith({Exception exception});
 }
 

@@ -29,6 +29,7 @@ class ClassGenerator {
       final cls = Class((c) => c
         ..name = ('${element.name.replaceFirst('_', '')}')
         ..annotations.add(references.immutable)
+        ..docs.addAll(type_processor.docCommentsOf(element))
         ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
         ..abstract = true
         ..extend = references.equatable
@@ -113,6 +114,10 @@ class ClassGenerator {
 
     return Method((m) => m
       ..name = 'when'
+      ..docs.addAll(type_processor.patternMatchingMethodDocComment(
+        type_processor.PatternMatchingMethod.when,
+        element,
+      ))
       ..types.add(references.generic_R_extends_Object)
       ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
@@ -182,6 +187,10 @@ class ClassGenerator {
 
     return Method((m) => m
       ..name = 'whenOrElse'
+      ..docs.addAll(type_processor.patternMatchingMethodDocComment(
+        type_processor.PatternMatchingMethod.whenOrElse,
+        element,
+      ))
       ..types.add(references.generic_R_extends_Object)
       ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
@@ -240,6 +249,10 @@ class ClassGenerator {
 
     return Method((m) => m
       ..name = 'whenPartial'
+      ..docs.addAll(type_processor.patternMatchingMethodDocComment(
+        type_processor.PatternMatchingMethod.whenPartial,
+        element,
+      ))
       ..returns = references.ref_void
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
@@ -273,6 +286,7 @@ class ClassGenerator {
       return Constructor((constructor) => constructor
         ..factory = true
         ..name = '${getCamelCase(field.name)}'
+        ..docs.addAll(type_processor.docCommentsOf(field))
         ..optionalParameters.addAll(type_processor.hasAnnotation<Data>(field)
             ? _generateClassConstructorFields(field)
             : [])
@@ -340,6 +354,7 @@ class ClassGenerator {
     final _objectClass = Class((c) => c
       ..name = '${field.name}'
       ..abstract = true
+      ..docs.addAll(type_processor.docCommentsOf(field))
       ..extend = refer(
           '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
       ..annotations.add(references.immutable)
@@ -352,6 +367,7 @@ class ClassGenerator {
         Constructor((c) => c
           ..name = 'create'
           ..factory = true
+          ..docs.addAll(type_processor.docCommentsOf(field))
           ..redirect =
               refer('_${field.name}Impl${_isNamespaceGeneric ? '<T>' : ''}')
           ..build())
@@ -410,6 +426,7 @@ class ClassGenerator {
 
     Method copyWith = Method((m) => m
       ..name = 'copyWith'
+      ..docs.addAll(type_processor.copyWithDocComment(field))
       ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) => f
         ..name = type_processor.dataFieldName(e)
         ..type = Reference(type_processor.dataFieldType(e))
@@ -470,6 +487,7 @@ class ClassGenerator {
       ..extend = refer(
           '${element.name.replaceFirst('_', '')}${_isNamespaceGeneric ? '<T>' : ''}')
       ..abstract = true
+      ..docs.addAll(type_processor.docCommentsOf(field))
       ..annotations.add(references.immutable)
       ..methods.add(copyWith)
       ..types.addAll(_isNamespaceGeneric ? [references.generic_T] : [])
@@ -495,6 +513,7 @@ class ClassGenerator {
         Constructor((c) => c
           ..name = 'create'
           ..factory = true
+          ..docs.addAll(type_processor.docCommentsOf(field))
           ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
                 if (type_processor.dataFieldRequired(e)) {
                   f.annotations.add(references.required);

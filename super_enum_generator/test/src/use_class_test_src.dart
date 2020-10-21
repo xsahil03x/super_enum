@@ -2,20 +2,27 @@ import 'package:source_gen_test/source_gen_test.dart';
 import 'package:super_enum/super_enum.dart';
 
 @ShouldGenerate(r'''
+/// Result Union UseClass
 @immutable
 abstract class ResultUnion extends Equatable {
   const ResultUnion(this._type);
 
+  /// Success case Of the Result Union
   factory ResultUnion.success(MySuccess mySuccess) = MySuccessWrapper;
 
+  /// Error case Of the Result Union
   factory ResultUnion.error(MyError myError) = MyErrorWrapper;
 
+  /// SpecialError case Of the Result Union
   factory ResultUnion.specialError(MyError myError) = MyErrorWrapper;
 
+  /// YetAnotherError case Of the Result Union
   factory ResultUnion.yetAnotherError(MyError myError) = YaeWrapper;
 
   final _ResultUnion _type;
 
+  /// The [when] method is the equivalent to pattern matching.
+  /// Its prototype depends on the _ResultUnion [_type]s defined.
   R when<R extends Object>(
       {@required R Function(MySuccess) success,
       @required R Function(MyError) error,
@@ -42,6 +49,11 @@ abstract class ResultUnion extends Equatable {
     }
   }
 
+  /// The [whenOrElse] method is equivalent to [when], but doesn't require
+  /// all callbacks to be specified.
+  ///
+  /// On the other hand, it adds an extra orElse required parameter,
+  /// for fallback behavior.
   R whenOrElse<R extends Object>(
       {R Function(MySuccess) success,
       R Function(MyError) error,
@@ -71,6 +83,8 @@ abstract class ResultUnion extends Equatable {
     return orElse(this);
   }
 
+  /// The [whenPartial] method is equivalent to [whenOrElse],
+  /// but non-exhaustive.
   void whenPartial(
       {void Function(MySuccess) success,
       void Function(MyError) error,
@@ -141,21 +155,26 @@ class YaeWrapper extends ResultUnion {
   List<Object> get props => [myError];
 }
 ''')
+
+/// Result Union UseClass
 @superEnum
-// ignore: unused_element
 enum _ResultUnion {
+  /// Success case Of the Result Union
   @UseClass(MySuccess)
   Success,
 
-  // duplicate class without custom name, doesn't result in double wrapper
+  /// Error case Of the Result Union
+// duplicate class without custom name, doesn't result in double wrapper
   @UseClass(MyError)
   Error,
 
-  // duplicate class without custom name, doesn't result in double wrapper
+  /// SpecialError case Of the Result Union
+// duplicate class without custom name, doesn't result in double wrapper
   @UseClass(MyError)
   SpecialError,
 
-  // Custom name for the wrapper
+  /// YetAnotherError case Of the Result Union
+// Custom name for the wrapper
   @UseClass(MyError, name: "YaeWrapper")
   YetAnotherError,
 }

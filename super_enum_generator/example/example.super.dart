@@ -7,24 +7,33 @@ part of 'example.dart';
 // SuperEnumGenerator
 // **************************************************************************
 
+/// Possible Types of Attribute
 @immutable
 abstract class Attribute extends Equatable {
   const Attribute(this._type);
 
+  /// Strength Attribute type
   factory Attribute.strength({@required int value}) = Strength.create;
 
+  /// Intelligence Attribute type
   factory Attribute.intelligence({@required int value}) = Intelligence.create;
 
+  /// Agility Attribute type
   factory Attribute.agility({@required int value}) = Agility.create;
 
+  /// Dexterity Attribute type
   factory Attribute.dexterity({@required int value}) = Dexterity.create;
 
+  /// Endurance Attribute type
   factory Attribute.endurance({@required int value}) = Endurance.create;
 
+  /// Speed Attribute type
   factory Attribute.speed({@required int value}) = Speed.create;
 
   final _Attribute _type;
 
+  /// The [when] method is the equivalent to pattern matching.
+  /// Its prototype depends on the _Attribute [_type]s defined.
   R when<R extends Object>(
       {@required R Function(Strength) strength,
       @required R Function(Intelligence) intelligence,
@@ -59,6 +68,11 @@ abstract class Attribute extends Equatable {
     }
   }
 
+  /// The [whenOrElse] method is equivalent to [when], but doesn't require
+  /// all callbacks to be specified.
+  ///
+  /// On the other hand, it adds an extra orElse required parameter,
+  /// for fallback behavior.
   R whenOrElse<R extends Object>(
       {R Function(Strength) strength,
       R Function(Intelligence) intelligence,
@@ -96,6 +110,8 @@ abstract class Attribute extends Equatable {
     return orElse(this);
   }
 
+  /// The [whenPartial] method is equivalent to [whenOrElse],
+  /// but non-exhaustive.
   void whenPartial(
       {void Function(Strength) strength,
       void Function(Intelligence) intelligence,
@@ -140,14 +156,18 @@ abstract class Attribute extends Equatable {
   List<Object> get props => const [];
 }
 
+/// Strength Attribute type
 @immutable
 abstract class Strength extends Attribute {
   const Strength({@required this.value}) : super(_Attribute.Strength);
 
+  /// Strength Attribute type
   factory Strength.create({@required int value}) = _StrengthImpl;
 
   final int value;
 
+  /// Creates a copy of this Strength but with the given fields
+  /// replaced with the new values.
   Strength copyWith({int value});
 }
 
@@ -168,14 +188,18 @@ class _StrengthImpl extends Strength {
   List<Object> get props => [value];
 }
 
+/// Intelligence Attribute type
 @immutable
 abstract class Intelligence extends Attribute {
   const Intelligence({@required this.value}) : super(_Attribute.Intelligence);
 
+  /// Intelligence Attribute type
   factory Intelligence.create({@required int value}) = _IntelligenceImpl;
 
   final int value;
 
+  /// Creates a copy of this Intelligence but with the given fields
+  /// replaced with the new values.
   Intelligence copyWith({int value});
 }
 
@@ -196,14 +220,18 @@ class _IntelligenceImpl extends Intelligence {
   List<Object> get props => [value];
 }
 
+/// Agility Attribute type
 @immutable
 abstract class Agility extends Attribute {
   const Agility({@required this.value}) : super(_Attribute.Agility);
 
+  /// Agility Attribute type
   factory Agility.create({@required int value}) = _AgilityImpl;
 
   final int value;
 
+  /// Creates a copy of this Agility but with the given fields
+  /// replaced with the new values.
   Agility copyWith({int value});
 }
 
@@ -224,14 +252,18 @@ class _AgilityImpl extends Agility {
   List<Object> get props => [value];
 }
 
+/// Dexterity Attribute type
 @immutable
 abstract class Dexterity extends Attribute {
   const Dexterity({@required this.value}) : super(_Attribute.Dexterity);
 
+  /// Dexterity Attribute type
   factory Dexterity.create({@required int value}) = _DexterityImpl;
 
   final int value;
 
+  /// Creates a copy of this Dexterity but with the given fields
+  /// replaced with the new values.
   Dexterity copyWith({int value});
 }
 
@@ -252,14 +284,18 @@ class _DexterityImpl extends Dexterity {
   List<Object> get props => [value];
 }
 
+/// Endurance Attribute type
 @immutable
 abstract class Endurance extends Attribute {
   const Endurance({@required this.value}) : super(_Attribute.Endurance);
 
+  /// Endurance Attribute type
   factory Endurance.create({@required int value}) = _EnduranceImpl;
 
   final int value;
 
+  /// Creates a copy of this Endurance but with the given fields
+  /// replaced with the new values.
   Endurance copyWith({int value});
 }
 
@@ -280,14 +316,18 @@ class _EnduranceImpl extends Endurance {
   List<Object> get props => [value];
 }
 
+/// Speed Attribute type
 @immutable
 abstract class Speed extends Attribute {
   const Speed({@required this.value}) : super(_Attribute.Speed);
 
+  /// Speed Attribute type
   factory Speed.create({@required int value}) = _SpeedImpl;
 
   final int value;
 
+  /// Creates a copy of this Speed but with the given fields
+  /// replaced with the new values.
   Speed copyWith({int value});
 }
 
