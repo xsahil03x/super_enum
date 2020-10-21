@@ -1,53 +1,64 @@
-0.4.2
+# 0.5.0
 
-    1. Fix for "Same @UseClass() generates the wrapper twice"
-       (https://github.com/xsahil03x/super_enum/issues/42)
+- Added support for optional data fields
+  (https://github.com/xsahil03x/super_enum/issues/51)
+  ```dart
+  DataField<String>("errorMessage", required: false),
+  ```
+- Updated equatable to ^1.2.5
 
-    2. Updated equatable to ^1.1.0
+- Updated meta to ^1.2.3
 
-0.4.1
+# 0.4.2
 
-    1. Hotfix for "DataFields with a name including 'T' break code generation"
-       (https://github.com/xsahil03x/super_enum/issues/39)
+- Fix for "Same @UseClass() generates the wrapper twice"
+  (https://github.com/xsahil03x/super_enum/issues/42)
 
-    2. Updated equatable to ^1.0.3
+- Updated equatable to ^1.1.0
 
-0.4.0
+# 0.4.1
 
-    1. Added support for generic data types `DataField<List<foo>>('foos')`
-       eg : List, Map, BuiltList etc
+- Hotfix for "DataFields with a name including 'T' break code generation"
+  (https://github.com/xsahil03x/super_enum/issues/39)
 
-    2. Added support for union types. `@UseClass()`
+- Updated equatable to ^1.0.3
 
-    3. Made the generated code more cohesive with generics.
+# 0.4.0
 
-    4. Bug fixes and improvements.
+- Added support for generic data types `DataField<List<foo>>('foos')`
+  eg : List, Map, BuiltList etc
 
-0.3.0
-    
-    1. Added two new 'whenX' methods.
-        - whenOrElse
-        - whenPartial
-    
-    2. Bug fixes and improvements.
+- Added support for union types. `@UseClass()`
 
-0.2.0
+- Made the generated code more cohesive with generics.
 
-    1. Make object classes singleton.
-    
-    2. Make Data classes Equatable 
-        * '=='
-        * 'hashCode'
-        * 'toString'
+- Bug fixes and improvements.
 
-0.1.0
+# 0.3.0
 
-    Added a proper example.
+- Added two new 'whenX' methods.
+  - whenOrElse
+  - whenPartial
 
-0.0.1+1
+- Bug fixes and improvements.
 
-    Fix homepage link.
+# 0.2.0
 
-0.0.1
+- Make object classes singleton.
 
-    Initial Release.
+- Make Data classes Equatable
+    * '=='
+    * 'hashCode'
+    * 'toString'
+
+# 0.1.0
+
+- Added a proper example.
+
+# 0.0.1+1
+
+- Fix homepage link.
+
+# 0.0.1
+
+- Initial Release.
