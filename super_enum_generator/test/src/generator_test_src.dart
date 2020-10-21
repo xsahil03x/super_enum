@@ -2,17 +2,22 @@ import 'package:source_gen_test/source_gen_test.dart';
 import 'package:super_enum/super_enum.dart';
 
 @ShouldGenerate(r'''
+/// Generic Result Union
 @immutable
 abstract class Result<T> extends Equatable {
   const Result(this._type);
 
+  /// Success case Of the Result
   factory Result.success({@required T data, @required String message}) =
       Success<T>.create;
 
+  /// Error case Of the Result
   factory Result.error() = Error<T>.create;
 
   final _Result _type;
 
+  /// The [when] method is the equivalent to pattern matching.
+  /// Its prototype depends on the _Result [_type]s defined.
   R when<R extends Object>(
       {@required R Function(Success<T>) success,
       @required R Function() error}) {
@@ -30,6 +35,11 @@ abstract class Result<T> extends Equatable {
     }
   }
 
+  /// The [whenOrElse] method is equivalent to [when], but doesn't require
+  /// all callbacks to be specified.
+  ///
+  /// On the other hand, it adds an extra orElse required parameter,
+  /// for fallback behavior.
   R whenOrElse<R extends Object>(
       {R Function(Success<T>) success,
       R Function() error,
@@ -51,6 +61,8 @@ abstract class Result<T> extends Equatable {
     return orElse(this);
   }
 
+  /// The [whenPartial] method is equivalent to [whenOrElse],
+  /// but non-exhaustive.
   void whenPartial({void Function(Success<T>) success, void Function() error}) {
     assert(() {
       if (success == null && error == null) {
@@ -72,11 +84,13 @@ abstract class Result<T> extends Equatable {
   List<Object> get props => const [];
 }
 
+/// Success case Of the Result
 @immutable
 abstract class Success<T> extends Result<T> {
   const Success({@required this.data, @required this.message})
       : super(_Result.Success);
 
+  /// Success case Of the Result
   factory Success.create({@required T data, @required String message}) =
       _SuccessImpl<T>;
 
@@ -84,6 +98,8 @@ abstract class Success<T> extends Result<T> {
 
   final String message;
 
+  /// Creates a copy of this Success but with the given fields
+  /// replaced with the new values.
   Success<T> copyWith({T data, String message});
 }
 
@@ -111,10 +127,12 @@ class _SuccessImpl<T> extends Success<T> {
   List<Object> get props => [data, message];
 }
 
+/// Error case Of the Result
 @immutable
 abstract class Error<T> extends Result<T> {
   const Error() : super(_Result.Error);
 
+  /// Error case Of the Result
   factory Error.create() = _ErrorImpl<T>;
 }
 
@@ -126,9 +144,11 @@ class _ErrorImpl<T> extends Error<T> {
   String toString() => 'Error()';
 }
 ''')
+
+/// Generic Result Union
 @superEnum
-// ignore: unused_element
 enum _Result {
+  /// Success case Of the Result
   @generic
   @Data(fields: [
     DataField<Generic>('data'),
@@ -136,6 +156,7 @@ enum _Result {
   ])
   Success,
 
+  /// Error case Of the Result
   @object
   Error,
 }
