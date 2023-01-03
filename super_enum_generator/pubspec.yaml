@@ -12,7 +12,7 @@ dependencies:
   # for "super_enum" before publishing the package.
   super_enum: ^0.5.0
   source_gen: ^1.2.6
-  analyzer: '^5.3.1'
+  analyzer: '^5.2.0'
   build: ^2.3.1
   code_builder: ^4.4.0
   dart_style: ^2.2.4
