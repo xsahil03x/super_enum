@@ -24,21 +24,21 @@ enum _MoviesResponse {
   NoNetwork,
 
   /// UnexpectedException State of the MovieResponse
-  @Data(fields: [DataField<Exception>('exception')])
+  @Data(fields: [DataField<Object>('exception')])
   UnexpectedException
 }
 
 class MoviesFetcher {
   http.Client client = http.Client();
-  final _baseUrl = "http://api.themoviedb.org/3/movie";
 
   final String apiKey;
 
-  MoviesFetcher({@required this.apiKey});
+  MoviesFetcher({required this.apiKey});
 
   Future<MoviesResponse> fetchMovies() async {
     try {
-      final response = await client.get('$_baseUrl/popular?api_key=$apiKey');
+      final response =
+          await client.get(Uri(scheme: 'http', host: 'api.themoviedb.org', path: '/3/movie/popular', queryParameters: {'api_key': apiKey}));
       if (response.statusCode == 200) {
         final movies = Movies.fromJson(json.decode(response.body));
         return MoviesResponse.success(movies: movies);
@@ -59,13 +59,12 @@ void main() async {
   );
 
   final _moviesResponse = await _moviesFetcher.fetchMovies();
-
   _moviesResponse.when(
-    success: (data) => print('Total Movies: ${data.movies.totalPages}'),
-    unauthorized: () => print('Invalid ApiKey'),
-    noNetwork: () => print(
+    onSuccess: (data) => print('Total Movies: ${data.movies.totalPages}'),
+    onUnauthorized: () => print('Invalid ApiKey'),
+    onNoNetwork: () => print(
       'No Internet, Please check your internet connection',
     ),
-    unexpectedException: (error) => print(error.exception),
+    onUnexpectedException: (error) => print(error.exception),
   );
 }
