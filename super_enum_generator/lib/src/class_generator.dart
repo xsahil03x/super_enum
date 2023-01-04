@@ -13,7 +13,7 @@ class ClassGenerator {
 
   ClassGenerator(this.element);
 
-  Iterable<FieldElement> get _fields => element.fields.skip(2);
+  Iterable<FieldElement> get _fields => element.fields.where((element) => element.isEnumConstant); // .sublist(0, element.fields.length - 1);//.skip(2);
 
   bool get _isNamespaceGeneric => _fields.any(type_processor.isGeneric);
 
@@ -65,6 +65,7 @@ class ClassGenerator {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
+    /*
     final assertionCondition =
         _fields.map((f) => '${getCamelCase(f.name)} == null').join(' || ');
 
@@ -74,6 +75,7 @@ class ClassGenerator {
       "return true;"
       "}());",
     );
+     */
 
     _bodyBuffer.writeln('switch(this._type){');
 
@@ -85,11 +87,11 @@ class ClassGenerator {
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
       if (usedClass != null) {
         final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
-        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+        _bodyBuffer.writeln('return ${getFieldFuncParamName(field.name)}'
             '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().getDisplayString(withNullability: false))});');
       } else {
-        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+        _bodyBuffer.writeln('return ${getFieldFuncParamName(field.name)}'
             '${hasObjectAnnotation ? '()' : '(this as ${field.name})'};');
       }
 
@@ -98,9 +100,10 @@ class ClassGenerator {
           : '${field.name}';
       _params.add(Parameter((p) {
         return p
-          ..name = '${getCamelCase(field.name)}'
+          ..name = '${getFieldFuncParamName(field.name)}'
           ..named = true
-          ..annotations.add(references.required)
+          ..required = true
+          // ..annotations.add(references.required)
           ..type = refer(
             '${references.generic_R.symbol} Function('
             '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
@@ -118,7 +121,7 @@ class ClassGenerator {
         type_processor.PatternMatchingMethod.when,
         element,
       ))
-      ..types.add(references.generic_R_extends_Object)
+      ..types.add(references.generic_R)//_extends_Object)
       ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
@@ -129,12 +132,14 @@ class ClassGenerator {
     final List<Parameter> _params = [];
     final StringBuffer _bodyBuffer = StringBuffer();
 
+    /*
     _bodyBuffer.write(
       "assert(() {"
       "if (orElse == null) {throw 'Missing orElse case';}"
       "return true;"
       "}());",
     );
+    */
 
     _bodyBuffer.writeln('switch(this._type){');
 
@@ -144,14 +149,14 @@ class ClassGenerator {
       final DartObject usedClass =
           type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
-      _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
+      _bodyBuffer.writeln('if (${getFieldFuncParamName(field.name)} == null) break;');
       if (usedClass != null) {
         final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
-        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+        _bodyBuffer.writeln('return ${getFieldFuncParamName(field.name)}'
             '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().getDisplayString(withNullability: false))});');
       } else {
-        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+        _bodyBuffer.writeln('return ${getFieldFuncParamName(field.name)}'
             '${hasObjectAnnotation ? '()' : '(this as ${field.name})'};');
       }
 
@@ -159,12 +164,12 @@ class ClassGenerator {
           ? '${usedClass.toTypeValue().getDisplayString(withNullability: false)}'
           : '${field.name}';
       _params.add(Parameter((p) => p
-        ..name = '${getCamelCase(field.name)}'
+        ..name = '${getFieldFuncParamName(field.name)}'
         ..named = true
         ..type = refer(
           '${references.generic_R.symbol} Function('
           '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
-          ')',
+          ')?',
         )
         ..build()));
     }
@@ -172,7 +177,8 @@ class ClassGenerator {
     _params.add(Parameter((p) => p
       ..name = 'orElse'
       ..named = true
-      ..annotations.add(references.required)
+      ..required = true
+      // ..annotations.add(references.required)
       ..type = refer(
         '${references.generic_R.symbol} Function('
         '${_isNamespaceGeneric ? '${element.name.replaceFirst('_', '')}<T>' : element.name.replaceFirst('_', '')}'
@@ -191,7 +197,7 @@ class ClassGenerator {
         type_processor.PatternMatchingMethod.whenOrElse,
         element,
       ))
-      ..types.add(references.generic_R_extends_Object)
+      ..types.add(references.generic_R)//_extends_Object)
       ..returns = references.generic_R
       ..optionalParameters.addAll(_params)
       ..body = Code(_bodyBuffer.toString())
@@ -203,7 +209,7 @@ class ClassGenerator {
     final StringBuffer _bodyBuffer = StringBuffer();
 
     final assertionCondition =
-        _fields.map((f) => '${getCamelCase(f.name)} == null').join(' && ');
+        _fields.map((f) => '${getFieldFuncParamName(getCamelCase(f.name))} == null').join(' && ');
 
     _bodyBuffer.write(
       "assert(() {"
@@ -220,14 +226,14 @@ class ClassGenerator {
       final DartObject usedClass =
           type_processor.usedClassFromAnnotation(field);
       _bodyBuffer.writeln('case ${element.name}.${field.name}:');
-      _bodyBuffer.writeln('if (${getCamelCase(field.name)} == null) break;');
+      _bodyBuffer.writeln('if (${getFieldFuncParamName(field.name)} == null) break;');
       if (usedClass != null) {
         final wrapperName = type_processor.usedWrapperNameFromAnnotation(field);
-        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+        _bodyBuffer.writeln('return ${getFieldFuncParamName(field.name)}'
             '((this as $wrapperName)'
             '.${getCamelCase(usedClass.toTypeValue().getDisplayString(withNullability: false))});');
       } else {
-        _bodyBuffer.writeln('return ${getCamelCase(field.name)}'
+        _bodyBuffer.writeln('return ${getFieldFuncParamName(field.name)}'
             '${hasObjectAnnotation ? '()' : '(this as ${field.name})'};');
       }
 
@@ -235,12 +241,12 @@ class ClassGenerator {
           ? '${usedClass.toTypeValue().getDisplayString(withNullability: false)}'
           : '${field.name}';
       _params.add(Parameter((p) => p
-        ..name = '${getCamelCase(field.name)}'
+        ..name = '${getFieldFuncParamName(field.name)}'
         ..named = true
         ..type = refer(
           '${references.ref_void.symbol} Function('
           '${hasObjectAnnotation ? '' : '${_isNamespaceGeneric ? '$callbackArgType<T>' : callbackArgType}'}'
-          ')',
+          ')?',
         )
         ..build()));
     }
@@ -303,7 +309,8 @@ class ClassGenerator {
     final fields = type_processor.listTypeFieldOf<Data>(element, 'fields');
     return fields.map((e) => Parameter((f) {
           if (type_processor.dataFieldRequired(e)) {
-            f.annotations.add(references.required);
+            // f.annotations.add(references.required);
+            f.required = true;
           }
           return f
             ..name = '${type_processor.dataFieldName(e)}'
@@ -502,7 +509,8 @@ class ClassGenerator {
           ..initializers.add(Code('super(${element.name}.${field.name})'))
           ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
                 if (type_processor.dataFieldRequired(e)) {
-                  f.annotations.add(references.required);
+                  // f.annotations.add(references.required);
+                  f.required = true;
                 }
                 return f
                   ..name = 'this.${type_processor.dataFieldName(e)}'
@@ -516,7 +524,8 @@ class ClassGenerator {
           ..docs.addAll(type_processor.docCommentsOf(field))
           ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
                 if (type_processor.dataFieldRequired(e)) {
-                  f.annotations.add(references.required);
+                  // f.annotations.add(references.required);
+                  f.required = true;
                 }
                 return f
                   ..name =
@@ -552,7 +561,8 @@ class ClassGenerator {
           ..initializers.add(Code('super($values)'))
           ..optionalParameters.addAll(_classFields.map((e) => Parameter((f) {
                 if (type_processor.dataFieldRequired(e)) {
-                  f.annotations.add(references.required);
+                  // f.annotations.add(references.required);
+                  f.required = true;
                 }
                 return f
                   ..name = 'this.${type_processor.dataFieldName(e)}'

@@ -6,6 +6,11 @@ String getCamelCase(String text, {String separator = ''}) {
   return words.join(separator);
 }
 
+String getFieldFuncParamName(String text) {
+  final k = '${text.substring(0, 1).toUpperCase()}${text.substring(1)}';
+  return 'on' + k;
+}
+
 String _upperCaseFirstLetter(String word) {
   return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
 }

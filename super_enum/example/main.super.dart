@@ -13,7 +13,7 @@ abstract class MoviesResponse extends Equatable {
   const MoviesResponse(this._type);
 
   /// Success State of the MovieResponse
-  factory MoviesResponse.success({@required Movies movies}) = Success.create;
+  factory MoviesResponse.success({required Movies movies}) = Success.create;
 
   /// Unauthorized State of the MovieResponse
   factory MoviesResponse.unauthorized() = Unauthorized.create;
@@ -22,36 +22,27 @@ abstract class MoviesResponse extends Equatable {
   factory MoviesResponse.noNetwork() = NoNetwork.create;
 
   /// UnexpectedException State of the MovieResponse
-  factory MoviesResponse.unexpectedException({@required Exception exception}) =
+  factory MoviesResponse.unexpectedException({required Object exception}) =
       UnexpectedException.create;
 
   final _MoviesResponse _type;
 
   /// The [when] method is the equivalent to pattern matching.
   /// Its prototype depends on the _MoviesResponse [_type]s defined.
-  R when<R extends Object>(
-      {@required R Function(Success) success,
-      @required R Function() unauthorized,
-      @required R Function() noNetwork,
-      @required R Function(UnexpectedException) unexpectedException}) {
-    assert(() {
-      if (success == null ||
-          unauthorized == null ||
-          noNetwork == null ||
-          unexpectedException == null) {
-        throw 'check for all possible cases';
-      }
-      return true;
-    }());
+  R when<R>(
+      {required R Function(Success) onSuccess,
+      required R Function() onUnauthorized,
+      required R Function() onNoNetwork,
+      required R Function(UnexpectedException) onUnexpectedException}) {
     switch (this._type) {
       case _MoviesResponse.Success:
-        return success(this as Success);
+        return onSuccess(this as Success);
       case _MoviesResponse.Unauthorized:
-        return unauthorized();
+        return onUnauthorized();
       case _MoviesResponse.NoNetwork:
-        return noNetwork();
+        return onNoNetwork();
       case _MoviesResponse.UnexpectedException:
-        return unexpectedException(this as UnexpectedException);
+        return onUnexpectedException(this as UnexpectedException);
     }
   }
 
@@ -60,31 +51,25 @@ abstract class MoviesResponse extends Equatable {
   ///
   /// On the other hand, it adds an extra orElse required parameter,
   /// for fallback behavior.
-  R whenOrElse<R extends Object>(
-      {R Function(Success) success,
-      R Function() unauthorized,
-      R Function() noNetwork,
-      R Function(UnexpectedException) unexpectedException,
-      @required R Function(MoviesResponse) orElse}) {
-    assert(() {
-      if (orElse == null) {
-        throw 'Missing orElse case';
-      }
-      return true;
-    }());
+  R whenOrElse<R>(
+      {R Function(Success)? onSuccess,
+      R Function()? onUnauthorized,
+      R Function()? onNoNetwork,
+      R Function(UnexpectedException)? onUnexpectedException,
+      required R Function(MoviesResponse) orElse}) {
     switch (this._type) {
       case _MoviesResponse.Success:
-        if (success == null) break;
-        return success(this as Success);
+        if (onSuccess == null) break;
+        return onSuccess(this as Success);
       case _MoviesResponse.Unauthorized:
-        if (unauthorized == null) break;
-        return unauthorized();
+        if (onUnauthorized == null) break;
+        return onUnauthorized();
       case _MoviesResponse.NoNetwork:
-        if (noNetwork == null) break;
-        return noNetwork();
+        if (onNoNetwork == null) break;
+        return onNoNetwork();
       case _MoviesResponse.UnexpectedException:
-        if (unexpectedException == null) break;
-        return unexpectedException(this as UnexpectedException);
+        if (onUnexpectedException == null) break;
+        return onUnexpectedException(this as UnexpectedException);
     }
     return orElse(this);
   }
@@ -92,32 +77,32 @@ abstract class MoviesResponse extends Equatable {
   /// The [whenPartial] method is equivalent to [whenOrElse],
   /// but non-exhaustive.
   void whenPartial(
-      {void Function(Success) success,
-      void Function() unauthorized,
-      void Function() noNetwork,
-      void Function(UnexpectedException) unexpectedException}) {
+      {void Function(Success)? onSuccess,
+      void Function()? onUnauthorized,
+      void Function()? onNoNetwork,
+      void Function(UnexpectedException)? onUnexpectedException}) {
     assert(() {
-      if (success == null &&
-          unauthorized == null &&
-          noNetwork == null &&
-          unexpectedException == null) {
+      if (onSuccess == null &&
+          onUnauthorized == null &&
+          onNoNetwork == null &&
+          onUnexpectedException == null) {
         throw 'provide at least one branch';
       }
       return true;
     }());
     switch (this._type) {
       case _MoviesResponse.Success:
-        if (success == null) break;
-        return success(this as Success);
+        if (onSuccess == null) break;
+        return onSuccess(this as Success);
       case _MoviesResponse.Unauthorized:
-        if (unauthorized == null) break;
-        return unauthorized();
+        if (onUnauthorized == null) break;
+        return onUnauthorized();
       case _MoviesResponse.NoNetwork:
-        if (noNetwork == null) break;
-        return noNetwork();
+        if (onNoNetwork == null) break;
+        return onNoNetwork();
       case _MoviesResponse.UnexpectedException:
-        if (unexpectedException == null) break;
-        return unexpectedException(this as UnexpectedException);
+        if (onUnexpectedException == null) break;
+        return onUnexpectedException(this as UnexpectedException);
     }
   }
 
@@ -128,10 +113,10 @@ abstract class MoviesResponse extends Equatable {
 /// Success State of the MovieResponse
 @immutable
 abstract class Success extends MoviesResponse {
-  const Success({@required this.movies}) : super(_MoviesResponse.Success);
+  const Success({required this.movies}) : super(_MoviesResponse.Success);
 
   /// Success State of the MovieResponse
-  factory Success.create({@required Movies movies}) = _SuccessImpl;
+  factory Success.create({required Movies movies}) = _SuccessImpl;
 
   final Movies movies;
 
@@ -142,7 +127,7 @@ abstract class Success extends MoviesResponse {
 
 @immutable
 class _SuccessImpl extends Success {
-  const _SuccessImpl({@required this.movies}) : super(movies: movies);
+  const _SuccessImpl({required this.movies}) : super(movies: movies);
 
   @override
   final Movies movies;
@@ -194,14 +179,14 @@ class _NoNetworkImpl extends NoNetwork {
 /// UnexpectedException State of the MovieResponse
 @immutable
 abstract class UnexpectedException extends MoviesResponse {
-  const UnexpectedException({@required this.exception})
+  const UnexpectedException({required this.exception})
       : super(_MoviesResponse.UnexpectedException);
 
   /// UnexpectedException State of the MovieResponse
-  factory UnexpectedException.create({@required Exception exception}) =
+  factory UnexpectedException.create({required Object exception}) =
       _UnexpectedExceptionImpl;
 
-  final Exception exception;
+  final Object exception;
 
   /// Creates a copy of this UnexpectedException but with the given fields
   /// replaced with the new values.
@@ -210,11 +195,11 @@ abstract class UnexpectedException extends MoviesResponse {
 
 @immutable
 class _UnexpectedExceptionImpl extends UnexpectedException {
-  const _UnexpectedExceptionImpl({@required this.exception})
+  const _UnexpectedExceptionImpl({required this.exception})
       : super(exception: exception);
 
   @override
-  final Exception exception;
+  final Object exception;
 
   @override
   _UnexpectedExceptionImpl copyWith({Object exception = superEnum}) =>
