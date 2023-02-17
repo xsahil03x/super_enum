@@ -1,3 +1,5 @@
+# Deprecated
+Super Enum is now deprecated in favor of Dart's Patterns. Read more [here](https://medium.com/dartlang/dart-3-alpha-f1458fb9d232).
 
 <img src="https://user-images.githubusercontent.com/25670178/68855928-5590b800-0705-11ea-98f2-43f98fb5b06e.png?sanitize=true" width="500px">
 
